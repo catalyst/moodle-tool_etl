@@ -15,20 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Plugin renderer.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_etl\table\task_table;
+use tool_etl\task_manager;
+use \tool_etl\form\task_form;
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+class tool_etl_renderer extends plugin_renderer_base {
+
+    /**
+     * Display a list of tasks with control buttons.
+     */
+    public function display_tasks_table() {
+        $table = new task_table();
+        $table->display(task_manager::get_all_tasks());
+    }
+
+    /**
+     * Render task form.
+     *
+     * @param \tool_etl\form\task_form $form
+     */
+    public function display_tasks_form(task_form $form) {
+        $form->display();
+    }
+
+}

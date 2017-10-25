@@ -15,20 +15,47 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * SFTP source.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\source;
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+class source_sftp extends source_ftp {
+
+    /**
+     * Name of the source.
+     *
+     * @var string
+     */
+    protected $name = "SFTP";
+
+    /**
+     * Settings.
+     *
+     * @var array
+     */
+    protected $settings = array(
+        'host' => '',
+        'port' => 21,
+        'username' => '',
+        'password' => '',
+        'directory' => '',
+        'fileregex' => '',
+    );
+
+    /**
+     * Connect to SFTP server.
+     */
+    protected function connect() {
+        if (!empty($this->settings['host'])) {
+            $this->connid = ftp_ssl_connect($this->settings['host'], $this->settings['port']);
+        }
+    }
+
+}

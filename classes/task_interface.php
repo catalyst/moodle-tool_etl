@@ -15,20 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Target interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl;
+use tool_etl\source\source_interface;
+use tool_etl\target\target_interface;
+use tool_etl\processor\processor_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+/**
+ * An interface describing task class behaviour.
+ */
+interface task_interface {
+    public function __construct($id = 0);
+    public function set_source(source_interface $source);
+    public function set_target(target_interface $target);
+    public function set_processor(processor_interface $processor);
+    public function add_schedule(scheduler $schedule);
+    public function save();
+    public function delete();
+    public function execute();
+    public function __get($name);
+}

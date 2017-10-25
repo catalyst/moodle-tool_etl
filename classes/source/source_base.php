@@ -15,20 +15,59 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Base source class. All new sources have to extend this class.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\source;
+
+use tool_etl\common\common_base;
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+abstract class source_base extends common_base implements source_interface {
+
+    /**
+     * Source data.
+     *
+     * @var array
+     */
+    protected $data = array();
+
+    /**
+     * A list of file paths.
+     *
+     * @var array
+     */
+    protected $filepaths = array();
+
+    /**
+     * @inheritdoc
+     */
+    public function get_file_paths() {
+        return $this->filepaths;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get_data() {
+        return $this->data;
+    }
+
+    /**
+     * Return available source options.
+     *
+     * @return array A list of existing source classes.
+     */
+    final public static function get_options() {
+        return array(
+            'source_ftp',
+            'source_sftp',
+        );
+    }
+
+}

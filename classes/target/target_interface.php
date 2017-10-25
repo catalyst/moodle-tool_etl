@@ -15,20 +15,49 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Target interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\target;
+
+use tool_etl\common\common_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+interface target_interface extends common_interface {
+    /**
+     * Constructor.
+     *
+     * @param array $settings A list of settings for the target.
+     */
+    public function __construct(array $settings);
+
+    /**
+     * Load data from array.
+     *
+     * @param array $data A data to load.
+     *
+     * @return bool
+     */
+    public function load(array $data);
+
+    /**
+     * Load data from files.
+     *
+     * @param array $filepaths A list of files.
+     *
+     * @return bool
+     */
+    public function load_from_files($filepaths);
+
+    /**
+     * Check if the target is available.
+     *
+     * @return bool
+     */
+    public function is_available();
+}

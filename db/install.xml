@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="admin/tool/etl/db" VERSION="20171024" COMMENT="XMLDB file for Moodle admin/tool/etl"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="tool_etl_task" COMMENT="">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="source" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="source_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="processor" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="processor_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="target_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="tool_etl_schedule" COMMENT="">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="taskid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="frequency" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="schedule" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="nextevent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="tooletlsched_t_fk" TYPE="foreign" FIELDS="taskid" REFTABLE="tool_etl_task" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

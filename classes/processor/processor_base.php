@@ -15,20 +15,44 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Base processor class. All new processors have to extend this class.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\processor;
+
+use tool_etl\common\common_base;
+
+
 defined('MOODLE_INTERNAL') || die;
 
-$string['pluginname'] = 'Extract, transform, load (ETL)';
-$string['edit_breadcrumb'] = 'Edit task';
-$string['create_breadcrumb'] = 'Create task';
-$string['delete_breadcrumb'] = 'Delete task';
-$string['edit_heading'] = 'Edit task';
-$string['create_heading'] = 'Create task';
-$string['delete_heading'] = 'Delete task';
-$string['delete_confirm'] = 'Are you sure you want to delete Task with ID {$a}?';
+abstract class processor_base extends common_base implements processor_interface {
+    /**
+     * Configured source instance.
+     *
+     * @var \tool_etl\source\source_interface
+     */
+    protected $source;
+
+    /**
+     * Configured target instance.
+     *
+     * @var \tool_etl\target\target_interface
+     */
+    protected $target;
+
+    /**
+     * Return available processor options.
+     *
+     * @return array A list of existing processor classes.
+     */
+    final public static function get_options() {
+        return array(
+            'processor_default',
+        );
+    }
+
+}
