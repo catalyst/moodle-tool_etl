@@ -77,6 +77,18 @@ class source_ftp extends source_base {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_settings_for_display() {
+        $settings = parent::get_settings_for_display();
+        unset($settings['password']);
+        unset($settings['username']);
+
+
+        return $settings;
+    }
+
+    /**
      * Connect to FTP server.
      */
     protected function connect() {

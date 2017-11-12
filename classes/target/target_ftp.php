@@ -55,9 +55,18 @@ class target_ftp extends target_base {
         if (!extension_loaded('ftp')) {
             throw new \Exception('PHP extension FTP is not loaded.');
         }
+    }
 
-        $this->connect();
-        $this->login();
+    /**
+     * @inheritdoc
+     */
+    public function get_settings_for_display() {
+        $settings = parent::get_settings_for_display();
+        unset($settings['password']);
+        unset($settings['username']);
+
+
+        return $settings;
     }
 
     protected function connect() {

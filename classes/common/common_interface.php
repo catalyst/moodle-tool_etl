@@ -50,6 +50,15 @@ interface common_interface {
     public function get_settings();
 
     /**
+     * Return a list of settings for display.
+     *
+     * Some settings can contain sensitive information and we provide control over printing it out to the instance.
+     *
+     * @return array
+     */
+    public function get_settings_for_display();
+
+    /**
      * Set component settings.
      *
      * @param array $data A list of settings to set.

@@ -80,6 +80,13 @@ abstract class common_base implements common_interface {
     /**
      * @inheritdoc
      */
+    public function get_settings_for_display() {
+        return $this->get_settings();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function set_settings(array $data) {
         foreach ($data as $name => $value) {
             if (isset($this->settings[$name])) {

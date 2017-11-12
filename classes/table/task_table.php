@@ -24,6 +24,7 @@
 
 namespace tool_etl\table;
 
+use tool_etl\common\common_interface;
 use tool_etl\task_interface;
 use flexible_table;
 use html_writer;
@@ -56,7 +57,6 @@ class task_table extends flexible_table {
                 'source',
                 'target',
                 'processor',
-                'settings',
                 'schedule',
                 'actions'
             )
@@ -65,7 +65,6 @@ class task_table extends flexible_table {
                 'Source',
                 'Target',
                 'Processor',
-                'Settings',
                 'Schedule',
                 get_string('actions'),
             )
@@ -94,13 +93,44 @@ class task_table extends flexible_table {
      */
     protected function add_task(task_interface $task) {
         $this->add_data(array(
-            $task->source->get_name(),
-            $task->target->get_name(),
-            $task->processor->get_name(),
-            '',
+            $this->display_task_item($task->source),
+            $this->display_task_item($task->target),
+            $this->display_task_item($task->processor),
             '',
             $this->create_action_buttons($task),
         ));
+    }
+
+    /**
+     * Render a single task item.
+     *
+     * @param \tool_etl\common\common_interface $item
+     *
+     * @return string
+     */
+    protected function display_task_item(common_interface $item) {
+        $name = html_writer::start_tag('strong') . $item->get_name() . html_writer::end_tag('strong');
+        $settings = $this->display_settings($item->get_settings_for_display());
+
+        return $name . $settings;
+    }
+
+    /**
+     * Render settings.
+     *
+     * @param array $settings
+     *
+     * @return string
+     */
+    protected function display_settings(array $settings) {
+        $output = html_writer::empty_tag('br');
+
+        foreach ($settings as $name => $value) {
+            $output .= html_writer::div($name . ': ' . $value);
+
+        }
+
+        return $output;
     }
 
     /**
