@@ -119,6 +119,21 @@ class target_dataroot extends target_base {
     /**
      * @inheritdoc
      */
+    public function validate_config_form_elements($data, $files, $errors) {
+        if (empty($data[$this->get_config_form_prefix() . 'path'])) {
+            $errors[$this->get_config_form_prefix() . 'path'] = 'Local folder path could not be empty';
+        }
+
+        if (empty($data[$this->get_config_form_prefix() . 'filename'])) {
+            $errors[$this->get_config_form_prefix() . 'filename'] = 'File name could not be empty';
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function is_available() {
         if (is_dir($this->path) && is_writable($this->path)) {
             return true;
