@@ -58,6 +58,7 @@ class task_table extends flexible_table {
                 'target',
                 'processor',
                 'schedule',
+                'enabled',
                 'actions'
             )
         );
@@ -66,6 +67,7 @@ class task_table extends flexible_table {
                 'Target',
                 'Processor',
                 'Schedule',
+                'Enabled',
                 get_string('actions'),
             )
         );
@@ -80,25 +82,34 @@ class task_table extends flexible_table {
      */
     public function display(array $tasks) {
         foreach ($tasks as $task) {
-            $this->add_task($task);
+            $this->display_task($task);
         }
 
         $this->finish_output();
     }
 
     /**
-     * Add a single task to the table data.
+     * Display a single task.
      *
      * @param \tool_etl\task_interface $task A task object.
      */
-    protected function add_task(task_interface $task) {
+    protected function display_task(task_interface $task) {
+        if ($task->is_enabled()) {
+            $class = '';
+            $enabled = get_string('yes');
+        } else {
+            $class = 'dimmed_text';
+            $enabled = get_string('no');
+        }
+
         $this->add_data(array(
             $this->display_task_item($task->source),
             $this->display_task_item($task->target),
             $this->display_task_item($task->processor),
             '',
+            $enabled,
             $this->create_action_buttons($task),
-        ));
+        ), $class);
     }
 
     /**
@@ -145,6 +156,26 @@ class task_table extends flexible_table {
         global $OUTPUT;
 
         $buttons = '';
+
+
+        // Enable/disable button.
+        $action = 'show';
+        $title = 'enable';
+
+        if ($task->is_enabled()) {
+            $action = 'hide';
+            $title = 'disable';
+        }
+
+        $buttons .= html_writer::link(
+            new moodle_url('/admin/tool/etl/status.php', array('id' => $task->id)),
+            html_writer::empty_tag('img', [
+                'src' => $OUTPUT->pix_url('t/' . $action),
+                'alt' => get_string($title),
+                'class' => 'iconsmall',
+            ]),
+            ['title' => get_string($title)]
+        );
 
         // Edit button.
         $buttons .= html_writer::link(

@@ -73,6 +73,13 @@ class task implements task_interface {
     protected $id = 0;
 
     /**
+     * Is the task enabled?
+     *
+     * @var int
+     */
+    protected $enabled = 1;
+
+    /**
      * Constructor.
      *
      * @param int $id ID of the task record from DB.
@@ -95,11 +102,10 @@ class task implements task_interface {
                 throw new \invalid_parameter_exception('Task ' . $this->id . ' is not exist');
             }
 
-            $data = (array)$data;
-
-            $this->source = common_base::init('source', $data['source'], unserialize($data['source_settings']));
-            $this->target = common_base::init('target', $data['target'], unserialize($data['target_settings']));
-            $this->processor = common_base::init('processor', $data['processor'], unserialize($data['processor_settings']));
+            $this->enabled = $data->enabled;
+            $this->source = common_base::init('source', $data->source, unserialize($data->source_settings));
+            $this->target = common_base::init('target', $data->target, unserialize($data->target_settings));
+            $this->processor = common_base::init('processor', $data->processor, unserialize($data->processor_settings));
         }
     }
 
@@ -147,6 +153,28 @@ class task implements task_interface {
     }
 
     /**
+     * Set enabled to the task.
+     *
+     * @param int $enabled
+     */
+    public function set_enabled($enabled = null) {
+        if (is_null($enabled)) {
+            $enabled = 0;
+        }
+
+        $this->enabled = $enabled;
+    }
+
+    /**
+     * Check if the task is enabled.
+     *
+     * @return bool
+     */
+    public function is_enabled() {
+        return !empty($this->enabled);
+    }
+
+    /**
      * Ass a schedule to the task.
      *
      * @param \tool_etl\scheduler $schedule
@@ -167,6 +195,7 @@ class task implements task_interface {
         $task->processor_settings = serialize($this->processor->get_settings());
         $task->target = $this->target->get_short_name();
         $task->target_settings = serialize($this->target->get_settings());
+        $task->enabled = $this->enabled;
 
         if (!empty($this->id)) {
             $task->id = $this->id;

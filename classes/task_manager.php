@@ -47,6 +47,8 @@ class task_manager {
         $processorinstance->set_settings($processorinstance->get_settings_from_submitted_data($data));
 
         $task = self::get_task($data['id']);
+
+        $task->set_enabled($data['enabled']);
         $task->set_source($sourceinstance);
         $task->set_target($targetinstance);
         $task->set_processor($processorinstance);

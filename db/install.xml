@@ -13,6 +13,7 @@
         <FIELD NAME="processor_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
         <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
         <FIELD NAME="target_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT=""/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

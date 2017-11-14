@@ -51,6 +51,9 @@ class task_form extends \moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $this->task->id);
 
+        $mform->addElement('advcheckbox', 'enabled', 'Enabled?');
+        $mform->setDefault('enabled', $this->task->enabled);
+
         $mform->addElement('header', 'sourcesettings', 'Source');
         $mform->addElement('select', 'source', 'Select source', $this->get_list_of_options('source'));
         $mform->setType('source', PARAM_ALPHAEXT);
@@ -62,7 +65,6 @@ class task_form extends \moodleform {
         $mform->setType('target', PARAM_ALPHAEXT);
         $mform->setDefault('target', $this->task->target->get_short_name());
         $this->add_config_fields_anchor('target');
-
 
         $mform->addElement('header', 'processorsettings', 'Processor');
         $mform->addElement('select', 'processor', 'Select processor', $this->get_list_of_options('processor'));
