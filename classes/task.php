@@ -231,23 +231,35 @@ class task implements task_interface {
             throw new \coding_exception('Task should have source, processor, target and schedule configured!');
         }
 
-        $taskobj = $this->to_object();
-        $scheduleobj = $this->schedule->to_object();
-
         if (!empty($this->id)) {
-            $taskobj->id = $this->id;
-            $this->db->update_record(self::TASK_TABLE, $taskobj);
-
-            if ($this->scheduleid) {
-                $scheduleobj->id = $this->scheduleid;
-                $this->db->update_record('tool_etl_schedule', $scheduleobj);
-            } else {
-                $this->db->insert_record('tool_etl_schedule', $scheduleobj);
-            }
+            $this->update_task();
         } else {
-            $this->id = $this->db->insert_record(self::TASK_TABLE, $taskobj);
-            $scheduleobj->taskid = $this->id;
-            $this->db->insert_record('tool_etl_schedule', $scheduleobj);
+            $this->insert_task();
+        }
+    }
+
+    /**
+     * Create a new task in DB.
+     */
+    protected function insert_task() {
+        $this->id = $this->db->insert_record(self::TASK_TABLE, $this->task_to_object());
+        $this->scheduleid = $this->db->insert_record('tool_etl_schedule', $this->schedule_to_object());
+    }
+
+    /**
+     * Update the task in DB.
+     */
+    protected function update_task() {
+        if (!$this->id) {
+            throw new \coding_exception('To be able to update task it should be inserted to DB first');
+        }
+
+        $this->db->update_record(self::TASK_TABLE, $this->task_to_object());
+
+        if ($this->scheduleid) {
+            $this->db->update_record('tool_etl_schedule', $this->schedule_to_object());
+        } else {
+            $this->scheduleid = $this->db->insert_record('tool_etl_schedule', $this->schedule_to_object());
         }
     }
 
@@ -256,8 +268,12 @@ class task implements task_interface {
      *
      * @return \stdClass
      */
-    protected function to_object() {
+    protected function task_to_object() {
         $task = new \stdClass();
+
+        if (!empty($this->id)) {
+            $task->id = $this->id;
+        }
 
         $task->source = $this->source->get_short_name();
         $task->source_settings = serialize($this->source->get_settings());
@@ -268,6 +284,25 @@ class task implements task_interface {
         $task->enabled = $this->enabled;
 
         return $task;
+    }
+
+    /**
+     * Return a schedule as object for saving to DB.
+     *
+     * @return \stdClass
+     */
+    protected function schedule_to_object() {
+        $scheduleobj = $this->schedule->to_object();
+
+        if (!empty($this->id)) {
+            $scheduleobj->taskid = $this->id;
+        }
+
+        if (!empty($this->scheduleid)) {
+            $scheduleobj->id = $this->scheduleid;
+        }
+
+        return $scheduleobj;
     }
 
     /**
