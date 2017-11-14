@@ -38,7 +38,7 @@ interface task_interface {
     public function set_target(target_interface $target);
     public function set_processor(processor_interface $processor);
     public function set_enabled($enabled = null);
-    public function add_schedule(scheduler $schedule);
+    public function set_schedule(scheduler $schedule);
     public function save();
     public function delete();
     public function execute();

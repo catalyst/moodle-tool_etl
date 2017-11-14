@@ -30,6 +30,13 @@ use tool_etl\task_interface;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/formslib.php");
+require_once($CFG->dirroot . '/calendar/lib.php');
+
+// Register a new form field.
+\MoodleQuickForm::registerElementType('schedule_etl',
+    "$CFG->dirroot/admin/tool/etl/classes/schedule_element.php",
+    'MoodleQuickForm_etl_schedule'
+);
 
 class task_form extends \moodleform {
     /**
@@ -72,9 +79,14 @@ class task_form extends \moodleform {
         $mform->setDefault('processor', $this->task->processor->get_short_name());
         $this->add_config_fields_anchor('processor');
 
+        $mform->addElement('header', 'schedulesettings', 'Schedule');
+        $mform->addElement('schedule_etl', 'schedulegroup', 'Schedule');
+
         $mform->registerNoSubmitButton('updateform');
         $mform->addElement('submit', 'updateform', 'updateform');
         $this->add_action_buttons();
+
+        $this->set_data($this->task->schedule->to_array());
     }
 
     /**

@@ -25,6 +25,7 @@
 namespace tool_etl\table;
 
 use tool_etl\common\common_interface;
+use tool_etl\scheduler;
 use tool_etl\task_interface;
 use flexible_table;
 use html_writer;
@@ -106,7 +107,7 @@ class task_table extends flexible_table {
             $this->display_task_item($task->source),
             $this->display_task_item($task->target),
             $this->display_task_item($task->processor),
-            '',
+            $this->display_schedule($task->schedule),
             $enabled,
             $this->create_action_buttons($task),
         ), $class);
@@ -124,6 +125,25 @@ class task_table extends flexible_table {
         $settings = $this->display_settings($item->get_settings_for_display());
 
         return $name . $settings;
+    }
+
+    /**
+     * @param \tool_etl\scheduler $schedule
+     *
+     * @return string
+     */
+    protected function display_schedule(scheduler $schedule) {
+        $output = $schedule->get_formatted();
+
+        if ($next = $schedule->get_scheduled_time()) {
+            if ($next < time()) {
+                $next = time();
+            }
+
+            $output .= '<br />' . userdate($next);
+        }
+
+        return $output;
     }
 
     /**

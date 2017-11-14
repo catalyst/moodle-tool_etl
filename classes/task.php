@@ -59,6 +59,20 @@ class task implements task_interface {
     protected $processor;
 
     /**
+     * Schedule for the task.
+     *
+     * @var scheduler
+     */
+    protected $schedule;
+
+    /**
+     * ID of schedule record.
+     *
+     * @var int
+     */
+    protected $scheduleid = 0;
+
+    /**
      * DB object.
      *
      * @var \moodle_database
@@ -92,21 +106,47 @@ class task implements task_interface {
         $this->db = $DB;
         $this->id = $id;
 
-        if ($this->id == 0) {
-            $this->source = common_base::init('source', 'source_ftp');
-            $this->target = common_base::init('target', 'target_dataroot');
-            $this->processor = common_base::init('processor', 'processor_default');
-        } else {
+        $this->init();
+    }
 
-            if (!$data = $DB->get_record(self::TASK_TABLE, array('id' => $this->id))) {
+    /**
+     * Initial set up of the instance.
+     *
+     * @throws \invalid_parameter_exception
+     */
+    protected function init() {
+        $this->schedule = new scheduler();
+
+        if ($this->id == 0) {
+            $source = 'source_ftp';
+            $target = 'target_dataroot';
+            $processor = 'processor_default';
+            $sourcesettings = array();
+            $targetsettings = array();
+            $processorsettings = array();
+        } else {
+            if (!$data = $this->db->get_record(self::TASK_TABLE, array('id' => $this->id))) {
                 throw new \invalid_parameter_exception('Task ' . $this->id . ' is not exist');
             }
 
             $this->enabled = $data->enabled;
-            $this->source = common_base::init('source', $data->source, unserialize($data->source_settings));
-            $this->target = common_base::init('target', $data->target, unserialize($data->target_settings));
-            $this->processor = common_base::init('processor', $data->processor, unserialize($data->processor_settings));
+
+            $source = $data->source;
+            $target = $data->target;
+            $processor = $data->processor;
+            $sourcesettings = unserialize($data->source_settings);
+            $targetsettings = unserialize($data->target_settings);
+            $processorsettings = unserialize($data->processor_settings);
+
+            if ($schedulerow = $this->db->get_record('tool_etl_schedule', array('taskid' => $this->id))) {
+                $this->scheduleid = $schedulerow->id;
+                $this->schedule = new scheduler($schedulerow);
+            }
         }
+
+        $this->source = common_base::init('source', $source, $sourcesettings);
+        $this->target = common_base::init('target', $target, $targetsettings);
+        $this->processor = common_base::init('processor', $processor, $processorsettings);
     }
 
     /**
@@ -153,6 +193,15 @@ class task implements task_interface {
     }
 
     /**
+     * Set a schedule to the task.
+     *
+     * @param \tool_etl\scheduler $schedule
+     */
+    public function set_schedule(scheduler $schedule) {
+        $this->schedule = $schedule;
+    }
+
+    /**
      * Set enabled to the task.
      *
      * @param int $enabled
@@ -175,18 +224,39 @@ class task implements task_interface {
     }
 
     /**
-     * Ass a schedule to the task.
-     *
-     * @param \tool_etl\scheduler $schedule
-     */
-    public function add_schedule(scheduler $schedule) {
-        // TODO: Implement add_schedule() method.
-    }
-
-    /**
      * Save the task to DB.
      */
     public function save() {
+        if (empty($this->source) || empty($this->processor) || empty($this->target) || empty($this->schedule)) {
+            throw new \coding_exception('Task should have source, processor, target and schedule configured!');
+        }
+
+        $taskobj = $this->to_object();
+        $scheduleobj = $this->schedule->to_object();
+
+        if (!empty($this->id)) {
+            $taskobj->id = $this->id;
+            $this->db->update_record(self::TASK_TABLE, $taskobj);
+
+            if ($this->scheduleid) {
+                $scheduleobj->id = $this->scheduleid;
+                $this->db->update_record('tool_etl_schedule', $scheduleobj);
+            } else {
+                $this->db->insert_record('tool_etl_schedule', $scheduleobj);
+            }
+        } else {
+            $this->id = $this->db->insert_record(self::TASK_TABLE, $taskobj);
+            $scheduleobj->taskid = $this->id;
+            $this->db->insert_record('tool_etl_schedule', $scheduleobj);
+        }
+    }
+
+    /**
+     * Return task as object for saving to DB.
+     *
+     * @return \stdClass
+     */
+    protected function to_object() {
         $task = new \stdClass();
 
         $task->source = $this->source->get_short_name();
@@ -197,18 +267,14 @@ class task implements task_interface {
         $task->target_settings = serialize($this->target->get_settings());
         $task->enabled = $this->enabled;
 
-        if (!empty($this->id)) {
-            $task->id = $this->id;
-            $this->db->update_record(self::TASK_TABLE, $task);
-        } else {
-            $this->db->insert_record(self::TASK_TABLE, $task);
-        }
+        return $task;
     }
 
     /**
      * Delete the task from DB.
      */
     public function delete() {
+        $this->db->delete_records('tool_etl_schedule', array('taskid' => $this->id));
         $this->db->delete_records(self::TASK_TABLE, array('id' => $this->id));
     }
 

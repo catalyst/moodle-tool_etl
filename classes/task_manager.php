@@ -52,6 +52,7 @@ class task_manager {
         $task->set_source($sourceinstance);
         $task->set_target($targetinstance);
         $task->set_processor($processorinstance);
+        $task->schedule->from_array($data);
 
         $task->save();
     }
