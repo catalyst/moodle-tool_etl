@@ -38,6 +38,26 @@ class task implements task_interface {
     const TASK_TABLE = 'tool_etl_task';
 
     /**
+     * Schedule table.
+     */
+    const SCHEDULE_TABLE = 'tool_etl_schedule';
+
+    /**
+     * Default source.
+     */
+    const DEFAULT_SOURCE = 'source_ftp';
+
+    /**
+     * Default target.
+     */
+    const DEFAULT_TARGET = 'target_dataroot';
+
+    /**
+     * Default processor.
+     */
+    const DEFAULT_PROCESSOR = 'processor_default';
+
+    /**
      * Source for the task.
      *
      * @var source_interface
@@ -118,9 +138,9 @@ class task implements task_interface {
         $this->schedule = new scheduler();
 
         if ($this->id == 0) {
-            $source = 'source_ftp';
-            $target = 'target_dataroot';
-            $processor = 'processor_default';
+            $source = self::DEFAULT_SOURCE;
+            $target = self::DEFAULT_TARGET;
+            $processor = self::DEFAULT_PROCESSOR;
             $sourcesettings = array();
             $targetsettings = array();
             $processorsettings = array();
@@ -138,7 +158,7 @@ class task implements task_interface {
             $targetsettings = unserialize($data->target_settings);
             $processorsettings = unserialize($data->processor_settings);
 
-            if ($schedulerow = $this->db->get_record('tool_etl_schedule', array('taskid' => $this->id))) {
+            if ($schedulerow = $this->db->get_record(self::SCHEDULE_TABLE, array('taskid' => $this->id))) {
                 $this->scheduleid = $schedulerow->id;
                 $this->schedule = new scheduler($schedulerow);
             }
@@ -243,7 +263,7 @@ class task implements task_interface {
      */
     protected function insert_task() {
         $this->id = $this->db->insert_record(self::TASK_TABLE, $this->task_to_object());
-        $this->scheduleid = $this->db->insert_record('tool_etl_schedule', $this->schedule_to_object());
+        $this->scheduleid = $this->db->insert_record(self::SCHEDULE_TABLE, $this->schedule_to_object());
     }
 
     /**
@@ -257,9 +277,9 @@ class task implements task_interface {
         $this->db->update_record(self::TASK_TABLE, $this->task_to_object());
 
         if ($this->scheduleid) {
-            $this->db->update_record('tool_etl_schedule', $this->schedule_to_object());
+            $this->db->update_record(self::SCHEDULE_TABLE, $this->schedule_to_object());
         } else {
-            $this->scheduleid = $this->db->insert_record('tool_etl_schedule', $this->schedule_to_object());
+            $this->scheduleid = $this->db->insert_record(self::SCHEDULE_TABLE, $this->schedule_to_object());
         }
     }
 
@@ -309,7 +329,7 @@ class task implements task_interface {
      * Delete the task from DB.
      */
     public function delete() {
-        $this->db->delete_records('tool_etl_schedule', array('taskid' => $this->id));
+        $this->db->delete_records(self::SCHEDULE_TABLE, array('taskid' => $this->id));
         $this->db->delete_records(self::TASK_TABLE, array('id' => $this->id));
     }
 
