@@ -15,15 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * ALH Customisations for totara Evidence functionality.
  *
- * @package    tool_etl
- * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @package    local_alh_evidence
+ * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+define('CLI_SCRIPT', true);
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+require(__DIR__. '/../../../../config.php');
+require_once($CFG->libdir.'/clilib.php');
+
+error_reporting(E_ALL | E_STRICT);
+ini_set('display_errors', 1);
+
+cli_heading("Running...");
+$task = new tool_etl\task\process_tasks();
+$task->execute();
+cli_heading("Done");
+
+exit(0);
