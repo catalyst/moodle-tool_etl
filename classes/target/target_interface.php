@@ -30,13 +30,6 @@ defined('MOODLE_INTERNAL') || die;
 
 interface target_interface extends common_interface {
     /**
-     * Constructor.
-     *
-     * @param array $settings A list of settings for the target.
-     */
-    public function __construct(array $settings);
-
-    /**
      * Load data from array.
      *
      * @param array $data A data to load.

@@ -66,14 +66,26 @@ class source_ftp extends source_base {
     protected $logginresult;
 
     /**
+     * A temp folder to save files.
+     *
+     * @var string
+     */
+    protected $tempdir;
+
+    /**
      * @inheritdoc
      */
     public function __construct(array $settings = array()) {
+        global $CFG;
+
         parent::__construct($settings);
 
         if (!extension_loaded('ftp')) {
             throw new \Exception('PHP extension FTP is not loaded.');
         }
+
+        $this->tempdir = $CFG->tempdir . DIRECTORY_SEPARATOR . 'source_ftp';
+        check_dir_exists($this->tempdir);
     }
 
     /**
@@ -110,12 +122,11 @@ class source_ftp extends source_base {
      * @inheritdoc
      */
     public function extract() {
-        if ($this->is_available()) {
-            // Get all files.
-            // Filter once what satisfy regex.
-            // Build file paths.
-            $this->filepaths = $this->get_files();
+        $this->connect();
+        $this->login();
 
+        if ($this->is_available()) {
+            $this->filepaths = $this->get_files();
         } else {
             throw new \Exception($this->name . ' source is not available!');
         }
@@ -154,7 +165,22 @@ class source_ftp extends source_base {
      * Return files.
      */
     protected function get_files() {
+        $localfiles = array();
+        $remotefiles = ftp_nlist($this->connid, $this->settings['directory']);
 
+        if ($remotefiles) {
+            foreach ($remotefiles as $remotefile) {
+                if (preg_match($this->settings['fileregex'], $remotefile)) {
+                    $localfile = $this->tempdir . DIRECTORY_SEPARATOR . basename($remotefile);
+
+                    if (ftp_get($this->connid, $localfile, $remotefile, FTP_BINARY, 0)) {
+                        $localfiles[] = $localfile;
+                    }
+                }
+            }
+        }
+
+        return $localfiles;
     }
 
     /**

@@ -40,11 +40,12 @@ class processor_default extends processor_base {
      */
     public function process() {
         try {
+            parent::process();
 
             $this->source->extract();
 
-            if ($sourcefile = $this->source->get_file_paths()) {
-                $this->target->load_from_file($sourcefile);
+            if ($sourcefiles = $this->source->get_file_paths()) {
+                $this->target->load_from_files($sourcefiles);
             } else if ($data = $this->source->get_data()) {
                 $this->target->load($data);
             } else {

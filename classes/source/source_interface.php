@@ -29,7 +29,6 @@ use tool_etl\common\common_interface;
 defined('MOODLE_INTERNAL') || die;
 
 interface source_interface extends common_interface {
-    public function __construct(array $settings);
     public function extract();
     public function get_file_paths();
     public function get_data();

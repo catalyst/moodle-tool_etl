@@ -317,6 +317,12 @@ class task implements task_interface {
      * Execute the task.
      */
     public function execute() {
-
+        if ($this->is_enabled() && $this->schedule->is_time()) {
+            $this->processor->set_source($this->source);
+            $this->processor->set_target($this->target);
+            $this->processor->process();
+            $this->schedule->next();
+            $this->update_task();
+        }
     }
 }

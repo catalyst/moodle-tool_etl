@@ -25,6 +25,8 @@
 namespace tool_etl\processor;
 
 use tool_etl\common\common_base;
+use tool_etl\source\source_interface;
+use tool_etl\target\target_interface;
 
 
 defined('MOODLE_INTERNAL') || die;
@@ -43,6 +45,29 @@ abstract class processor_base extends common_base implements processor_interface
      * @var \tool_etl\target\target_interface
      */
     protected $target;
+
+    /**
+     * @inheritdoc
+     */
+    public function set_source(source_interface $source) {
+        $this->source = $source;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function set_target(target_interface $target) {
+        $this->target = $target;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function process() {
+        if (empty($this->source) || empty($this->target)) {
+            throw new \coding_exception('Can not process. Source and target must be set!');
+        }
+    }
 
     /**
      * Return available processor options.

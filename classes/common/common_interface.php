@@ -28,6 +28,13 @@ defined('MOODLE_INTERNAL') || die;
 
 interface common_interface {
     /**
+     * Constructor.
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings);
+
+    /**
      * Return a name of the component.
      *
      * @return string

@@ -25,16 +25,25 @@
 namespace tool_etl\processor;
 
 use tool_etl\common\common_interface;
+use tool_etl\source\source_interface;
+use tool_etl\target\target_interface;
 
 defined('MOODLE_INTERNAL') || die;
 
 interface processor_interface extends common_interface {
     /**
-     * Constructor.
+     * Set source for the processor.
      *
-     * @param array $settings
+     * @param \tool_etl\source\source_interface $source
      */
-    public function __construct(array $settings);
+    public function set_source(source_interface $source);
+
+    /**
+     * Set target for the processor.
+     *
+     * @param \tool_etl\target\target_interface $target
+     */
+    public function set_target(target_interface $target);
 
     /**
      * Process ETL actions.

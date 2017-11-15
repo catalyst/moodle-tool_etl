@@ -74,10 +74,10 @@ class target_dataroot extends target_base {
             return false;
         }
 
-        foreach ($filepaths as $filepath) {
-            if (!copy($filepath, $this->path . '/' . $this->settings['filename'])) {
-                //Log error.
-            }
+        $filepath = reset($filepaths); // We copy only one file.
+
+        if (!copy($filepath, $this->path . '/' . $this->settings['filename'])) {
+            //Log error.
         }
 
         return true;
@@ -135,6 +135,10 @@ class target_dataroot extends target_base {
      * @inheritdoc
      */
     public function is_available() {
+        if (!empty($this->settings['clreateifnotexist'])) {
+            check_dir_exists($this->path);
+        }
+
         if (is_dir($this->path) && is_writable($this->path)) {
             return true;
         }
