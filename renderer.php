@@ -23,6 +23,7 @@
  */
 
 use tool_etl\table\task_table;
+use tool_etl\table\history_table;
 use tool_etl\task_manager;
 use \tool_etl\form\task_form;
 
@@ -45,6 +46,22 @@ class tool_etl_renderer extends plugin_renderer_base {
      */
     public function display_tasks_form(task_form $form) {
         $form->display();
+    }
+
+    /**
+     * Render history table.
+     *
+     * @param \tool_etl\table\history_table $table
+     *
+     * @return string
+     */
+    public function render_history_table(history_table $table) {
+        ob_start();
+        $table->out($table->pagesize, false);
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
     }
 
 }

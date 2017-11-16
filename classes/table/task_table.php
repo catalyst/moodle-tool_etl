@@ -177,15 +177,20 @@ class task_table extends flexible_table {
 
         $buttons = '';
 
+        // Edit button.
+        $buttons .= html_writer::link(
+            new moodle_url('/admin/tool/etl/history.php',  array('taskid' => $task->id)),
+            html_writer::empty_tag('img', [
+                'src' => $OUTPUT->pix_url('t/viewdetails'),
+                'alt' => 'View task history',
+                'class' => 'iconsmall',
+            ]),
+            ['title' => 'View task history']
+        );
 
         // Enable/disable button.
-        $action = 'show';
-        $title = 'enable';
-
-        if ($task->is_enabled()) {
-            $action = 'hide';
-            $title = 'disable';
-        }
+        $action = $task->is_enabled() ? 'hide' : 'show';
+        $title = $task->is_enabled() ? 'disable' : 'enable';
 
         $buttons .= html_writer::link(
             new moodle_url('/admin/tool/etl/status.php', array('id' => $task->id)),
