@@ -179,7 +179,7 @@ final class logger {
      *
      * @return string
      */
-    private function to_string($info = null) {
+    public function to_string($info = null) {
         $retval = '';
         if (is_string($info)) {
             $retval = $info;

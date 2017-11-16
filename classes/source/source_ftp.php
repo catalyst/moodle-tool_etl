@@ -25,6 +25,7 @@
 namespace tool_etl\source;
 
 use tool_etl\config_field;
+use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -136,11 +137,17 @@ class source_ftp extends source_base {
      * @inheritdoc
      */
     public function is_available() {
-        if ($this->connid && $this->logginresult) {
-            return true;
+        if (!$this->connid) {
+            $this->log('connect', 'Connection failed', logger::TYPE_ERROR);
+            return false;
         }
 
-        return false;
+        if (!$this->logginresult) {
+            $this->log('login', 'Login failed using ' . $this->settings['username'], logger::TYPE_ERROR);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -168,6 +175,8 @@ class source_ftp extends source_base {
         $localfiles = array();
         $remotefiles = ftp_nlist($this->connid, $this->settings['directory']);
 
+        $this->log('get_files', $remotefiles);
+
         if ($remotefiles) {
             foreach ($remotefiles as $remotefile) {
                 if (preg_match($this->settings['fileregex'], $remotefile)) {
@@ -175,9 +184,16 @@ class source_ftp extends source_base {
 
                     if (ftp_get($this->connid, $localfile, $remotefile, FTP_BINARY, 0)) {
                         $localfiles[] = $localfile;
+                        $this->log('copy_from_ftp', 'Completed copy ' . $remotefile . ' to ' . $localfile);
+                    } else {
+                        $this->log('copy_from_ftp', 'Failed to copy ' . $remotefile . ' to ' . $localfile, logger::TYPE_ERROR);
                     }
                 }
             }
+        }
+
+        if (empty($localfiles)) {
+            $this->log('match_files', 'No files found matching regex ' . $this->settings['fileregex'], logger::TYPE_WARNING);
         }
 
         return $localfiles;
@@ -208,6 +224,15 @@ class source_ftp extends source_base {
         }
 
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function log($action, $info = '', $logtype = logger::TYPE_INFO, $trace = '') {
+        $info = logger::get_instance()->to_string($info);
+        $info = 'Host ' . $this->settings['host'] . ':' . $this->settings['port'] . ': ' . $info;
+        parent::log($action, $info, $logtype, $trace);
     }
 
     /**

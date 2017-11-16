@@ -337,12 +337,37 @@ class task implements task_interface {
      * Execute the task.
      */
     public function execute() {
-        if ($this->is_enabled() && $this->schedule->is_time()) {
-            $this->processor->set_source($this->source);
-            $this->processor->set_target($this->target);
-            $this->processor->process();
-            $this->schedule->next();
-            $this->update_task();
+        try {
+            if ($this->is_enabled() && $this->schedule->is_time()) {
+                $this->log('execute', 'Task started');
+
+                $this->schedule->next();
+                $this->update_task();
+
+                $this->processor->set_source($this->source);
+                $this->processor->set_target($this->target);
+                $this->processor->process();
+
+                $this->log('execute', 'Task completed');
+            }
+        } catch (\Exception $e) {
+            $this->log('failed', $e->getMessage(), logger::TYPE_ERROR);
         }
+    }
+
+    /**
+     * Log an action.
+     *
+     * @param string $action Logged action.
+     * @param string $info Info text.
+     * @param string $logtype One of self::TYPE_*
+     * @param string $trace Some code trace.
+     *
+     * @throws \coding_exception
+     */
+    protected function log($action, $info='', $logtype = logger::TYPE_INFO, $trace='') {
+        logger::get_instance()->set_task_id($this->id);
+        logger::get_instance()->set_element('Task');
+        logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
     }
 }

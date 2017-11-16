@@ -24,6 +24,8 @@
 
 namespace tool_etl\processor;
 
+use tool_etl\logger;
+
 defined('MOODLE_INTERNAL') || die;
 
 class processor_default extends processor_base {
@@ -49,10 +51,10 @@ class processor_default extends processor_base {
             } else if ($data = $this->source->get_data()) {
                 $this->target->load($data);
             } else {
-                // Log empty.
+                $this->log('process', 'No data to processed', logger::TYPE_WARNING);
             }
         } catch (\Exception $e) {
-            return false;
+            $this->log('process', $e->getMessage(), logger::TYPE_ERROR);
         }
 
         return true;

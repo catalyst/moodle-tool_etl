@@ -25,6 +25,7 @@
 namespace tool_etl\target;
 
 use tool_etl\config_field;
+use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -34,7 +35,7 @@ class target_dataroot extends target_base {
      *
      * @var string
      */
-    protected $name = "Folder in the site data";
+    protected $name = "Site data";
 
     /**
      * Data root path.
@@ -74,11 +75,14 @@ class target_dataroot extends target_base {
             return false;
         }
 
-        $filepath = reset($filepaths); // We copy only one file.
+        $source = reset($filepaths); // We copy only one file.
+        $target = $this->path . '/' . $this->settings['filename'];
 
-        if (!copy($filepath, $this->path . '/' . $this->settings['filename'])) {
-            //Log error.
+        if (!copy($source, $target)) {
+            $this->log('load_data', 'Failed to copy file ' . $source . ' to ' . $target, logger::TYPE_ERROR);
         }
+
+        $this->log('load_data', 'Successfully copied file ' . $source . ' to ' . $target);
 
         return true;
     }
@@ -142,6 +146,8 @@ class target_dataroot extends target_base {
         if (is_dir($this->path) && is_writable($this->path)) {
             return true;
         }
+
+        $this->log('load_data', 'Directory is not writable ' . $this->path, logger::TYPE_ERROR);
 
         return false;
     }

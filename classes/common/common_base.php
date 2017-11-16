@@ -24,6 +24,8 @@
 
 namespace tool_etl\common;
 
+use tool_etl\logger;
+
 defined('MOODLE_INTERNAL') || die;
 
 abstract class common_base implements common_interface {
@@ -189,6 +191,21 @@ abstract class common_base implements common_interface {
         }
 
         return $elements;
+    }
+
+    /**
+     * Log an action.
+     *
+     * @param string $action Logged action.
+     * @param string $info Info text.
+     * @param string $logtype One of self::TYPE_*
+     * @param string $trace Some code trace.
+     *
+     * @throws \coding_exception
+     */
+    protected function log($action, $info='', $logtype = logger::TYPE_INFO, $trace='') {
+        logger::get_instance()->set_element($this->get_name());
+        logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
     }
 
 }
