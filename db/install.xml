@@ -32,5 +32,29 @@
         <KEY NAME="tooletlsched_t_fk" TYPE="foreign" FIELDS="taskid" REFTABLE="tool_etl_task" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
+    <TABLE NAME="tool_etl_log" COMMENT="">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="unix time"/>
+        <FIELD NAME="runid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="logtype" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="element" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="info" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="trace" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="tooletllog_t_fk" TYPE="foreign" FIELDS="taskid" REFTABLE="tool_etl_task" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="logtype" UNIQUE="false" FIELDS="logtype"/>
+        <INDEX NAME="element" UNIQUE="false" FIELDS="action"/>
+        <INDEX NAME="action" UNIQUE="false" FIELDS="action"/>
+        <INDEX NAME="taskid" UNIQUE="false" FIELDS="runid"/>
+        <INDEX NAME="runid" UNIQUE="false" FIELDS="runid"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>
