@@ -71,7 +71,7 @@ class source_ftp extends source_base {
      *
      * @var string
      */
-    protected $tempdir;
+    protected $filedir;
 
     /**
      * @inheritdoc
@@ -85,8 +85,8 @@ class source_ftp extends source_base {
             throw new \Exception('PHP extension FTP is not loaded.');
         }
 
-        $this->tempdir = $CFG->tempdir . DIRECTORY_SEPARATOR . 'source_ftp';
-        check_dir_exists($this->tempdir);
+        $this->filedir = $CFG->dataroot . DIRECTORY_SEPARATOR . $this->get_short_name();
+        check_dir_exists($this->filedir);
     }
 
     /**
@@ -180,7 +180,7 @@ class source_ftp extends source_base {
         if ($remotefiles) {
             foreach ($remotefiles as $remotefile) {
                 if (preg_match($this->settings['fileregex'], $remotefile)) {
-                    $localfile = $this->tempdir . DIRECTORY_SEPARATOR . basename($remotefile);
+                    $localfile = $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);
 
                     if (ftp_get($this->connid, $localfile, $remotefile, FTP_BINARY, 0)) {
                         $localfiles[] = $localfile;
@@ -239,7 +239,7 @@ class source_ftp extends source_base {
      * Close FTP connection.
      */
     public function __destruct() {
-        if ($this->connid) {
+        if ($this->connid && is_resource($this->connid)) {
             ftp_close($this->connid);
         }
     }
