@@ -64,7 +64,7 @@ class target_dataroot extends target_base {
         global $CFG;
 
         parent::__construct($settings);
-        $this->path = $CFG->dataroot . '/' .  $this->settings['path'];
+        $this->path = $CFG->dataroot . DIRECTORY_SEPARATOR .  $this->settings['path'];
     }
 
     /**
