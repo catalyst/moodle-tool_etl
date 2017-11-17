@@ -67,6 +67,7 @@ abstract class source_base extends common_base implements source_interface {
         return array(
             'source_ftp',
             'source_sftp',
+            'source_sftp_key',
         );
     }
 
