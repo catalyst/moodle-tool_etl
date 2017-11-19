@@ -25,7 +25,6 @@
 namespace tool_etl\source;
 
 use tool_etl\config_field;
-use tool_etl\logger;
 use phpseclib\Crypt\RSA;
 use phpseclib\Net\SFTP;
 
@@ -157,64 +156,25 @@ class source_sftp_key extends source_ftp {
     /**
      * @inheritdoc
      */
-    public function extract() {
-        $this->connect();
-        $this->login();
-
-        if ($this->is_available()) {
-            $this->filepaths = $this->get_files();
-        } else {
-            throw new \Exception($this->name . ' source is not available!');
-        }
-    }
-
-    /**
-     * Return files.
-     */
-    protected function get_files() {
-        $localfiles = array();
-        $remotefiles = $this->connid->nlist($this->settings['directory']);
-
-        $this->log('get_files', $remotefiles);
-
-        if ($remotefiles) {
-            foreach ($remotefiles as $remotefile) {
-                if (preg_match($this->settings['fileregex'], $remotefile)) {
-                    $localfile = $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);
-                    $remotefile = $this->settings['directory'] . '/' . basename($remotefile);
-
-                    if ($this->connid->get($remotefile, $localfile)) {
-                        $localfiles[] = $localfile;
-                        $this->log('copy_from_ftp', 'Completed copy ' . $remotefile . ' to ' . $localfile);
-                    } else {
-                        $this->log('copy_from_ftp', 'Failed to copy ' . $remotefile . ' to ' . $localfile, logger::TYPE_ERROR);
-                    }
-                }
-            }
-        }
-
-        if (empty($localfiles)) {
-            $this->log('match_files', 'No files found matching regex ' . $this->settings['fileregex'], logger::TYPE_WARNING);
-        }
-
-        return $localfiles;
+    protected function get_remote_files() {
+        return $this->connid->nlist($this->settings['directory']);
     }
 
     /**
      * @inheritdoc
      */
-    public function is_available() {
-        if (!$this->connid) {
-            $this->log('connect', 'Connection failed', logger::TYPE_ERROR);
-            return false;
-        }
+    protected function get_remote_file_path($remotefile) {
+        return $this->settings['directory'] . '/' . basename($remotefile);
+    }
 
-        if (!$this->logginresult) {
-            $this->log('login', 'Login failed using ' . $this->settings['username'], logger::TYPE_ERROR);
-            return false;
-        }
+    /**
+     * @inheritdoc
+     */
+    protected function copy_file($remotefile, $localfile) {
+        $result = $this->connid->get($remotefile, $localfile);
+        $this->log_copy_result($result, $remotefile, $localfile);
 
-        return true;
+        return $result;
     }
 
     /**

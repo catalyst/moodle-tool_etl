@@ -173,30 +173,113 @@ class source_ftp extends source_base {
      */
     protected function get_files() {
         $localfiles = array();
-        $remotefiles = ftp_nlist($this->connid, $this->settings['directory']);
+        $matchedfiles = array();
+        $remotefiles = $this->get_remote_files();
 
         $this->log('get_files', $remotefiles);
 
         if ($remotefiles) {
             foreach ($remotefiles as $remotefile) {
-                if (preg_match($this->settings['fileregex'], $remotefile)) {
-                    $localfile = $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);
+                if ($this->should_copy($remotefile)) {
+                    $localfile = $this->get_local_file_path($remotefile);
+                    $remotefile = $this->get_remote_file_path($remotefile);
 
-                    if (ftp_get($this->connid, $localfile, $remotefile, FTP_BINARY, 0)) {
+                    $matchedfiles[] = $remotefile;
+
+                    if ($this->copy_file($remotefile, $localfile)) {
                         $localfiles[] = $localfile;
-                        $this->log('copy_from_ftp', 'Completed copy ' . $remotefile . ' to ' . $localfile);
-                    } else {
-                        $this->log('copy_from_ftp', 'Failed to copy ' . $remotefile . ' to ' . $localfile, logger::TYPE_ERROR);
                     }
                 }
             }
         }
 
-        if (empty($localfiles)) {
-            $this->log('match_files', 'No files found matching regex ' . $this->settings['fileregex'], logger::TYPE_WARNING);
-        }
+        $this->log_get_files_results($matchedfiles, $localfiles);
 
         return $localfiles;
+    }
+
+    /**
+     * Check if we should copy the remote file.
+     *
+     * @param string $remotefile Remote file path.
+     *
+     * @return int
+     */
+    protected function should_copy($remotefile) {
+        return preg_match($this->settings['fileregex'], $remotefile);
+    }
+
+    /**
+     * Return a list of all remote files from the configured folder.
+     *
+     * @return array
+     */
+    protected function get_remote_files() {
+        return ftp_nlist($this->connid, $this->settings['directory']);
+    }
+
+    /**
+     * Get a path of local file to copy.
+     *
+     * @param string $remotefile Remote file path.
+     *
+     * @return string
+     */
+    protected function get_local_file_path($remotefile) {
+        return $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);;
+    }
+
+    /**
+     * Copy file from FTP source.
+     *
+     * @param string $remotefile Remote file path.
+     * @param string $localfile Local file path.
+     *
+     * @return bool
+     */
+    protected function copy_file($remotefile, $localfile) {
+        $result = ftp_get($this->connid, $localfile, $remotefile, FTP_BINARY, 0);
+        $this->log_copy_result($result, $remotefile, $localfile);
+
+        return $result;
+    }
+
+    /**
+     * Return full path to the remote file.
+     *
+     * @param string $remotefile Remote file name.
+     *
+     * @return mixed
+     */
+    protected function get_remote_file_path($remotefile) {
+        return $remotefile;
+    }
+
+    /**
+     * Log a result of the copying file.
+     *
+     * @param bool $result Result.
+     * @param string $remotefile Remote file path.
+     * @param string $localfile Local file path.
+     */
+    protected function log_copy_result($result, $remotefile, $localfile) {
+        if ($result) {
+            $this->log('copy_from_ftp', 'Completed copy ' . $remotefile . ' to ' . $localfile);
+        } else {
+            $this->log('copy_from_ftp', 'Failed to copy ' . $remotefile . ' to ' . $localfile, logger::TYPE_ERROR);
+        }
+    }
+
+    /**
+     * Log the result of getting files.
+     *
+     * @param array $matchedfiles A list of matched files.
+     * @param array $processedfiles List of processed files.
+     */
+    protected function log_get_files_results(array $matchedfiles, array $processedfiles) {
+        $this->log('match_files', count ($matchedfiles) . ' files matched regex ' . $this->settings['fileregex']);
+
+        $this->log('result', count($processedfiles) . ' files processed ');
     }
 
     /**
