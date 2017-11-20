@@ -52,7 +52,6 @@ abstract class target_base extends common_base implements target_interface {
     final public static function get_options() {
         return array(
             'target_dataroot',
-            'target_ftp',
         );
     }
 }
