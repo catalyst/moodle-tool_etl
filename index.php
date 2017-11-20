@@ -57,7 +57,7 @@ if ($data = $form->get_data()) {
 $PAGE->navbar->add(get_string($action . '_breadcrumb', 'tool_etl'));
 
 echo $output->header();
-echo $output->heading(get_string($action . '_heading', 'tool_etl'));
+echo $output->heading(get_string($action . '_heading', 'tool_etl', $id));
 
 $output->display_tasks_form($form);
 $output->display_tasks_table();

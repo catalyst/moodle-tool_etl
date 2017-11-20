@@ -72,10 +72,10 @@ if ($table->is_downloading()) {
     die();
 }
 
-$PAGE->navbar->add('Task history');
+$PAGE->navbar->add(get_string('historynav', 'tool_etl'));
 
 echo $output->header();
-echo $output->heading('Task history');
+echo $output->heading(get_string('historyheader', 'tool_etl'));
 $mform->display();
 echo $output->render($table);
 echo $output->footer();

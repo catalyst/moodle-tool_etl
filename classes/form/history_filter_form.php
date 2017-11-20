@@ -39,22 +39,36 @@ class history_filter_form extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('text', 'runid', 'Run ID');
-        $mform->setType('runid', PARAM_ALPHANUM);
+        $mform->addElement('header', 'filters', get_string('filters', 'tool_etl'));
 
-        $mform->addElement('select', 'taskid', 'Task ID', $this->get_task_ids());
+        $mform->addElement('select', 'taskid', get_string('taskid', 'tool_etl'), $this->get_task_ids());
         $mform->setType('taskid', PARAM_INT);
 
+        $mform->addElement('text', 'runid', get_string('runid', 'tool_etl'));
+        $mform->setType('runid', PARAM_ALPHANUM);
+        $mform->setAdvanced('runid');
+
+
         $mform->addElement('date_selector', 'datefrom', get_string('from'), array('optional' => true));
+        $mform->setAdvanced('datefrom');
         $mform->addElement('date_selector', 'datetill', get_string('to'), array('optional' => true));
+        $mform->setAdvanced('datetill');
 
-        $mform->addElement('select', 'logtype', 'Type', $this->get_log_types(), array('multiple' => 'multiple', 'size' => 3));
+        $mform->addElement('select',
+            'logtype', get_string('logtype', 'tool_etl'),
+            $this->get_log_types(),
+            array('multiple' => 'multiple', 'size' => 3)
+        );
+        $mform->setAdvanced('logtype');
 
-        $mform->addElement('select', 'element', 'Task element', $this->get_task_elements());
+        $mform->addElement('select', 'element', get_string('taskelement', 'tool_etl'), $this->get_task_elements());
         $mform->setType('element', PARAM_RAW);
+        $mform->setAdvanced('element');
 
-        $mform->addElement('select', 'action', 'Element action', $this->get_actions());
+        $mform->addElement('select', 'action', get_string('elementaction', 'tool_etl'), $this->get_actions());
         $mform->setType('action', PARAM_RAW);
+        $mform->setAdvanced('action');
+
 
         $mform->addElement('submit', 'submitbutton', get_string('filter'));
     }
@@ -72,7 +86,7 @@ class history_filter_form extends \moodleform {
         }
 
         asort($ids);
-        array_unshift($ids, 'Choose task...');
+        array_unshift($ids, get_string('choose', 'tool_etl'));
 
         return $ids;
     }
@@ -101,7 +115,7 @@ class history_filter_form extends \moodleform {
             $elements[$element] = $element;
         }
 
-        array_unshift($elements, 'Choose task element...');
+        array_unshift($elements, get_string('choose', 'tool_etl'));
 
         return $elements;
     }
@@ -117,7 +131,7 @@ class history_filter_form extends \moodleform {
             $actions[$action] = $action;
         }
 
-        array_unshift($actions, 'Choose action...');
+        array_unshift($actions, get_string('choose', 'tool_etl'));
 
         return $actions;
     }

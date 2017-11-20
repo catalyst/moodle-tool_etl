@@ -64,11 +64,11 @@ class task_table extends flexible_table {
             )
         );
         $this->define_headers(array(
-                'Source',
-                'Target',
-                'Processor',
-                'Schedule',
-                'Enabled',
+                get_string('source', 'tool_etl'),
+                get_string('target', 'tool_etl'),
+                get_string('processor', 'tool_etl'),
+                get_string('schedule', 'tool_etl'),
+                get_string('enabled', 'tool_etl'),
                 get_string('actions'),
             )
         );
@@ -182,10 +182,10 @@ class task_table extends flexible_table {
             new moodle_url('/admin/tool/etl/history.php',  array('taskid' => $task->id)),
             html_writer::empty_tag('img', [
                 'src' => $OUTPUT->pix_url('t/viewdetails'),
-                'alt' => 'View task history',
+                'alt' => get_string('viewhistory', 'tool_etl'),
                 'class' => 'iconsmall',
             ]),
-            ['title' => 'View task history']
+            ['title' => get_string('viewhistory', 'tool_etl')]
         );
 
         // Enable/disable button.

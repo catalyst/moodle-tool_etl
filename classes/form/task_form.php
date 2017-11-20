@@ -58,29 +58,31 @@ class task_form extends \moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $this->task->id);
 
-        $mform->addElement('advcheckbox', 'enabled', 'Enabled?');
+        $mform->addElement('header', 'status', get_string('status', 'tool_etl'));
+        $mform->addElement('advcheckbox', 'enabled', get_string('enabled', 'tool_etl'));
         $mform->setDefault('enabled', $this->task->enabled);
+        $mform->setExpanded('status', false);
 
-        $mform->addElement('header', 'sourcesettings', 'Source');
-        $mform->addElement('select', 'source', 'Select source', $this->get_list_of_options('source'));
+        $mform->addElement('header', 'sourcesettings', get_string('source', 'tool_etl'));
+        $mform->addElement('select', 'source', get_string('selsource', 'tool_etl'), $this->get_list_of_options('source'));
         $mform->setType('source', PARAM_ALPHAEXT);
         $mform->setDefault('source', $this->task->source->get_short_name());
         $this->add_config_fields_anchor('source');
 
-        $mform->addElement('header', 'targetsettings', 'Target');
-        $mform->addElement('select', 'target', 'Select target', $this->get_list_of_options('target'));
+        $mform->addElement('header', 'targetsettings',  get_string('target', 'tool_etl'));
+        $mform->addElement('select', 'target',  get_string('seltarget', 'tool_etl'), $this->get_list_of_options('target'));
         $mform->setType('target', PARAM_ALPHAEXT);
         $mform->setDefault('target', $this->task->target->get_short_name());
         $this->add_config_fields_anchor('target');
 
-        $mform->addElement('header', 'processorsettings', 'Processor');
-        $mform->addElement('select', 'processor', 'Select processor', $this->get_list_of_options('processor'));
+        $mform->addElement('header', 'processorsettings',  get_string('processor', 'tool_etl'));
+        $mform->addElement('select', 'processor', get_string('selprocessor', 'tool_etl'), $this->get_list_of_options('processor'));
         $mform->setType('processor', PARAM_ALPHAEXT);
         $mform->setDefault('processor', $this->task->processor->get_short_name());
         $this->add_config_fields_anchor('processor');
 
-        $mform->addElement('header', 'schedulesettings', 'Schedule');
-        $mform->addElement('schedule_etl', 'schedulegroup', 'Schedule');
+        $mform->addElement('header', 'schedulesettings', get_string('schedule', 'tool_etl'));
+        $mform->addElement('schedule_etl', 'schedulegroup', get_string('schedule', 'tool_etl'));
 
         $mform->registerNoSubmitButton('updateform');
         $mform->addElement('submit', 'updateform', 'updateform');

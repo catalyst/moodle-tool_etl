@@ -1,43 +1,25 @@
 <?php
-/*
- * This file is part of Totara LMS
- *
- * Copyright (C) 2010 onwards Totara Learning Solutions LTD
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @author Valerii Kuznetsov <valerii.kuznetsov@totaralms.com>
- * @package totara
- * @subpackage core
- */
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * This class incapsulates operation with scheduling
  *
- * It operates on DB row objects by changing it's fields. After applying changes on object, this
- * object should be saved in DB by $DB->insert_record or $DB->update_record
- *
- * To avoid overwriting other fields use scheduler::to_object().
- * This method will return object with only scheduler specific fields and 'id' field
- * Scheduler changes original object fields aswell, so no need to use scheduler::to_object() if you
- * save original object after applying scheduler changes.
- *
- * To support scheduling db table represented by operated db row object must have next fields:
- * frequency (int), schedule(int), nextevent (bigint)
- * If field(s) have dfferent names it can be configured via set_field method
- * Also, it has tight integration with Scheduler form element, and as result it's easily to integrate
- * them.
+ * @package    tool_etl
+ * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace tool_etl;

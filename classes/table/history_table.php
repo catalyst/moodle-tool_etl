@@ -103,14 +103,14 @@ class history_table extends \table_sql implements \renderable {
     protected function define_table_columns() {
 
         $cols = array(
-            'runid' => 'Run ID',
-            'taskid' => 'Task ID',
-            'time' => 'Time',
-            'logtype' => 'Type',
-            'element' => 'Element',
-            'action' => 'Action',
-            'info' => 'Info',
-            'trace' => 'Trace',
+            'runid' => get_string('runid', 'tool_etl'),
+            'taskid' => get_string('taskid', 'tool_etl'),
+            'time' => get_string('time'),
+            'logtype' => get_string('logtype', 'tool_etl'),
+            'element' => get_string('taskelement', 'tool_etl'),
+            'action' => get_string('elementaction', 'tool_etl'),
+            'info' => get_string('info'),
+            'trace' => get_string('trace', 'tool_etl'),
         );
 
         $this->define_columns(array_keys($cols));
