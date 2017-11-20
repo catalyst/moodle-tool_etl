@@ -197,4 +197,37 @@ final class logger {
         return $retval;
     }
 
+    /**
+     * Return a list of existing elements.
+     *
+     * @return array
+     */
+    public static function get_existing_elements() {
+        global $DB;
+
+        return $DB->get_fieldset_sql("SELECT element FROM {tool_etl_log} GROUP BY element");
+    }
+
+    /**
+     * Return a list of existing actions.
+     *
+     * @return array
+     */
+    public static function get_existing_actions() {
+        global $DB;
+
+        return $DB->get_fieldset_sql("SELECT action FROM {tool_etl_log} GROUP BY action");
+    }
+
+    /**
+     * Return a list of existing run ids.
+     *
+     * @return array
+     */
+    public static function get_existing_run_ids() {
+        global $DB;
+
+        return $DB->get_fieldset_sql("SELECT runid FROM {tool_etl_log} GROUP BY runid");
+    }
+
 }

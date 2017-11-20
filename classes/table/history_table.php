@@ -24,6 +24,8 @@
 
 namespace tool_etl\table;
 
+use tool_etl\logger;
+
 defined('MOODLE_INTERNAL') || die;
 
 class history_table extends \table_sql implements \renderable {
@@ -242,6 +244,32 @@ class history_table extends \table_sql implements \renderable {
      */
     public function col_time(\stdClass $history) {
         return userdate($history->time);
+    }
+
+    /**
+     * Method to display column logtype.
+     *
+     * @param \stdClass $history an entry of history record.
+     *
+     * @return string HTML to display
+     */
+    public function col_logtype(\stdClass $history) {
+        switch ($history->logtype) {
+            case logger::TYPE_ERROR:
+                $logtype = get_string('error');
+                break;
+            case logger::TYPE_WARNING:
+                $logtype = get_string('warning');
+                break;
+            case logger::TYPE_INFO:
+                $logtype = get_string('ok');
+                break;
+            default:
+                $logtype = get_string('warning');
+                break;
+        }
+
+        return $logtype;
     }
 
 }

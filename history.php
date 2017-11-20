@@ -36,16 +36,34 @@ $PAGE->set_url($indexurl);
 
 $output = $PAGE->get_renderer('tool_etl');
 
-$filters = array(
-    'runid' => optional_param('runid', 0, PARAM_INT),
-    'taskid' => optional_param('taskid', 0, PARAM_INT),
-    'element' => optional_param('element', 0, PARAM_ALPHANUMEXT),
-    'action' => optional_param('action', 0, PARAM_ALPHANUMEXT),
-    'logtype' => optional_param('logtype', '', PARAM_SEQUENCE),
-    'datefrom' => optional_param('datefrom', 0, PARAM_INT),
-    'datetill' => optional_param('datetill', 0, PARAM_INT),
-);
+$mform = new \tool_etl\form\history_filter_form(null, array());
+$filters = array();
 
+if ($data = $mform->get_data()) {
+    $filters = (array)$data;
+
+    $filters['runid'] = (int)$filters['runid']; // We don't use PARAM_INT in the form as it sets the field to 0 all the time.
+
+    if (isset($filters['logtype']) && is_array($filters['logtype'])) {
+        $filters['logtype'] = implode(',', $filters['logtype']);
+    }
+
+    if (!empty($filters['datetill'])) {
+        $filters['datetill'] += DAYSECS - 1; // Set to end of the chosen day.
+    }
+} else {
+    $filters = array(
+        'runid' => optional_param('runid', '', PARAM_INT),
+        'taskid' => optional_param('taskid', '', PARAM_INT),
+        'element' => optional_param('element', '', PARAM_ALPHANUMEXT),
+        'action' => optional_param('action', '', PARAM_ALPHANUMEXT),
+        'logtype' => optional_param('logtype', '', PARAM_SEQUENCE),
+        'datefrom' => optional_param('datefrom', 0, PARAM_INT),
+        'datetill' => optional_param('datetill', 0, PARAM_INT),
+    );
+}
+
+$mform->set_data($filters);
 $table = new \tool_etl\table\history_table('task_history', $indexurl, $filters, $download, $page);
 
 if ($table->is_downloading()) {
@@ -58,5 +76,6 @@ $PAGE->navbar->add('Task history');
 
 echo $output->header();
 echo $output->heading('Task history');
+$mform->display();
 echo $output->render($table);
 echo $output->footer();
