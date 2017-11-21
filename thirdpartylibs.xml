@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>extlib/vendor/autoload.php</location>
+        <name>Composer Autoloader</name>
+        <version></version>
+        <license></license>
+        <licenseversion></licenseversion>
+    </library>
+    <library>
+        <location>extlib/composer/location>
+        <name>Composer Autoloader</name>
+        <version></version>
+        <license></license>
+        <licenseversion></licenseversion>
+    </library>
+    <library>
+        <location>extlib/phpseclib</location>
+        <name>PHP Secure Communications Library</name>
+        <version>2.0</version>
+        <license></license>
+        <licenseversion></licenseversion>
+    </library>
+</libraries>
