@@ -31,14 +31,12 @@ defined('MOODLE_INTERNAL') || die;
  */
 class tool_etl_config_field_testcase extends advanced_testcase {
 
+    /**
+     * @expectedException coding_exception
+     * @expectedExceptionMessage Coding error detected, it must be fixed by a programmer: Unknown parameter bla
+     */
     public function test_exception_when_getting_unknown_parameter() {
         $instance = new config_field('test_name', 'Test title');
-
-        $this->setExpectedException(
-            'coding_exception',
-            'Coding error detected, it must be fixed by a programmer: Unknown parameter bla'
-        );
-
         $instance->bla;
     }
 

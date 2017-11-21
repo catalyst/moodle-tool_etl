@@ -58,22 +58,48 @@ class tool_etl_data_testcase extends advanced_testcase {
         $this->assertEquals('object', $actual[3]);
     }
 
-    public function test_get_data_throwing_exception() {
+    /**
+     * @expectedException Exception
+     * @@expectedExceptionMessage Data is not available in bla format
+     */
+    public function test_get_data_throwing_exception_on_unknown_format() {
         $data = new data();
-
-        $this->setExpectedException('Exception', 'Data is not available in bla format');
         $data->get_data('bla');
+    }
 
-        $this->setExpectedException('Exception', 'Data is not available in files format');
+    /**
+     * @expectedException Exception
+     * @@expectedExceptionMessage Data is not available in files format
+     */
+    public function test_get_data_throwing_exception_on_files_format() {
+        $data = new data();
         $data->get_data('files');
+    }
 
-        $this->setExpectedException('Exception', 'Data is not available in string format');
+    /**
+     * @expectedException Exception
+     * @@expectedExceptionMessage Data is not available in string format
+     */
+    public function test_get_data_throwing_exception_on_string_format() {
+        $data = new data();
         $data->get_data('string');
+    }
 
-        $this->setExpectedException('Exception', 'Data is not available in array format');
+    /**
+     * @expectedException Exception
+     * @@expectedExceptionMessage Data is not available in array format
+     */
+    public function test_get_data_throwing_exception_on_array_format() {
+        $data = new data();
         $data->get_data('array');
+    }
 
-        $this->setExpectedException('Exception', 'Data is not available in object format');
+    /**
+     * @expectedException Exception
+     * @@expectedExceptionMessage Data is not available in object format
+     */
+    public function test_get_data_throwing_exception_on_object_format() {
+        $data = new data();
         $data->get_data('object');
     }
 
@@ -84,9 +110,6 @@ class tool_etl_data_testcase extends advanced_testcase {
         $this->assertEquals('test', $data->get_data('string'));
         $this->assertEquals(array('test'), $data->get_data('array'));
         $this->assertEquals(new stdClass(), $data->get_data('object'));
-
-        $this->setExpectedException('Exception', 'Data is not available in bla format');
-        $data->get_data('bla');
     }
 
 }
