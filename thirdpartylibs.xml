@@ -8,14 +8,14 @@
         <licenseversion></licenseversion>
     </library>
     <library>
-        <location>extlib/composer</location>
+        <location>extlib/vendor/composer</location>
         <name>Composer Autoloader</name>
         <version></version>
         <license></license>
         <licenseversion></licenseversion>
     </library>
     <library>
-        <location>extlib/phpseclib</location>
+        <location>extlib/vendor/phpseclib</location>
         <name>PHP Secure Communications Library</name>
         <version>2.0</version>
         <license></license>
