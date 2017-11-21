@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Settings.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
@@ -24,6 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+if ($hassiteconfig) {
+
+    $externalpage = new admin_externalpage(
+        'tool_etl_settings',
+        get_string('pluginname', 'tool_etl'),
+        new moodle_url('/admin/tool/etl/index.php')
+    );
+
+    $ADMIN->add('tools', $externalpage);
+}

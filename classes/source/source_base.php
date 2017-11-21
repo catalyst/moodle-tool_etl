@@ -15,15 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Base source class. All new sources have to extend this class.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\source;
+
+use tool_etl\common\common_base;
+use tool_etl\data_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+abstract class source_base extends common_base implements source_interface {
+
+    /**
+     * Result of extraction.
+     *
+     * @var data_interface
+     */
+    protected $data;
+
+    /**
+     * Return available source options.
+     *
+     * @return array A list of existing source classes.
+     */
+    final public static function get_options() {
+        return array(
+            'source_ftp',
+            'source_sftp',
+            'source_sftp_key',
+        );
+    }
+
+}

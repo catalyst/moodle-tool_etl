@@ -15,15 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Source interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\source;
+
+use tool_etl\common\common_interface;
+use tool_etl\data_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+interface source_interface extends common_interface {
+    /**
+     * Return a result of extraction.
+     *
+     * @return data_interface
+     */
+    public function extract();
+
+    /**
+     * Check if the source is available.
+     *
+     * @return bool
+     */
+    public function is_available();
+}

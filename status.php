@@ -15,15 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Change task's status.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+use tool_etl\task_manager;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+
+admin_externalpage_setup('tool_etl_settings');
+
+$action = 'status';
+$id = required_param('id', PARAM_INT);
+
+$indexurl = new moodle_url('/admin/tool/etl/index.php');
+
+$task = task_manager::get_task($id);
+
+$newstatus = 1 - $task->enabled;
+
+$task->set_enabled($newstatus);
+$task->save();
+
+redirect($indexurl);

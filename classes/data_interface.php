@@ -15,15 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Data interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+interface data_interface {
+    /**
+     * Return a list of supported data formats for the data object.
+     *
+     * @return array
+     */
+    public function get_supported_formats();
+
+    /**
+     * Return data in the specific format.
+     *
+     * @param string $format A name of the required format.
+     *
+     * @return mixed Data based on the format.
+     * @throws \Exception If format is not supported.
+     */
+    public function get_data($format);
+}

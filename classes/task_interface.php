@@ -15,15 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Target interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl;
+use tool_etl\source\source_interface;
+use tool_etl\target\target_interface;
+use tool_etl\processor\processor_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+/**
+ * An interface describing task class behaviour.
+ */
+interface task_interface {
+    public function __construct($id = 0);
+    public function set_source(source_interface $source);
+    public function set_target(target_interface $target);
+    public function set_processor(processor_interface $processor);
+    public function set_enabled($enabled = null);
+    public function set_schedule(scheduler $schedule);
+    public function save();
+    public function delete();
+    public function execute();
+    public function __get($name);
+    public function is_enabled();
+}

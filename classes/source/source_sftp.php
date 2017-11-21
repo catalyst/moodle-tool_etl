@@ -15,15 +15,47 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * SFTP source.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\source;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+class source_sftp extends source_ftp {
+
+    /**
+     * Name of the source.
+     *
+     * @var string
+     */
+    protected $name = "SFTP";
+
+    /**
+     * Settings.
+     *
+     * @var array
+     */
+    protected $settings = array(
+        'host' => '',
+        'port' => 21,
+        'username' => '',
+        'password' => '',
+        'directory' => '',
+        'fileregex' => '',
+    );
+
+    /**
+     * Connect to SFTP server.
+     */
+    protected function connect() {
+        if (!empty($this->settings['host'])) {
+            $this->connid = ftp_ssl_connect($this->settings['host'], $this->settings['port']);
+        }
+    }
+
+}

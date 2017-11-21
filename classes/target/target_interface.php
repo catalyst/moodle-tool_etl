@@ -15,15 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Target interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_etl\target;
+
+use tool_etl\common\common_interface;
+use tool_etl\data_interface;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+interface target_interface extends common_interface {
+    /**
+     * Load data.
+     *
+     * @param data_interface $data A data to load.
+     *
+     * @return bool
+     */
+    public function load(data_interface $data);
+
+    /**
+     * Check if the target is available.
+     *
+     * @return bool
+     */
+    public function is_available();
+}

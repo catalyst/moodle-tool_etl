@@ -15,15 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Task to process ETL tasks.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+namespace tool_etl\task;
 
-$plugin->version   = 2017102401; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051100; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
+use tool_etl\task_manager;
+
+defined('MOODLE_INTERNAL') || die();
+
+class process_tasks extends \core\task\scheduled_task {
+
+    /**
+     * Get task name
+     */
+    public function get_name() {
+        return get_string('pluginname', 'tool_etl');
+    }
+
+    /**
+     * Execute task
+     */
+    public function execute() {
+        $tasks = task_manager::get_all_tasks();
+
+        foreach ($tasks as $task) {
+            $task->execute();
+        }
+    }
+}
