@@ -15,32 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Source interface.
+ * Data interface.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\source;
-
-use tool_etl\common\common_interface;
-use tool_etl\data_interface;
+namespace tool_etl;
 
 defined('MOODLE_INTERNAL') || die;
 
-interface source_interface extends common_interface {
+interface data_interface {
     /**
-     * Return a result of extraction.
+     * Return a list of supported data formats for the data object.
      *
-     * @return data_interface
+     * @return array
      */
-    public function extract();
+    public function get_supported_formats();
 
     /**
-     * Check if the source is available.
+     * Return data in the specific format.
      *
-     * @return bool
+     * @param string $format A name of the required format.
+     *
+     * @return mixed Data based on the format.
+     * @throws \Exception If format is not supported.
      */
-    public function is_available();
+    public function get_data($format);
 }

@@ -25,38 +25,18 @@
 namespace tool_etl\source;
 
 use tool_etl\common\common_base;
+use tool_etl\data_interface;
 
 defined('MOODLE_INTERNAL') || die;
 
 abstract class source_base extends common_base implements source_interface {
 
     /**
-     * Source data.
+     * Result of extraction.
      *
-     * @var array
+     * @var data_interface
      */
-    protected $data = array();
-
-    /**
-     * A list of file paths.
-     *
-     * @var array
-     */
-    protected $filepaths = array();
-
-    /**
-     * @inheritdoc
-     */
-    public function get_file_paths() {
-        return $this->filepaths;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get_data() {
-        return $this->data;
-    }
+    protected $data;
 
     /**
      * Return available source options.

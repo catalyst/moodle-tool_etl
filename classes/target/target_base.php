@@ -32,19 +32,6 @@ defined('MOODLE_INTERNAL') || die;
 abstract class target_base extends common_base implements target_interface {
 
     /**
-     * Default load class.
-     *
-     * @param array $data
-     *
-     * @return bool
-     *
-     * @throws \coding_exception
-     */
-    public function load(array $data) {
-        throw new \coding_exception('Loading from an array is not supported yet');
-    }
-
-    /**
      * Return available target options.
      *
      * @return array A list of existing target classes.

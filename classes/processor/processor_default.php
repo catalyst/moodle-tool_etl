@@ -17,6 +17,8 @@
 /**
  * Default processor instance.
  *
+ * Does not manipulate data. Simply pass it to target.
+ *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -44,15 +46,14 @@ class processor_default extends processor_base {
         try {
             parent::process();
 
-            $this->source->extract();
+            $result = $this->source->extract();
 
-            if ($sourcefiles = $this->source->get_file_paths()) {
-                $this->target->load_from_files($sourcefiles);
-            } else if ($data = $this->source->get_data()) {
-                $this->target->load($data);
-            } else {
-                $this->log('process', 'No data to processed', logger::TYPE_WARNING);
+            if (empty($result->get_supported_formats())) {
+                $this->log('process', 'No data to process', logger::TYPE_WARNING);
             }
+
+            $this->target->load($result);
+
         } catch (\Exception $e) {
             $this->log('process', $e->getMessage(), logger::TYPE_ERROR);
         }

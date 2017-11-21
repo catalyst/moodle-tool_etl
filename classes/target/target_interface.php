@@ -25,27 +25,19 @@
 namespace tool_etl\target;
 
 use tool_etl\common\common_interface;
+use tool_etl\data_interface;
 
 defined('MOODLE_INTERNAL') || die;
 
 interface target_interface extends common_interface {
     /**
-     * Load data from array.
+     * Load data.
      *
-     * @param array $data A data to load.
-     *
-     * @return bool
-     */
-    public function load(array $data);
-
-    /**
-     * Load data from files.
-     *
-     * @param array $filepaths A list of files.
+     * @param data_interface $data A data to load.
      *
      * @return bool
      */
-    public function load_from_files($filepaths);
+    public function load(data_interface $data);
 
     /**
      * Check if the target is available.

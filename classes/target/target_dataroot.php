@@ -26,6 +26,7 @@ namespace tool_etl\target;
 
 use tool_etl\config_field;
 use tool_etl\logger;
+use tool_etl\data_interface;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -70,16 +71,41 @@ class target_dataroot extends target_base {
     /**
      * @inheritdoc
      */
-    public function load_from_files($filepaths) {
+    public function load(data_interface $data) {
         if (!$this->is_available()) {
             return false;
         }
 
+        foreach ($data->get_supported_formats() as $format) {
+            if ($format === 'files') {
+                $files = $data->get_data($format);
+                if (!empty($files)) {
+                    return $this->load_from_files($data->get_data($files));
+                } else {
+                    $this->log('load_data', 'Nothing to load', logger::TYPE_WARNING);
+                    return false;
+                }
+            } else {
+                $this->log('load_data', 'Loading from ' . $format . ' is not supported yet', logger::TYPE_WARNING);
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Load data from files.
+     *
+     * @param array $filepaths A list of files to load from.
+     *
+     * @return bool
+     */
+    protected function load_from_files(array $filepaths) {
         $source = reset($filepaths); // We copy only one file.
         $target = $this->path . '/' . $this->settings['filename'];
 
         if (!copy($source, $target)) {
             $this->log('load_data', 'Failed to copy file ' . $source . ' to ' . $target, logger::TYPE_ERROR);
+            return false;
         }
 
         $this->log('load_data', 'Successfully copied file ' . $source . ' to ' . $target);
