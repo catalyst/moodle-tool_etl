@@ -103,7 +103,7 @@ final class logger {
      *
      * @throws \coding_exception
      */
-    private function __wakeup() {
+    public function __wakeup() {
         throw new \coding_exception("Cannot unserialize singleton");
     }
 

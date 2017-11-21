@@ -98,7 +98,6 @@ class source_ftp extends source_base {
         unset($settings['password']);
         unset($settings['username']);
 
-
         return $settings;
     }
 

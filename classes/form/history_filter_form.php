@@ -48,7 +48,6 @@ class history_filter_form extends \moodleform {
         $mform->setType('runid', PARAM_ALPHANUM);
         $mform->setAdvanced('runid');
 
-
         $mform->addElement('date_selector', 'datefrom', get_string('from'), array('optional' => true));
         $mform->setAdvanced('datefrom');
         $mform->addElement('date_selector', 'datetill', get_string('to'), array('optional' => true));
@@ -68,7 +67,6 @@ class history_filter_form extends \moodleform {
         $mform->addElement('select', 'action', get_string('elementaction', 'tool_etl'), $this->get_actions());
         $mform->setType('action', PARAM_RAW);
         $mform->setAdvanced('action');
-
 
         $mform->addElement('submit', 'submitbutton', get_string('filter'));
     }

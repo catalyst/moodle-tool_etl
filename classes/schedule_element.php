@@ -31,6 +31,8 @@ require_once($CFG->libdir . '/form/group.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/calendar/lib.php');
 
+// @codingStandardsIgnoreStart
+
 /**
  * Class for a group of elements used to input a schedule for events.
  *
@@ -291,3 +293,4 @@ class MoodleQuickForm_etl_schedule extends \MoodleQuickForm_group {
         return ($assoc) ? $value : array_values($value);
     }
 }
+// @codingStandardsIgnoreEnd

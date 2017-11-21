@@ -68,17 +68,17 @@ class scheduler {
     /**
      * Constructor
      *
-     * @param stdClass DB row object
-     * @param array $alias_map Optional field renaming
+     * @param \stdClass DB row object
+     * @param array $aliasmap Optional field renaming
      */
-    public function __construct(\stdClass $row = null, array $alias_map = array()) {
+    public function __construct(\stdClass $row = null, array $aliasmap = array()) {
         if (is_null($row)) {
             $row = new \stdClass();
         }
         $this->subject = $row;
         // Remap and add fields.
         foreach ($this->map as $k => $v) {
-            $v = (isset($alias_map[$k])) ? $alias_map[$k] : $v;
+            $v = (isset($aliasmap[$k])) ? $aliasmap[$k] : $v;
             $this->set_field($k, $v);
             $this->subject->{$v} = isset($this->subject->{$v}) ? $this->subject->{$v} : null;
         }
@@ -118,12 +118,12 @@ class scheduler {
     /**
      * Calculate next time of execution
      *
-     * @param int $timestamp Current date, specify value in unit tests only
-     * @param bool $is_cron False means we are saving new value, true means do not schedule for today for weekly and monthly frequency.
-     * @param string $forcetimezone may be used to override current user timezone, for example for system timezone scheduling
+     * @param int $timestamp Current date, specify value in unit tests only.
+     * @param bool $iscron False means we are saving new value, true means do not schedule for today for weekly and monthly.
+     * @param string $forcetimezone may be used to override current user timezone, for example for system timezone scheduling.
      * @return scheduler $this
      */
-    public function next($timestamp = null, $is_cron = true, $forcetimezone = null) {
+    public function next($timestamp = null, $iscron = true, $forcetimezone = null) {
         if (!isset($this->subject->{$this->map['frequency']})) {
             return $this;
         }
@@ -163,7 +163,7 @@ class scheduler {
                 break;
             case self::WEEKLY:
                 $timeweekday = $next->format('w'); // Current day of week, Sunday is 0.
-                if (($schedule == $timeweekday) && (!$is_cron)) {
+                if (($schedule == $timeweekday) && (!$iscron)) {
                     // The scheduled day of the week is the same as the given day of the week, so schedule for this day.
                     $next->setTime(0, 0, 0);
                 } else {
@@ -177,7 +177,7 @@ class scheduler {
                 break;
             case self::MONTHLY:
                 $timeday = $next->format('j');
-                if (($timeday == $schedule) && (!$is_cron)) {
+                if (($timeday == $schedule) && (!$iscron)) {
                     // The scheduled day of the month is the same as the given day of the week, so schedule for this day.
                     $next->setTime(0, 0, 0);
                 } else {
