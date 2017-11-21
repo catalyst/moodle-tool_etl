@@ -8,7 +8,7 @@
         <licenseversion></licenseversion>
     </library>
     <library>
-        <location>extlib/composer/location>
+        <location>extlib/composer</location>
         <name>Composer Autoloader</name>
         <version></version>
         <license></license>
