@@ -241,7 +241,6 @@ class task_table extends flexible_table {
             $function = 'pix_url';
         } else {
             $function = 'image_url';
-
         }
 
         return $OUTPUT->$function($icon);
