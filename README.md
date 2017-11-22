@@ -1,3 +1,7 @@
+<a href="https://travis-ci.org/catalyst/moodle-tool_etl">
+<img src="https://api.travis-ci.org/catalyst/moodle-tool_etl.svg?branch=master">
+</a>
+
 # Extract, transform, load (ETL)
 ETL is a Moodle admin tool that allows to extract, transform and then load any data from a source system to a target system.
 
