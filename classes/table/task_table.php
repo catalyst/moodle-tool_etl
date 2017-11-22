@@ -237,7 +237,7 @@ class task_table extends flexible_table {
     protected function display_icon($icon) {
         global $CFG, $OUTPUT;
 
-        if ($CFG->version < 2017051500) {
+        if ($CFG->version < 2017051500) { // New API since moodle 3.2.
             $function = 'pix_url';
         } else {
             $function = 'image_url';
