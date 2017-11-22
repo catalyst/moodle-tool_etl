@@ -152,9 +152,15 @@ abstract class common_base implements common_interface {
      * @param array $settings Settings to pass to the element.
      *
      * @return common_interface
+     * @throws \coding_exception If required class is not exist.
      */
     public static function init($type, $name, $settings = array()) {
         $classname = "tool_etl\\$type\\" . $name;
+
+        if (!class_exists($classname)) {
+            throw new \coding_exception('Can not initialise element. Class ' . $classname . ' is not exists');
+        }
+
         return new $classname($settings);
     }
 
@@ -164,11 +170,33 @@ abstract class common_base implements common_interface {
      * @param string $type Element type: source, target or processor.
      *
      * @return array
+     * @throws \coding_exception If required provided invalid type of element.
      */
     public static function options($type) {
+        if (!self::is_valid_type($type)) {
+            throw new \coding_exception('Invalid type ' . $type);
+        }
+
         $baseclass = "tool_etl\\$type\\$type" . "_base";
 
         return $baseclass::get_options();
+    }
+
+    /**
+     * Check if provided type is valid.
+     *
+     * @param string $type Element type.
+     *
+     * @return bool
+     */
+    public static function is_valid_type($type) {
+        $validtypes = array('source', 'target', 'processor');
+
+        if (in_array($type, $validtypes)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
