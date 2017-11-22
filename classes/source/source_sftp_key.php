@@ -213,32 +213,10 @@ class source_sftp_key extends source_ftp {
      * @inheritdoc
      */
     public function validate_config_form_elements($data, $files, $errors) {
-        if (empty($data[$this->get_config_form_prefix() . 'host'])) {
-            $errors[$this->get_config_form_prefix() . 'host'] = 'Host could not be empty';
-        }
-
-        if (empty($data[$this->get_config_form_prefix() . 'port'])) {
-            $errors[$this->get_config_form_prefix() . 'port'] = 'Port could not be empty';
-        }
-
-        if (empty($data[$this->get_config_form_prefix() . 'username'])) {
-            $errors[$this->get_config_form_prefix() . 'username'] = 'Username could not be empty';
-        }
+        $errors = parent::validate_config_form_elements($data, $files, $errors);
 
         if (empty($data[$this->get_config_form_prefix() . 'key']) && empty($data[$this->get_config_form_prefix() . 'keyname'])) {
             $errors[$this->get_config_form_prefix() . 'key'] = 'Private key could not be empty';
-        }
-
-        if (empty($data[$this->get_config_form_prefix() . 'directory'])) {
-            $errors[$this->get_config_form_prefix() . 'directory'] = 'File directory could not be empty';
-        }
-
-        $regexfield = $this->get_config_form_prefix() . 'fileregex';
-
-        if (empty($data[$this->get_config_form_prefix() . 'fileregex'])) {
-            $errors[$this->get_config_form_prefix() . 'fileregex'] = 'Files regex could not be empty';
-        } else {
-            $errors[$regexfield] = $this->validate_regex($data[$regexfield]);
         }
 
         return $errors;
