@@ -80,7 +80,7 @@ class target_dataroot extends target_base {
             if ($format === 'files') {
                 $files = $data->get_data($format);
                 if (!empty($files)) {
-                    return $this->load_from_files($data->get_data($files));
+                    return $this->load_from_files($data->get_data('files'));
                 } else {
                     $this->log('load_data', 'Nothing to load', logger::TYPE_WARNING);
                     return false;
