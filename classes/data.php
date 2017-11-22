@@ -97,6 +97,10 @@ class data implements data_interface {
      * @inheritdoc
      */
     public function get_data($format) {
+        if (!is_string($format)) {
+            throw new \coding_exception('Format should be a string');
+        }
+
         if (!in_array($format, $this->get_supported_formats())) {
             throw new \Exception('Data is not available in ' . $format . ' format');
         }

@@ -59,6 +59,15 @@ class tool_etl_data_testcase extends advanced_testcase {
     }
 
     /**
+     * @expectedException coding_exception
+     * @@expectedExceptionMessage Format should be a string
+     */
+    public function test_get_data_throwing_exception_if_format_is_not_string() {
+        $data = new data();
+        $data->get_data(array());
+    }
+
+    /**
      * @expectedException Exception
      * @@expectedExceptionMessage Data is not available in bla format
      */
