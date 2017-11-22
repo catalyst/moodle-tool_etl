@@ -175,15 +175,13 @@ class task_table extends flexible_table {
      * @throws \coding_exception
      */
     protected function create_action_buttons(task_interface $task) {
-        global $OUTPUT;
-
         $buttons = '';
 
         // Edit button.
         $buttons .= html_writer::link(
             new moodle_url('/admin/tool/etl/history.php',  array('taskid' => $task->id)),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/viewdetails'),
+                'src' => $this->display_icon('t/viewdetails'),
                 'alt' => get_string('viewhistory', 'tool_etl'),
                 'class' => 'iconsmall',
             ]),
@@ -197,7 +195,7 @@ class task_table extends flexible_table {
         $buttons .= html_writer::link(
             new moodle_url('/admin/tool/etl/status.php', array('id' => $task->id)),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/' . $action),
+                'src' => $this->display_icon('t/' . $action),
                 'alt' => get_string($title),
                 'class' => 'iconsmall',
             ]),
@@ -208,7 +206,7 @@ class task_table extends flexible_table {
         $buttons .= html_writer::link(
             new moodle_url('/admin/tool/etl/index.php',  array('id' => $task->id)),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/edit'),
+                'src' => $this->display_icon('t/edit'),
                 'alt' => get_string('edit'),
                 'class' => 'iconsmall',
             ]),
@@ -219,7 +217,7 @@ class task_table extends flexible_table {
         $buttons .= html_writer::link(
             new moodle_url('/admin/tool/etl/delete.php',  array('id' => $task->id)),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/delete'),
+                'src' => $this->display_icon('t/delete'),
                 'alt' => get_string('delete'),
                 'class' => 'iconsmall',
             ]),
@@ -227,6 +225,26 @@ class task_table extends flexible_table {
         );
 
         return html_writer::tag('nobr', $buttons);
+    }
+
+    /**
+     * Display icon depending on Moodle version.
+     *
+     * @param string $icon Icon name.
+     *
+     * @return mixed
+     */
+    protected function display_icon($icon) {
+        global $CFG, $OUTPUT;
+
+        if ($CFG->version < 2017051500) {
+            $function = 'pix_url';
+        } else {
+            $function = 'image_url';
+
+        }
+
+        return $OUTPUT->$function($icon);
     }
 
 }
