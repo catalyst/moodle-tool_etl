@@ -304,8 +304,12 @@ class source_ftp extends source_base {
             $errors[$this->get_config_form_prefix() . 'directory'] = 'Files directory could not be empty';
         }
 
+        $regexfield = $this->get_config_form_prefix() . 'fileregex';
+
         if (empty($data[$this->get_config_form_prefix() . 'fileregex'])) {
             $errors[$this->get_config_form_prefix() . 'fileregex'] = 'Files regex could not be empty';
+        } else {
+            $errors[$regexfield] = $this->validate_regex($data[$regexfield]);
         }
 
         return $errors;

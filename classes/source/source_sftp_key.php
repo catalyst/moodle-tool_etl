@@ -233,8 +233,12 @@ class source_sftp_key extends source_ftp {
             $errors[$this->get_config_form_prefix() . 'directory'] = 'File directory could not be empty';
         }
 
+        $regexfield = $this->get_config_form_prefix() . 'fileregex';
+
         if (empty($data[$this->get_config_form_prefix() . 'fileregex'])) {
-            $errors[$this->get_config_form_prefix() . 'fileregex'] = 'File regex could not be empty';
+            $errors[$this->get_config_form_prefix() . 'fileregex'] = 'Files regex could not be empty';
+        } else {
+            $errors[$regexfield] = $this->validate_regex($data[$regexfield]);
         }
 
         return $errors;

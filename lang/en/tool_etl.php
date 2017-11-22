@@ -68,4 +68,5 @@ $string['trace'] = 'Trace';
 $string['viewhistory'] = 'View task history';
 $string['filters'] = 'Filters';
 $string['status'] = 'Status';
-
+$string['regex_error_too_short'] = 'RegEx too short';
+$string['regex_error_malformed'] = 'Invalid (malformed) RegEx';

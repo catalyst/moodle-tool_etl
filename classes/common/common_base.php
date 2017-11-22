@@ -25,6 +25,7 @@
 namespace tool_etl\common;
 
 use tool_etl\logger;
+use tool_etl\regex_validator;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -206,6 +207,19 @@ abstract class common_base implements common_interface {
     protected function log($action, $info='', $logtype = logger::TYPE_INFO, $trace='') {
         logger::get_instance()->set_element($this->get_name());
         logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
+    }
+
+    /**
+     * Validates provided regex.
+     *
+     * @param string $regex
+     *
+     * @return null|string
+     */
+    public function validate_regex($regex) {
+        $validator = new regex_validator($regex);
+
+        return $validator->get_error();
     }
 
 }
