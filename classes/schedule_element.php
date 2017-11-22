@@ -70,6 +70,13 @@ class MoodleQuickForm_etl_schedule extends \MoodleQuickForm_group {
     }
 
     /**
+     * Old syntax of class constructor for backward compatibility.
+     */
+    public function MoodleQuickForm_etl_schedule($elementName = null, $elementLabel = null, $options = array(), $attributes = null) {
+        self::__construct($elementName, $elementLabel, $options, $attributes);
+    }
+
+    /**
      * This will create date group element constisting of frequency and scheduled date/time
      *
      * @access private
