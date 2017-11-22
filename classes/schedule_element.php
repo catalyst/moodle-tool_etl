@@ -82,6 +82,8 @@ class MoodleQuickForm_etl_schedule extends \MoodleQuickForm_group {
      * @access private
      */
     function _createElements() {
+        global $CFG;
+
         // Use a fixed date to prevent problems on days with DST switch and months with < 31 days.
         $date = new DateTime('2000-01-01T00:00:00+00:00');
 
@@ -129,12 +131,22 @@ class MoodleQuickForm_etl_schedule extends \MoodleQuickForm_group {
         }
 
         $this->_elements = array();
-        $this->_elements['frequency'] = @MoodleQuickForm::createElement('select', 'frequency', get_string('schedule', 'tool_etl'), $frequencyselect);
-        $this->_elements['daily'] = @MoodleQuickForm::createElement('select', 'daily', get_string('dailyat', 'tool_etl'), $dailyselect);
-        $this->_elements['weekly'] = @MoodleQuickForm::createElement('select', 'weekly', get_string('weeklyon', 'tool_etl'), $weeklyselect);
-        $this->_elements['monthly'] = @MoodleQuickForm::createElement('select', 'monthly', get_string('monthlyon', 'tool_etl'), $monthlyselect);
-        $this->_elements['hourly'] = @MoodleQuickForm::createElement('select', 'hourly', get_string('hourlyon', 'tool_etl'), $hourlyselect);
-        $this->_elements['minutely'] = @MoodleQuickForm::createElement('select', 'minutely', get_string('minutelyon', 'tool_etl'), $minutelyselect);
+
+        if ($CFG->version < 2016120500) { // New API since moodle 3.2.
+            $this->_elements['frequency'] = @MoodleQuickForm::createElement('select', 'frequency', get_string('schedule', 'tool_etl'), $frequencyselect);
+            $this->_elements['daily'] = @MoodleQuickForm::createElement('select', 'daily', get_string('dailyat', 'tool_etl'), $dailyselect);
+            $this->_elements['weekly'] = @MoodleQuickForm::createElement('select', 'weekly', get_string('weeklyon', 'tool_etl'), $weeklyselect);
+            $this->_elements['monthly'] = @MoodleQuickForm::createElement('select', 'monthly', get_string('monthlyon', 'tool_etl'), $monthlyselect);
+            $this->_elements['hourly'] = @MoodleQuickForm::createElement('select', 'hourly', get_string('hourlyon', 'tool_etl'), $hourlyselect);
+            $this->_elements['minutely'] = @MoodleQuickForm::createElement('select', 'minutely', get_string('minutelyon', 'tool_etl'), $minutelyselect);
+        } else {
+            $this->_elements['frequency'] = $this->createFormElement('select', 'frequency', get_string('schedule', 'tool_etl'), $frequencyselect);
+            $this->_elements['daily'] = $this->createFormElement('select', 'daily', get_string('dailyat', 'tool_etl'), $dailyselect);
+            $this->_elements['weekly'] = $this->createFormElement('select', 'weekly', get_string('weeklyon', 'tool_etl'), $weeklyselect);
+            $this->_elements['monthly'] = $this->createFormElement('select', 'monthly', get_string('monthlyon', 'tool_etl'), $monthlyselect);
+            $this->_elements['hourly'] = $this->createFormElement('select', 'hourly', get_string('hourlyon', 'tool_etl'), $hourlyselect);
+            $this->_elements['minutely'] = $this->createFormElement('select', 'minutely', get_string('minutelyon', 'tool_etl'), $minutelyselect);
+        }
 
         foreach ($this->_elements as $element){
             if (method_exists($element, 'setHiddenLabel')){
