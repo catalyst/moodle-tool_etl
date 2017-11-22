@@ -271,7 +271,7 @@ class task implements task_interface {
      */
     protected function update_task() {
         if (!$this->id) {
-            throw new \coding_exception('To be able to update task it should be inserted to DB first');
+            throw new \coding_exception('To be able to update task it should be saved to DB first');
         }
 
         $this->db->update_record(self::TASK_TABLE, $this->task_to_object());
@@ -329,6 +329,10 @@ class task implements task_interface {
      * Delete the task from DB.
      */
     public function delete() {
+        if (!$this->id) {
+            throw new \coding_exception('To be able to delete task it should be saved to DB first');
+        }
+
         $this->db->delete_records(self::SCHEDULE_TABLE, array('taskid' => $this->id));
         $this->db->delete_records(self::TASK_TABLE, array('id' => $this->id));
     }
