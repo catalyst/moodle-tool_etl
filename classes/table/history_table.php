@@ -28,6 +28,8 @@ use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once($CFG->libdir.'/tablelib.php');
+
 class history_table extends \table_sql implements \renderable {
 
     /**
