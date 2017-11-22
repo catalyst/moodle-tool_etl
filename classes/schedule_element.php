@@ -51,7 +51,14 @@ class MoodleQuickForm_etl_schedule extends \MoodleQuickForm_group {
      * @param mixed $attributes Either a typical HTML attribute string or an associative array
      */
     public function __construct($elementName = null, $elementLabel = null, $options = array(), $attributes = null) {
-        $this->HTML_QuickForm_element($elementName, $elementLabel, $attributes);
+        global $CFG;
+
+        if ($CFG->version < 2016052300) {
+            $this->HTML_QuickForm_element($elementName, $elementLabel, $attributes);
+        } else {
+            parent::__construct($elementName, $elementLabel, $attributes);
+        }
+
         $this->_persistantFreeze = true;
         $this->_appendName = true;
         $this->_type = 'schedule_etl';
