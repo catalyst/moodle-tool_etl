@@ -43,19 +43,14 @@ class processor_default extends processor_base {
      * @inheritdoc
      */
     public function process() {
-        try {
-            parent::process();
+        parent::process();
 
-            $result = $this->source->extract();
+        $result = $this->source->extract();
 
-            if (empty($result->get_supported_formats())) {
-                $this->log('process', 'No data to process', logger::TYPE_WARNING);
-            }
-
+        if (empty($result->get_supported_formats())) {
+            $this->log('process', 'No data to process', logger::TYPE_WARNING);
+        } else {
             $this->target->load($result);
-
-        } catch (\Exception $e) {
-            $this->log('process', $e->getMessage(), logger::TYPE_ERROR);
         }
 
         return true;

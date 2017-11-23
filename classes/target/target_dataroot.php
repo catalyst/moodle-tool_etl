@@ -26,7 +26,6 @@ namespace tool_etl\target;
 
 use tool_etl\config_field;
 use tool_etl\logger;
-use tool_etl\data_interface;
 
 defined('MOODLE_INTERNAL') || die;
 

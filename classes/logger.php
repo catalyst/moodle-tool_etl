@@ -156,7 +156,7 @@ final class logger {
         global $DB;
 
         if (empty($this->taskid) || empty($this->element)) {
-            throw new \coding_exception('Task or Element is not set. Can write to the log');
+            throw new \coding_exception('Task or Element is not set. Can not write to the log');
         }
 
         $log = new \stdClass;
