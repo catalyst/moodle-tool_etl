@@ -45,6 +45,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
 
     public function setUp() {
         global $CFG;
+        require_once($CFG->dirroot . '/lib/formslib.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/source_fake.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/target_fake.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/data_fake.php');
@@ -57,6 +58,26 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
         $this->data = new data_fake();
 
         logger::get_instance()->set_task_id(1); // Emulate running task.
+    }
+
+    public function test_no_settings_exist() {
+        $processor = new processor_default();
+        $this->assertEmpty($processor->get_settings());
+    }
+
+    public function test_no__config_form_elements() {
+        $processor = new processor_default();
+        $this->assertEmpty($processor->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php')));
+    }
+
+    public function test_short_name() {
+        $processor = new processor_default();
+        $this->assertEquals('processor_default', $processor->get_short_name());
+    }
+
+    public function test_config_form_prefix() {
+        $processor = new processor_default();
+        $this->assertEquals('processor_default-', $processor->get_config_form_prefix());
     }
 
     /**
