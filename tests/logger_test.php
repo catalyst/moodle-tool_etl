@@ -55,7 +55,7 @@ class tool_etl_logger_testcase extends advanced_testcase {
 
     /**
      * @expectedException coding_exception
-     * @expectedExceptionMessage Task or Element is not set. Can write to the log
+     * @expectedExceptionMessage Task or Element is not set. Can not write to the log
      */
     public function test_throw_exception_if_task_id_is_not_set() {
         $logger = logger::get_instance();
@@ -66,7 +66,7 @@ class tool_etl_logger_testcase extends advanced_testcase {
 
     /**
      * @expectedException coding_exception
-     * @expectedExceptionMessage Task or Element is not set. Can write to the log
+     * @expectedExceptionMessage Task or Element is not set. Can not write to the log
      */
     public function test_throw_exception_if_element_is_not_set() {
         $logger = logger::get_instance();
