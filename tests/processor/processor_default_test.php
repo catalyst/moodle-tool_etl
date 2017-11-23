@@ -65,7 +65,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
         $this->assertEmpty($processor->get_settings());
     }
 
-    public function test_no__config_form_elements() {
+    public function test_no_config_form_elements() {
         $processor = new processor_default();
         $this->assertEmpty($processor->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php')));
     }
