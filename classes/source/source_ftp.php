@@ -305,11 +305,12 @@ class source_ftp extends source_base {
         }
 
         $regexfield = $this->get_config_form_prefix() . 'fileregex';
+        $regexerror = $this->validate_regex($data[$regexfield]);
 
-        if (empty($data[$this->get_config_form_prefix() . 'fileregex'])) {
-            $errors[$this->get_config_form_prefix() . 'fileregex'] = 'Files regex could not be empty';
-        } else {
-            $errors[$regexfield] = $this->validate_regex($data[$regexfield]);
+        if (empty($data[$regexfield])) {
+            $errors[$regexfield] = 'Files regex could not be empty';
+        } else if (!empty($regexerror)) {
+            $errors[$regexfield] = $regexerror;
         }
 
         return $errors;
