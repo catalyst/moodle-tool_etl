@@ -25,6 +25,8 @@
 namespace tool_etl\target;
 
 use tool_etl\common\common_base;
+use tool_etl\data_interface;
+use tool_etl\logger;
 
 
 defined('MOODLE_INTERNAL') || die;
@@ -40,5 +42,41 @@ abstract class target_base extends common_base implements target_interface {
         return array(
             'target_dataroot',
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function load(data_interface $data) {
+        if (!$this->is_available()) {
+            return false;
+        }
+
+        foreach ($data->get_supported_formats() as $format) {
+            $functionname = 'load_from_' . $format;
+
+            if (!method_exists($this, $functionname)) {
+                $this->log('load_data', 'Loading from ' . $format . ' is not supported yet', logger::TYPE_WARNING);
+            } else {
+                try {
+                    $data = $data->get_data($format);
+
+                    if (!empty($data)) {
+                        $this->$functionname($data);
+                    } else {
+                        $this->log('load_data', 'Nothing to load', logger::TYPE_WARNING);
+                    }
+                } catch (\Exception $e) {
+                    $this->log(
+                        'load_data',
+                        "Error in loading data in $format format: " . $e->getMessage(),
+                        logger::TYPE_ERROR,
+                        $e->getTraceAsString()
+                    );
+                }
+            }
+        }
+
+        return true;
     }
 }

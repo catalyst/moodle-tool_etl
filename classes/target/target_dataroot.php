@@ -69,37 +69,18 @@ class target_dataroot extends target_base {
     }
 
     /**
-     * @inheritdoc
-     */
-    public function load(data_interface $data) {
-        if (!$this->is_available()) {
-            return false;
-        }
-
-        foreach ($data->get_supported_formats() as $format) {
-            if ($format === 'files') {
-                $files = $data->get_data($format);
-                if (!empty($files)) {
-                    return $this->load_from_files($data->get_data('files'));
-                } else {
-                    $this->log('load_data', 'Nothing to load', logger::TYPE_WARNING);
-                    return false;
-                }
-            } else {
-                $this->log('load_data', 'Loading from ' . $format . ' is not supported yet', logger::TYPE_WARNING);
-                return false;
-            }
-        }
-    }
-
-    /**
      * Load data from files.
      *
      * @param array $filepaths A list of files to load from.
      *
      * @return bool
+     * @throws \coding_exception If incorrect file paths format.
      */
-    protected function load_from_files(array $filepaths) {
+    protected function load_from_files($filepaths) {
+        if (!is_array($filepaths)) {
+            throw new \coding_exception('File paths should be an array');
+        }
+
         $source = reset($filepaths); // We copy only one file.
         $target = $this->path . '/' . $this->settings['filename'];
 
