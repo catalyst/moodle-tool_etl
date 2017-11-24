@@ -28,6 +28,11 @@ defined('MOODLE_INTERNAL') || die;
 
 final class logger {
     /**
+     * Logger DB table.
+     */
+    const TABLE = 'tool_etl_log';
+
+    /**
      * Error type record.
      */
     const TYPE_ERROR = 'ERROR';
@@ -169,7 +174,7 @@ final class logger {
         $log->info = $this->to_string($info);
         $log->trace = $trace;
 
-        return $DB->insert_record('tool_etl_log', $log);
+        return $DB->insert_record(self::TABLE, $log);
     }
 
     /**
@@ -205,7 +210,7 @@ final class logger {
     public static function get_existing_elements() {
         global $DB;
 
-        return $DB->get_fieldset_sql("SELECT element FROM {tool_etl_log} GROUP BY element ORDER BY element");
+        return $DB->get_fieldset_sql("SELECT element FROM {" . self::TABLE . "} GROUP BY element ORDER BY element");
     }
 
     /**
@@ -216,7 +221,7 @@ final class logger {
     public static function get_existing_actions() {
         global $DB;
 
-        return $DB->get_fieldset_sql("SELECT action FROM {tool_etl_log} GROUP BY action ORDER BY action");
+        return $DB->get_fieldset_sql("SELECT action FROM {" . self::TABLE . "} GROUP BY action ORDER BY action");
     }
 
     /**
@@ -227,7 +232,7 @@ final class logger {
     public static function get_existing_run_ids() {
         global $DB;
 
-        return $DB->get_fieldset_sql("SELECT runid FROM {tool_etl_log} GROUP BY runid ORDER BY runid");
+        return $DB->get_fieldset_sql("SELECT runid FROM {" . self::TABLE . "} GROUP BY runid ORDER BY runid");
     }
 
 }
