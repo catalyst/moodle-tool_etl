@@ -27,6 +27,7 @@ namespace tool_etl\target;
 use tool_etl\common\common_base;
 use tool_etl\data_interface;
 use tool_etl\logger;
+use tool_etl\result;
 
 
 defined('MOODLE_INTERNAL') || die;
@@ -48,21 +49,23 @@ abstract class target_base extends common_base implements target_interface {
      * @inheritdoc
      */
     public function load(data_interface $data) {
+        $result = new result();
+
         if (!$this->is_available()) {
-            return false;
+            return $result;
         }
 
         foreach ($data->get_supported_formats() as $format) {
+            $result->add_result($format, false);
             $functionname = 'load_from_' . $format;
 
             if (!method_exists($this, $functionname)) {
                 $this->log('load_data', 'Loading from ' . $format . ' is not supported yet', logger::TYPE_WARNING);
             } else {
                 try {
-                    $data = $data->get_data($format);
-
-                    if (!empty($data)) {
-                        $this->$functionname($data);
+                    if ($datainformat = $data->get_data($format)) {
+                        $formatresult = $this->$functionname($datainformat);
+                        $result->add_result($format, $formatresult);
                     } else {
                         $this->log('load_data', 'Nothing to load', logger::TYPE_WARNING);
                     }
@@ -77,6 +80,59 @@ abstract class target_base extends common_base implements target_interface {
             }
         }
 
-        return true;
+        return $result;
     }
+
+    /**
+     * Base load from files method.
+     *
+     * This method could be overridden in a child class.
+     *
+     * @param array $data Data as a list of files.
+     *
+     * @return bool
+     */
+    protected function load_from_files($data) {
+        return false;
+    }
+
+    /**
+     * Base load from array method.
+     *
+     * This method could be overridden in a child class.
+     *
+     * @param array $data Data as array.
+     *
+     * @return bool
+     */
+    protected function load_from_array($data) {
+        return false;
+    }
+
+    /**
+     * Base load from array method.
+     *
+     * This method could be overridden in a child class.
+     *
+     * @param string $data Data as string.
+     *
+     * @return bool
+     */
+    protected function load_from_string($data) {
+        return false;
+    }
+
+    /**
+     * Base load from array method.
+     *
+     * This method could be overridden in a child class.
+     *
+     * @param \stdClass $data Data as object.
+     *
+     * @return bool
+     */
+    protected function load_from_object($data) {
+        return false;
+    }
+
 }

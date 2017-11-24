@@ -35,7 +35,7 @@ interface target_interface extends common_interface {
      *
      * @param data_interface $data A data to load.
      *
-     * @return bool
+     * @return \tool_etl\result
      */
     public function load(data_interface $data);
 

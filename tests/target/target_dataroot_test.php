@@ -147,18 +147,47 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
 
     public function test_load_returns_false_if_target_is_not_available() {
         $this->target = new target_dataroot(array('path' => 'not_exist'));
-        $this->assertFalse($this->target->load($this->data));
+        $actual = $this->target->load($this->data);
+        $this->assertEmpty($actual->get_results());
     }
 
-    public function test_that_support_only_loading_from_files() {
-        global $DB;
+    public function test_that_all_results_empty_if_load_empty_data() {
+        $this->data->set_supported_formats(array('files', 'array', 'object', 'string'));
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+        $this->assertFalse($actual->get_result('array'));
+        $this->assertFalse($actual->get_result('object'));
+        $this->assertFalse($actual->get_result('string'));
+    }
 
-        $this->assertEmpty($DB->get_records(logger::TABLE));
+    public function test_that_support_loading_from_files_only() {
+        global $CFG;
+
+        $testfile = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test.txt';
+        touch($testfile);
+
+        $filescontant = array($testfile);
+        $arraycontent = array('content' => 'Some array content');
+        $dataobject = new stdClass();
+        $dataobject->content = 'Some object content';
 
         $this->data->set_supported_formats(array('files', 'array', 'object', 'string'));
-        $this->target->load($this->data);
+        $this->data->set_get_data('files', $filescontant);
+        $this->data->set_get_data('array', $arraycontent);
+        $this->data->set_get_data('object', $dataobject);
+        $this->data->set_get_data('string', 'String content to load');
 
-        $this->assertCount(4, $DB->get_records(logger::TABLE));
+        $this->target->set_settings(array('filename' => 'target_test.txt'));
+        $actual = $this->target->load($this->data);
+
+        $this->assertTrue($actual->get_result('files'));
+        $this->assertFalse($actual->get_result('array'));
+        $this->assertFalse($actual->get_result('object'));
+        $this->assertFalse($actual->get_result('string'));
+
+        // Clean up test files.
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test.txt');
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'target_test.txt');
     }
 
 }
