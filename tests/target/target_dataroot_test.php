@@ -43,7 +43,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         require_once($CFG->dirroot . '/lib/formslib.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/data_fake.php');
 
-
         parent::setUp();
 
         $this->resetAfterTest(true);
