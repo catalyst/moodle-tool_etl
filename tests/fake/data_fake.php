@@ -32,17 +32,13 @@ class data_fake implements data_interface {
     protected $data = array();
     protected $exception;
 
-    public function __construct() {
-
-    }
-
     public function set_supported_formats($formats) {
         $this->formats = $formats;
     }
 
-    public function set_get_data($data, $exception = false) {
-        $this->data = $data;
-        $this->exception = $exception;
+    public function set_get_data($format, $data, $exception = false) {
+        $this->data[$format] = $data;
+        $this->exception[$format] = $exception;
     }
 
     public function get_supported_formats() {
@@ -50,10 +46,10 @@ class data_fake implements data_interface {
     }
 
     public function get_data($format) {
-        if ($this->exception) {
-            throw new Exception ($this->exception);
+        if ($this->exception[$format]) {
+            throw new Exception ($this->exception[$format]);
         } else {
-            return $this->data;
+            return $this->data[$format];
         }
     }
 
