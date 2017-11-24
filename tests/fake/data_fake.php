@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 class data_fake implements data_interface {
 
     protected $formats = array();
-    protected $data;
+    protected $data = array();
     protected $exception;
 
     public function __construct() {
