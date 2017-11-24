@@ -58,7 +58,7 @@ class result {
         $this->validate_format($format);
 
         if (isset($this->result[$format])) {
-            return !empty($this->result[$format]);
+            return boolval($this->result[$format]);
         }
 
         return false;
@@ -72,8 +72,8 @@ class result {
      * @throws \coding_exception If format is not valid.
      */
     protected function validate_format($format) {
-        if (!is_string($format)) {
-            throw new \coding_exception('Format should be string');
+        if (!is_string($format) || $format === '') {
+            throw new \coding_exception('Format should be not empty string');
         }
     }
 }
