@@ -56,8 +56,8 @@ class tool_etl_result_testcase extends advanced_testcase {
      * @expectedException coding_exception
      * @expectedExceptionMessage Format should be not empty string
      */
-    public function test_validate_format_when_set_result($format) {
-        $this->resultinstance->set_result($format, true);
+    public function test_validate_format_when_add_result($format) {
+        $this->resultinstance->add_result($format, true);
     }
 
     /**
@@ -69,9 +69,9 @@ class tool_etl_result_testcase extends advanced_testcase {
         $this->resultinstance->get_result($format);
     }
 
-    public function test_set_result_for_format() {
+    public function test_add_result_for_format() {
         $this->assertFalse($this->resultinstance->get_result('test_format'));
-        $this->resultinstance->set_result('test_format', true);
+        $this->resultinstance->add_result('test_format', true);
         $this->assertTrue($this->resultinstance->get_result('test_format'));
     }
 
@@ -93,8 +93,22 @@ class tool_etl_result_testcase extends advanced_testcase {
      * @dataProvider data_provider_not_bool
      */
     public function test_get_result_return_bool($result, $expected) {
-        $this->resultinstance->set_result('test_format', $result);
+        $this->resultinstance->add_result('test_format', $result);
         $this->assertEquals($expected, $this->resultinstance->get_result('test_format'));
+    }
+
+    public function test_get_all_results() {
+        $this->resultinstance->add_result('test_result', true);
+        $this->resultinstance->add_result('test_result2', false);
+        $this->resultinstance->add_result('test_result3', true);
+
+        $expected = array(
+            'test_result' => true,
+            'test_result2' => false,
+            'test_result3' => true,
+        );
+
+        $this->assertEquals($expected, $this->resultinstance->get_results());
     }
 
 }

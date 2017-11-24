@@ -31,7 +31,7 @@ class result {
      * A list of results. Keys are names of formats.
      * @var array
      */
-    protected $result = array();
+    protected $results = array();
 
     /**
      * Set a result for provided format.
@@ -41,9 +41,9 @@ class result {
      *
      * @throws \coding_exception If format is not string.
      */
-    public function set_result($format, $result = false) {
+    public function add_result($format, $result = false) {
         $this->validate_format($format);
-        $this->result[$format] = $result;
+        $this->results[$format] = $result;
     }
 
     /**
@@ -57,11 +57,20 @@ class result {
     public function get_result($format) {
         $this->validate_format($format);
 
-        if (isset($this->result[$format])) {
-            return boolval($this->result[$format]);
+        if (isset($this->results[$format])) {
+            return boolval($this->results[$format]);
         }
 
         return false;
+    }
+
+    /**
+     * Return all results.
+     *
+     * @return array
+     */
+    public function get_results() {
+        return $this->results;
     }
 
     /**
