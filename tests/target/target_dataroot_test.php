@@ -166,13 +166,13 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $testfile = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test.txt';
         touch($testfile);
 
-        $filescontant = array($testfile);
+        $filescontent = array($testfile);
         $arraycontent = array('content' => 'Some array content');
         $dataobject = new stdClass();
         $dataobject->content = 'Some object content';
 
         $this->data->set_supported_formats(array('files', 'array', 'object', 'string'));
-        $this->data->set_get_data('files', $filescontant);
+        $this->data->set_get_data('files', $filescontent);
         $this->data->set_get_data('array', $arraycontent);
         $this->data->set_get_data('object', $dataobject);
         $this->data->set_get_data('string', 'String content to load');
@@ -190,4 +190,35 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'target_test.txt');
     }
 
+    public function test_that_can_not_load_from_random_format() {
+        $this->data->set_supported_formats(array('random_format'));
+        $this->data->set_get_data('random_format', array('content' => 'Some random content'));
+
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('random_format'));
+    }
+
+    public function test_loading_when_files_data_is_not_array() {
+        $this->data->set_supported_formats(array('files'));
+
+        $this->data->set_get_data('files', 'String');
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+
+        $this->data->set_get_data('files', new stdClass());
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+
+        $this->data->set_get_data('files', 1);
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+
+        $this->data->set_get_data('files', 1.5);
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+
+        $this->data->set_get_data('files', null);
+        $actual = $this->target->load($this->data);
+        $this->assertFalse($actual->get_result('files'));
+    }
 }
