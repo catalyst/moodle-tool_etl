@@ -36,20 +36,6 @@ class source_sftp extends source_ftp {
     protected $name = "SFTP";
 
     /**
-     * Settings.
-     *
-     * @var array
-     */
-    protected $settings = array(
-        'host' => '',
-        'port' => 21,
-        'username' => '',
-        'password' => '',
-        'directory' => '',
-        'fileregex' => '',
-    );
-
-    /**
      * Connect to SFTP server.
      */
     protected function connect() {

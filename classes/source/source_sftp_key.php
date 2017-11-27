@@ -69,7 +69,7 @@ class source_sftp_key extends source_ftp {
      */
     protected $settings = array(
         'host' => '',
-        'port' => 21,
+        'port' => 22,
         'username' => '',
         'password' => '',
         'key' => '',
