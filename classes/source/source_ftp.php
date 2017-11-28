@@ -228,7 +228,7 @@ class source_ftp extends source_base {
      * @return string
      */
     protected function get_local_file_path($remotefile) {
-        return $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);;
+        return $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);
     }
 
     /**

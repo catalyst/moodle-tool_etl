@@ -51,8 +51,11 @@ class target_dataroot extends target_base {
      */
     protected $settings = array(
         'path' => '',
-        'filename' => '',
         'clreateifnotexist' => 0,
+        'filename' => '',
+        'overwrite' => 1,
+        'addtime' => 0,
+        'timedelimiter' => '',
     );
 
     /**
@@ -80,15 +83,29 @@ class target_dataroot extends target_base {
             throw new \coding_exception('File paths should be an array');
         }
 
-        $source = reset($filepaths); // We copy only one file.
-        $target = $this->path . '/' . $this->settings['filename'];
+        $files = array();
 
-        if (!copy($source, $target)) {
-            $this->log('load_data', 'Failed to copy file ' . $source . ' to ' . $target, logger::TYPE_ERROR);
-            return false;
+        if (!empty($this->settings['filename'])) {
+            $files[] = $filepaths[0]; // Load only first file if filename is provided.
+        } else {
+            $files = $filepaths; // Load all files if file name is empty.
         }
 
-        $this->log('load_data', 'Successfully copied file ' . $source . ' to ' . $target);
+        foreach ($files as $file) {
+            // TODO: append file name by date if required.
+            $target = $this->path . '/' . basename($this->settings['filename']);
+
+            if (file_exists($target) && empty($this->settings['overwrite'])) {
+                $this->log('load_data', 'Failed to copy file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
+                continue;
+            }
+
+            if (!copy($file, $target)) {
+                $this->log('load_data', 'Failed to copy file ' . $file . ' to ' . $target, logger::TYPE_ERROR);
+            } else {
+                $this->log('load_data', 'Successfully copied file ' . $file . ' to ' . $target);
+            }
+        }
 
         return true;
     }
@@ -97,45 +114,93 @@ class target_dataroot extends target_base {
      * @inheritdoc
      */
     public function create_config_form_elements(\MoodleQuickForm $mform) {
-        $elements = parent::create_config_form_elements($mform);
+        $fields = array();
 
-        $fields = array(
-            'path' => new config_field(
-                'path',
-                ' Local folder path',
-                'text',
-                $this->settings['path'],
-                PARAM_SAFEPATH
-            ),
-            'clreateifnotexist' => new config_field(
-                'clreateifnotexist',
-                'Create folder if not exists',
-                'checkbox',
-                $this->settings['clreateifnotexist'],
-                PARAM_BOOL
-            ),
-            'filename' => new config_field(
-                'filename',
-                'File name',
-                'text',
-                $this->settings['filename'],
-                PARAM_FILE
-            ),
+        $fields['path'] = new config_field(
+            'path',
+            'Path',
+            'text',
+            $this->settings['path'],
+            PARAM_SAFEPATH
+        );
+        $fields['clreateifnotexist'] = new config_field(
+            'clreateifnotexist',
+            'Create folder if not exists',
+            'checkbox',
+            $this->settings['clreateifnotexist'],
+            PARAM_BOOL
+        );
+        $fields['filename'] = new config_field(
+            'filename',
+            'File name',
+            'text',
+            $this->settings['filename'],
+            PARAM_FILE
+        );
+        $fields['overwrite'] = new config_field(
+            'overwrite',
+            'Overwrite files?',
+            'checkbox',
+            $this->settings['overwrite'],
+            PARAM_BOOL
+        );
+        $fields['addtime'] = new config_field(
+            'addtime',
+            'Append files by date like ' . date($this->get_date_format(), time()),
+            'checkbox',
+            $this->settings['addtime'],
+            PARAM_BOOL
+        );
+        $fields['timedelimiter'] = new config_field(
+            'timedelimiter',
+            'Date delimiter',
+            'text',
+            $this->settings['timedelimiter'],
+            PARAM_RAW
         );
 
-        return array_merge($elements, $this->get_config_form_elements($mform, $fields));
+        $elements = $this->get_config_form_elements($mform, $fields);
+
+        // Disable Create folder setting if writing in the root of sitedata.
+        $mform->disabledIf(
+            $this->get_config_form_prefix() . 'clreateifnotexist',
+            $this->get_config_form_prefix() . 'path',
+            'eq',
+            ''
+        );
+
+        // Disable delimiter setting if not appending files by date.
+        $mform->disabledIf(
+            $this->get_config_form_prefix() . 'timedelimiter' ,
+            $this->get_config_form_prefix() . 'addtime'
+        );
+
+        return $elements;
+    }
+
+    /**
+     * Get used date format.
+     *
+     * @return string Date format for php date function.
+     */
+    protected function get_date_format() {
+        return 'YmdHis';
     }
 
     /**
      * @inheritdoc
      */
     public function validate_config_form_elements($data, $files, $errors) {
-        if (empty($data[$this->get_config_form_prefix() . 'path'])) {
-            $errors[$this->get_config_form_prefix() . 'path'] = 'Local folder path could not be empty';
+        if (!empty($data[$this->get_config_form_prefix() . 'clreateifnotexist'])) {
+            if (empty($data[$this->get_config_form_prefix() . 'path'])) {
+                $errors[$this->get_config_form_prefix() . 'path'] = 'Path can not be empty';
+            }
         }
 
-        if (empty($data[$this->get_config_form_prefix() . 'filename'])) {
-            $errors[$this->get_config_form_prefix() . 'filename'] = 'File name could not be empty';
+        if (!empty($data[$this->get_config_form_prefix() . 'addtime'])) {
+            if (empty($data[$this->get_config_form_prefix() . 'timedelimiter'])) {
+                $errors[$this->get_config_form_prefix() . 'timedelimiter'] = 'Delimiter can not be empty';
+            }
         }
 
         return $errors;
