@@ -104,7 +104,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals('text', $elements[5]->getType());
         $this->assertEquals('checkbox', $elements[6]->getType());
 
-
         $this->assertEquals('target_dataroot-path', $elements[0]->getName());
         $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());
         $this->assertEquals('target_dataroot-filename', $elements[2]->getName());
@@ -112,7 +111,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals('target_dataroot-addtime', $elements[4]->getName());
         $this->assertEquals('target_dataroot-delimiter', $elements[5]->getName());
         $this->assertEquals('target_dataroot-backupfiles', $elements[6]->getName());
-
     }
 
     public function test_config_form_validation() {
