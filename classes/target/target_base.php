@@ -135,4 +135,25 @@ abstract class target_base extends common_base implements target_interface {
         return false;
     }
 
+    /**
+     * Return target file name based on configuration.
+     *
+     * @param string $filepath File path.
+     *
+     * @return string
+     */
+    protected function get_target_file_name($filepath) {
+        if (!empty($this->settings['filename'])) {
+            $filename = basename($this->settings['filename']);
+        } else {
+            $filename = basename($filepath);
+        }
+
+        if (!empty($this->settings['addtime'])) {
+            $filename = $this->append_filename_by_date($filename);
+        }
+
+        return $filename;
+    }
+
 }

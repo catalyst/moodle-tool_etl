@@ -31,6 +31,16 @@ defined('MOODLE_INTERNAL') || die;
 
 abstract class common_base implements common_interface {
     /**
+     * Default date format.
+     */
+    const DEFAULT_DATE_FORMAT = 'YmdHis';
+
+    /**
+     * Default delimiter.
+     */
+    const DEFAULT_DELIMITER = '';
+
+    /**
      * Name of the element.
      *
      * @var string
@@ -248,6 +258,72 @@ abstract class common_base implements common_interface {
         $validator = new regex_validator($regex);
 
         return $validator->get_error();
+    }
+
+    /**
+     * Get date format from configuration.
+     *
+     * @return string Date format for php date function.
+     */
+    public function get_date_format() {
+        if (isset($this->settings['dateformat'])) {
+            return $this->settings['dateformat'];
+        }
+
+        return self::DEFAULT_DATE_FORMAT;
+    }
+
+    /**
+     * Get date delimiter based on configuration.
+     *
+     * @return string
+     */
+    public function get_date_delimiter() {
+        if (isset($this->settings['delimiter'])) {
+            return $this->settings['delimiter'];
+        }
+
+        return self::DEFAULT_DELIMITER;
+    }
+
+    /**
+     * Append provided file by date in configured format.
+     *
+     * @param string $filename File name or file path.
+     * @param null|string  $time Timestamp of the time.
+     *
+     * @return string
+     */
+    public function append_filename_by_date($filename, $time = null) {
+        if (empty($time)) {
+            $time = time();
+        }
+
+        $pathinfo = pathinfo($filename);
+
+        $dot = '.';
+        $filename = !empty($pathinfo['filename']) ? $pathinfo['filename'] : $pathinfo['basename'];
+        $extension = !empty($pathinfo['extension']) ? $pathinfo['extension'] : '';
+
+        // If a file starts with dot (e.g. .test).
+        if (empty($pathinfo['filename']) && !empty($pathinfo['extension'])) {
+            $extension = '';
+            $dot = '';
+        }
+        // If a file ends with dot (e.g. test.).
+        if (empty($pathinfo['extension']) && !empty($pathinfo['basename'])) {
+            $filename = $pathinfo['basename'];
+        }
+
+        // No extra dot if there is no extension.
+        if (empty($pathinfo['extension'])) {
+            $dot = '';
+        }
+
+        $delimiter = $this->get_date_delimiter();
+        $date = date($this->get_date_format(), $time);
+
+        return $filename . $delimiter . $date . $dot . $extension;
     }
 
 }

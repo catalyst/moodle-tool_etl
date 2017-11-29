@@ -60,6 +60,9 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
             'path' => '',
             'filename' => '',
             'clreateifnotexist' => 0,
+            'overwrite' => 1,
+            'addtime' => 0,
+            'delimiter' => '',
         );
         $this->assertEquals($expected, $this->target->get_settings());
     }
@@ -89,15 +92,21 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->target->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(3, $elements);
+        $this->assertCount(6, $elements);
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('checkbox', $elements[1]->getType());
         $this->assertEquals('text', $elements[2]->getType());
+        $this->assertEquals('checkbox', $elements[3]->getType());
+        $this->assertEquals('checkbox', $elements[4]->getType());
+        $this->assertEquals('text', $elements[5]->getType());
 
         $this->assertEquals('target_dataroot-path', $elements[0]->getName());
         $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());
         $this->assertEquals('target_dataroot-filename', $elements[2]->getName());
+        $this->assertEquals('target_dataroot-overwrite', $elements[3]->getName());
+        $this->assertEquals('target_dataroot-addtime', $elements[4]->getName());
+        $this->assertEquals('target_dataroot-delimiter', $elements[5]->getName());
     }
 
     public function test_config_form_validation() {
@@ -106,39 +115,18 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
             array(),
             array()
         );
-        $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('target_dataroot-path', $errors);
-        $this->assertArrayHasKey('target_dataroot-filename', $errors);
+        $this->assertEmpty($errors);
 
         $errors = $this->target->validate_config_form_elements(
-            array('path' => 'test', 'filename' => 'test'),
+            array('target_dataroot-clreateifnotexist' => 1),
             array(),
             array()
         );
         $this->assertNotEmpty($errors);
         $this->assertArrayHasKey('target_dataroot-path', $errors);
-        $this->assertArrayHasKey('target_dataroot-filename', $errors);
 
         $errors = $this->target->validate_config_form_elements(
-            array('target_dataroot-path' => 'test'),
-            array(),
-            array()
-        );
-        $this->assertNotEmpty($errors);
-        $this->assertArrayNotHasKey('target_dataroot-path', $errors);
-        $this->assertArrayHasKey('target_dataroot-filename', $errors);
-
-        $errors = $this->target->validate_config_form_elements(
-            array('target_dataroot-filename' => 'test'),
-            array(),
-            array()
-        );
-        $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('target_dataroot-path', $errors);
-        $this->assertArrayNotHasKey('target_dataroot-filename', $errors);
-
-        $errors = $this->target->validate_config_form_elements(
-            array('target_dataroot-path' => 'test', 'target_dataroot-filename' => 'test'),
+            array('target_dataroot-clreateifnotexist' => 1, 'target_dataroot-path' => 'test'),
             array(),
             array()
         );
@@ -220,5 +208,56 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->data->set_get_data('files', null);
         $actual = $this->target->load($this->data);
         $this->assertFalse($actual->get_result('files'));
+    }
+
+    public function data_provider_for_test_append_filename_by_date() {
+        return array(
+            array('/var/lib/test.csv', 'test20171129071554.csv'),
+            array('test.csv', 'test20171129071554.csv'),
+            array('/var/lib/test', 'test20171129071554'),
+            array('test', 'test20171129071554'),
+            array('/var/lib/test.', 'test.20171129071554'),
+            array('test.', 'test.20171129071554'),
+            array('/var/lib/.test', '.test20171129071554'),
+            array('.test', '.test20171129071554'),
+            array('/var/lib/test.inc.csv', 'test.inc20171129071554.csv'),
+            array('test.inc.csv', 'test.inc20171129071554.csv'),
+            array('/var/lib/test.inc.csv.', 'test.inc.csv.20171129071554'),
+            array('test.inc.csv.', 'test.inc.csv.20171129071554'),
+        );
+    }
+
+    /**
+     * @dataProvider data_provider_for_test_append_filename_by_date
+     */
+    public function test_append_filename_by_date($filename, $expected) {
+        $time = '1511910954';
+        $actual = $this->target->append_filename_by_date($filename, $time);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function test_loading_from_files() {
+        global $CFG;
+
+        $testfile1 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt';
+        $testfile2 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt';
+        $testfile3 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt';
+
+        touch($testfile1);
+        touch($testfile2);
+        touch($testfile3);
+
+        $files = array($testfile1, $testfile2, $testfile3);
+
+        $this->data->set_supported_formats(array('files'));
+        $this->data->set_get_data('files', $files);
+        $actual = $this->target->load($this->data);
+
+        $this->assertTrue($actual->get_result('files'));
+
+        // Clean up test files.
+        unlink($testfile1);
+        unlink($testfile2);
+        unlink($testfile3);
     }
 }

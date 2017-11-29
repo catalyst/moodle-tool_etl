@@ -55,7 +55,7 @@ class target_dataroot extends target_base {
         'filename' => '',
         'overwrite' => 1,
         'addtime' => 0,
-        'timedelimiter' => '',
+        'delimiter' => '',
     );
 
     /**
@@ -83,31 +83,30 @@ class target_dataroot extends target_base {
             throw new \coding_exception('File paths should be an array');
         }
 
-        $files = array();
+        $result = true;
 
-        if (!empty($this->settings['filename'])) {
-            $files[] = $filepaths[0]; // Load only first file if filename is provided.
-        } else {
-            $files = $filepaths; // Load all files if file name is empty.
-        }
-
-        foreach ($files as $file) {
-            // TODO: append file name by date if required.
-            $target = $this->path . '/' . basename($this->settings['filename']);
+        foreach ($filepaths as $file) {
+            $target = rtrim($this->path, '/') . '/' .  $this->get_target_file_name($file);
 
             if (file_exists($target) && empty($this->settings['overwrite'])) {
-                $this->log('load_data', 'Failed to copy file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
+                $this->log('load_data', 'Skip copying file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
+                continue;
+            }
+
+            if ($file == $target) {
+                $this->log('load_data', 'Skip to copy file ' . $file . ' to ' . $target . 'The same files.', logger::TYPE_ERROR);
                 continue;
             }
 
             if (!copy($file, $target)) {
                 $this->log('load_data', 'Failed to copy file ' . $file . ' to ' . $target, logger::TYPE_ERROR);
+                $result = false; // Fail result if any file is failed.
             } else {
                 $this->log('load_data', 'Successfully copied file ' . $file . ' to ' . $target);
             }
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -151,11 +150,11 @@ class target_dataroot extends target_base {
             $this->settings['addtime'],
             PARAM_BOOL
         );
-        $fields['timedelimiter'] = new config_field(
-            'timedelimiter',
+        $fields['delimiter'] = new config_field(
+            'delimiter',
             'Date delimiter',
             'text',
-            $this->settings['timedelimiter'],
+            $this->settings['delimiter'],
             PARAM_RAW
         );
 
@@ -171,20 +170,11 @@ class target_dataroot extends target_base {
 
         // Disable delimiter setting if not appending files by date.
         $mform->disabledIf(
-            $this->get_config_form_prefix() . 'timedelimiter' ,
+            $this->get_config_form_prefix() . 'delimiter' ,
             $this->get_config_form_prefix() . 'addtime'
         );
 
         return $elements;
-    }
-
-    /**
-     * Get used date format.
-     *
-     * @return string Date format for php date function.
-     */
-    protected function get_date_format() {
-        return 'YmdHis';
     }
 
     /**
@@ -194,12 +184,6 @@ class target_dataroot extends target_base {
         if (!empty($data[$this->get_config_form_prefix() . 'clreateifnotexist'])) {
             if (empty($data[$this->get_config_form_prefix() . 'path'])) {
                 $errors[$this->get_config_form_prefix() . 'path'] = 'Path can not be empty';
-            }
-        }
-
-        if (!empty($data[$this->get_config_form_prefix() . 'addtime'])) {
-            if (empty($data[$this->get_config_form_prefix() . 'timedelimiter'])) {
-                $errors[$this->get_config_form_prefix() . 'timedelimiter'] = 'Delimiter can not be empty';
             }
         }
 
