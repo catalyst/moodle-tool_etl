@@ -25,9 +25,11 @@ To install this plugin in your Moodle.
 * **FTP** - remote FTP server, login using username and password.
 * **SFTP** - remote SFTP server, login using username and password.
 * **SFTP with key authentication** - remote SFTP server, login using SSH key.
+* **Server folder** - server local folder.
 
 ### Targets
 * **Moodle sitedata** - a folder inside Moodle sitedata directory.
+* **Server folder** - server local folder.
 
 ### Processors
 * **Default processor** - doesn't do any transformation, simply pass extracted data from a source to a target.
