@@ -52,6 +52,11 @@ class target_dataroot extends target_base {
         'backupfiles' => 1,
     );
 
+    /**
+     * Return a full source path.
+     *
+     * @return string
+     */
     protected function get_full_path() {
         global $CFG;
 
