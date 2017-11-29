@@ -38,13 +38,6 @@ class target_dataroot extends target_base {
     protected $name = "Site data";
 
     /**
-     * Data root path.
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
      * Settings of the target.
      *
      * @var array
@@ -58,16 +51,10 @@ class target_dataroot extends target_base {
         'delimiter' => '',
     );
 
-    /**
-     * Constructor.
-     *
-     * @param array $settings
-     */
-    public function __construct(array $settings = array()) {
+    protected function get_full_path() {
         global $CFG;
 
-        parent::__construct($settings);
-        $this->path = $CFG->dataroot . DIRECTORY_SEPARATOR .  $this->settings['path'];
+        return $CFG->dataroot . DIRECTORY_SEPARATOR .  $this->settings['path'];
     }
 
     /**
@@ -86,7 +73,7 @@ class target_dataroot extends target_base {
         $result = true;
 
         foreach ($filepaths as $file) {
-            $target = rtrim($this->path, '/') . '/' .  $this->get_target_file_name($file);
+            $target = rtrim($this->get_full_path(), '/') . '/' .  $this->get_target_file_name($file);
 
             if (file_exists($target) && empty($this->settings['overwrite'])) {
                 $this->log('load_data', 'Skip copying file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
@@ -195,14 +182,14 @@ class target_dataroot extends target_base {
      */
     public function is_available() {
         if (!empty($this->settings['clreateifnotexist'])) {
-            check_dir_exists($this->path);
+            check_dir_exists($this->get_full_path());
         }
 
-        if (is_dir($this->path) && is_writable($this->path)) {
+        if (is_dir($this->get_full_path()) && is_writable($this->get_full_path())) {
             return true;
         }
 
-        $this->log('load_data', 'Directory is not writable ' . $this->path, logger::TYPE_ERROR);
+        $this->log('load_data', 'Directory is not writable ' . $this->get_full_path(), logger::TYPE_ERROR);
 
         return false;
     }

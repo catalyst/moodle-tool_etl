@@ -151,7 +151,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
     public function test_that_support_loading_from_files_only() {
         global $CFG;
 
-        $testfile = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test.txt';
+        $testfile = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test.txt';
         touch($testfile);
 
         $filescontent = array($testfile);
@@ -174,7 +174,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertFalse($actual->get_result('string'));
 
         // Clean up test files.
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test.txt');
+        unlink($testfile);
         unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'target_test.txt');
     }
 
@@ -236,12 +236,12 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals($expected, $actual);
     }
 
-    public function test_loading_from_files() {
+    public function test_loading_from_files_default_settings() {
         global $CFG;
 
-        $testfile1 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt';
-        $testfile2 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt';
-        $testfile3 = $CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt';
+        $testfile1 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test1.txt';
+        $testfile2 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test2.txt';
+        $testfile3 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test3.txt';
 
         touch($testfile1);
         touch($testfile2);
@@ -254,10 +254,80 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $actual = $this->target->load($this->data);
 
         $this->assertTrue($actual->get_result('files'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt'));
 
         // Clean up test files.
         unlink($testfile1);
         unlink($testfile2);
         unlink($testfile3);
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt');
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt');
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt');
     }
+
+    public function test_loading_from_files_set_path() {
+        global $CFG;
+
+        $testfile1 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test1.txt';
+        $testfile2 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test2.txt';
+        $testfile3 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test3.txt';
+
+        touch($testfile1);
+        touch($testfile2);
+        touch($testfile3);
+
+        $files = array($testfile1, $testfile2, $testfile3);
+
+        $this->data->set_supported_formats(array('files'));
+        $this->data->set_get_data('files', $files);
+        $this->target->set_settings(array('path' => 'test', 'clreateifnotexist' => 1));
+        $actual = $this->target->load($this->data);
+
+        $this->assertTrue($actual->get_result('files'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test1.txt'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test2.txt'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test3.txt'));
+
+        // Clean up test files.
+        unlink($testfile1);
+        unlink($testfile2);
+        unlink($testfile3);
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test1.txt');
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test2.txt');
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test3.txt');
+    }
+
+    public function test_loading_from_files_set_filename() {
+        global $CFG;
+
+        $testfile1 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test1.txt';
+        $testfile2 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test2.txt';
+        $testfile3 = $CFG->tempdir . DIRECTORY_SEPARATOR . 'test3.txt';
+
+        touch($testfile1);
+        touch($testfile2);
+        touch($testfile3);
+
+        $files = array($testfile1, $testfile2, $testfile3);
+
+        $this->data->set_supported_formats(array('files'));
+        $this->data->set_get_data('files', $files);
+        $this->target->set_settings(array('filename' => 'new_file_name.csv'));
+        $actual = $this->target->load($this->data);
+
+        $this->assertTrue($actual->get_result('files'));
+        $this->assertFalse(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt'));
+        $this->assertFalse(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR .'test2.txt'));
+        $this->assertFalse(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt'));
+        $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'new_file_name.csv'));
+
+        // Clean up test files.
+        unlink($testfile1);
+        unlink($testfile2);
+        unlink($testfile3);
+        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'new_file_name.csv');
+    }
+
 }
