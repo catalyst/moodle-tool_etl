@@ -49,6 +49,7 @@ class target_dataroot extends target_base {
         'overwrite' => 1,
         'addtime' => 0,
         'delimiter' => '',
+        'backupfiles' => 1,
     );
 
     protected function get_full_path() {
@@ -69,6 +70,8 @@ class target_dataroot extends target_base {
         if (!is_array($filepaths)) {
             throw new \coding_exception('File paths should be an array');
         }
+
+        $this->backup_files($filepaths);
 
         $result = true;
 
@@ -143,6 +146,13 @@ class target_dataroot extends target_base {
             'text',
             $this->settings['delimiter'],
             PARAM_RAW
+        );
+        $fields['backupfiles'] = new config_field(
+            'backupfiles',
+            'Backup files?',
+            'checkbox',
+            $this->settings['backupfiles'],
+            PARAM_BOOL
         );
 
         $elements = $this->get_config_form_elements($mform, $fields);

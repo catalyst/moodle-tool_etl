@@ -63,6 +63,8 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
             'overwrite' => 1,
             'addtime' => 0,
             'delimiter' => '',
+            'backupfiles' => 1,
+
         );
         $this->assertEquals($expected, $this->target->get_settings());
     }
@@ -92,7 +94,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->target->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(6, $elements);
+        $this->assertCount(7, $elements);
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('checkbox', $elements[1]->getType());
@@ -100,6 +102,8 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals('checkbox', $elements[3]->getType());
         $this->assertEquals('checkbox', $elements[4]->getType());
         $this->assertEquals('text', $elements[5]->getType());
+        $this->assertEquals('checkbox', $elements[6]->getType());
+
 
         $this->assertEquals('target_dataroot-path', $elements[0]->getName());
         $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());
@@ -107,6 +111,8 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals('target_dataroot-overwrite', $elements[3]->getName());
         $this->assertEquals('target_dataroot-addtime', $elements[4]->getName());
         $this->assertEquals('target_dataroot-delimiter', $elements[5]->getName());
+        $this->assertEquals('target_dataroot-backupfiles', $elements[6]->getName());
+
     }
 
     public function test_config_form_validation() {
@@ -172,10 +178,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertFalse($actual->get_result('array'));
         $this->assertFalse($actual->get_result('object'));
         $this->assertFalse($actual->get_result('string'));
-
-        // Clean up test files.
-        unlink($testfile);
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'target_test.txt');
     }
 
     public function test_that_can_not_load_from_random_format() {
@@ -257,14 +259,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt'));
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt'));
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt'));
-
-        // Clean up test files.
-        unlink($testfile1);
-        unlink($testfile2);
-        unlink($testfile3);
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test1.txt');
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test2.txt');
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt');
     }
 
     public function test_loading_from_files_set_path() {
@@ -289,14 +283,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test1.txt'));
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test2.txt'));
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test3.txt'));
-
-        // Clean up test files.
-        unlink($testfile1);
-        unlink($testfile2);
-        unlink($testfile3);
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test1.txt');
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test2.txt');
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'test3.txt');
     }
 
     public function test_loading_from_files_set_filename() {
@@ -322,12 +308,6 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertFalse(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR .'test2.txt'));
         $this->assertFalse(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'test3.txt'));
         $this->assertTrue(file_exists($CFG->dataroot . DIRECTORY_SEPARATOR . 'new_file_name.csv'));
-
-        // Clean up test files.
-        unlink($testfile1);
-        unlink($testfile2);
-        unlink($testfile3);
-        unlink($CFG->dataroot . DIRECTORY_SEPARATOR . 'new_file_name.csv');
     }
 
 }

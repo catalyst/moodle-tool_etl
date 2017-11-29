@@ -156,4 +156,28 @@ abstract class target_base extends common_base implements target_interface {
         return $filename;
     }
 
+    /**
+     * Backup loaded files if required.
+     *
+     * @param array $filepaths A list of files to backup.
+     */
+    protected function backup_files(array $filepaths) {
+        global $CFG;
+
+        if (!empty($this->settings['backupfiles'])) {
+            $date = date($this->get_date_format(), time());
+            $backupfolder = $CFG->dataroot . DIRECTORY_SEPARATOR . $this->get_short_name() . DIRECTORY_SEPARATOR . $date;
+            check_dir_exists($backupfolder);
+
+            foreach ($filepaths as $filepath) {
+                $target = $backupfolder . DIRECTORY_SEPARATOR . basename($filepath);
+                if (!copy($filepath, $target)) {
+                    $this->log('backup_files', 'Failed to back up file ' . $filepath . ' to ' . $target, logger::TYPE_ERROR);
+                } else {
+                    $this->log('backup_files', 'Successfully backed up file ' . $filepath . ' to ' . $target);
+                }
+            }
+        }
+    }
+
 }
