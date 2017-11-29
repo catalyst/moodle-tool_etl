@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 class tool_etl_target_base_testcase extends advanced_testcase {
     public function test_get_options() {
         $actual = target_base::get_options();
-        $expected = array('target_dataroot');
+        $expected = array('target_dataroot', 'target_folder');
         $this->assertEquals($expected, $actual);
     }
 }

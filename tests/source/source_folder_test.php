@@ -139,7 +139,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Folder source is not available!
+     * @expectedExceptionMessage Server folder source is not available!
      */
     public function test_exception_thrown_when_extract_and_source_is_not_available() {
         $this->source->extract();
