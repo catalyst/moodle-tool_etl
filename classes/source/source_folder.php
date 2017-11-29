@@ -37,7 +37,7 @@ class source_folder extends source_base {
      *
      * @var string
      */
-    protected $name = "Folder";
+    protected $name = "Server folder";
 
     /**
      * Settings.
@@ -63,18 +63,27 @@ class source_folder extends source_base {
     }
 
     /**
+     * Return folder path.
+     *
+     * @return string
+     */
+    protected function get_folder_path() {
+        return $this->settings['folder'];
+    }
+
+    /**
      * Return files.
      */
     protected function get_files() {
         $matchedfiles = array();
-        $files = scandir($this->settings['folder']);
+        $files = scandir($this->get_folder_path());
 
         $this->log('get_files', $files);
 
         if ($files) {
             foreach ($files as $file) {
                 if ($this->should_extract($file)) {
-                    $matchedfiles[] = $this->settings['folder'] . DIRECTORY_SEPARATOR . $file;
+                    $matchedfiles[] = $this->get_folder_path() . DIRECTORY_SEPARATOR . $file;
                 }
             }
         }
@@ -89,11 +98,11 @@ class source_folder extends source_base {
      * @inheritdoc
      */
     public function is_available() {
-        if (is_dir($this->settings['folder']) && is_readable($this->settings['folder'])) {
+        if (is_dir($this->get_folder_path()) && is_readable($this->get_folder_path())) {
             return true;
         }
 
-        $this->log('load_data', 'Folder is not readable ' . $this->settings['folder'], logger::TYPE_ERROR);
+        $this->log('load_data', 'Folder is not readable ' . $this->get_folder_path(), logger::TYPE_ERROR);
 
         return false;
     }

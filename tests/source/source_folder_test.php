@@ -53,7 +53,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
     }
 
     public function test_get_name() {
-        $this->assertEquals('Folder', $this->source->get_name());
+        $this->assertEquals('Server folder', $this->source->get_name());
     }
 
     public function test_default_settings() {
