@@ -190,7 +190,7 @@ class source_sftp_key extends source_ftp {
         $fields['password'] = new config_field('password', 'Password', 'passwordunmask', $this->settings['password'], PARAM_RAW);
 
         if (!empty($this->settings['keyname'])) {
-            $fields['owerwritekey'] = new config_field('owerwritekey', 'Overwrite existing key?', 'checkbox', 0, PARAM_INT);
+            $fields['owerwritekey'] = new config_field('owerwritekey', 'Overwrite existing key?', 'advcheckbox', 0, PARAM_INT);
         }
 
         $fields['key'] = new config_field('key', 'Private key', 'textarea', '', PARAM_RAW);

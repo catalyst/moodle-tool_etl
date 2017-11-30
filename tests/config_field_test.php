@@ -41,11 +41,11 @@ class tool_etl_config_field_testcase extends advanced_testcase {
     }
 
     public function test_can_get_parameter() {
-        $instance = new config_field('test_name', 'Test title', 'checkbox', 1, PARAM_RAW);
+        $instance = new config_field('test_name', 'Test title', 'advcheckbox', 1, PARAM_RAW);
 
         $this->assertEquals('test_name', $instance->name);
         $this->assertEquals('Test title', $instance->title);
-        $this->assertEquals('checkbox', $instance->type);
+        $this->assertEquals('advcheckbox', $instance->type);
         $this->assertEquals(1, $instance->default);
         $this->assertEquals(PARAM_RAW, $instance->filter);
     }

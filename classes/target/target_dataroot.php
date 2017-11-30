@@ -120,7 +120,7 @@ class target_dataroot extends target_base {
         $fields['clreateifnotexist'] = new config_field(
             'clreateifnotexist',
             'Create folder if not exists',
-            'checkbox',
+            'advcheckbox',
             $this->settings['clreateifnotexist'],
             PARAM_BOOL
         );
@@ -134,14 +134,14 @@ class target_dataroot extends target_base {
         $fields['overwrite'] = new config_field(
             'overwrite',
             'Overwrite files?',
-            'checkbox',
+            'advcheckbox',
             $this->settings['overwrite'],
             PARAM_BOOL
         );
         $fields['addtime'] = new config_field(
             'addtime',
             'Append files by date like ' . date($this->get_date_format(), time()),
-            'checkbox',
+            'advcheckbox',
             $this->settings['addtime'],
             PARAM_BOOL
         );
@@ -155,7 +155,7 @@ class target_dataroot extends target_base {
         $fields['backupfiles'] = new config_field(
             'backupfiles',
             'Backup files?',
-            'checkbox',
+            'advcheckbox',
             $this->settings['backupfiles'],
             PARAM_BOOL
         );
