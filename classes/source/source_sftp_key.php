@@ -120,10 +120,10 @@ class source_sftp_key extends source_ftp {
      */
     public function get_settings_for_display() {
         $settings = $this->get_settings();
-        $settings['keyname'] = $this->get_key_path($settings['keyname']);
-
         unset($settings['password']);
         unset($settings['key']);
+
+        $settings['key'] = $this->get_key_path($settings['keyname']);
 
         return $settings;
     }

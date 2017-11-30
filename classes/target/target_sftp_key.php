@@ -141,10 +141,10 @@ class target_sftp_key extends target_base {
      */
     public function get_settings_for_display() {
         $settings = $this->get_settings();
-        $settings['keyname'] = $this->get_key_path($settings['keyname']);
-
         unset($settings['password']);
         unset($settings['key']);
+
+        $settings['key'] = $this->get_key_path($settings['keyname']);
 
         return $settings;
     }
