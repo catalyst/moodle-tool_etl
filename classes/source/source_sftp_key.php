@@ -76,6 +76,7 @@ class source_sftp_key extends source_ftp {
         'keyname' => '',
         'directory' => '',
         'fileregex' => '',
+        'delete' => 0,
     );
 
     /**
@@ -180,6 +181,13 @@ class source_sftp_key extends source_ftp {
     /**
      * @inheritdoc
      */
+    protected function delete_file($filepath) {
+        return $this->connid->delete($filepath);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function create_config_form_elements(\MoodleQuickForm $mform) {
         $fields = array();
 
@@ -196,7 +204,7 @@ class source_sftp_key extends source_ftp {
         $fields['key'] = new config_field('key', 'Private key', 'textarea', '', PARAM_RAW);
         $fields['directory'] = new config_field('directory', 'Directory', 'text', $this->settings['directory'], PARAM_SAFEPATH);
         $fields['fileregex'] = new config_field('fileregex', 'File regex', 'text', $this->settings['fileregex'], PARAM_RAW);
-        $fields['host'] = new config_field('host', 'Host', 'text', $this->settings['host'],  PARAM_HOST);
+        $fields['delete'] = new config_field('delete', 'Delete loaded files', 'advcheckbox', $this->settings['delete'], PARAM_BOOL);
 
         $elements = $this->get_config_form_elements($mform, $fields);
 

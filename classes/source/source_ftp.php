@@ -40,6 +40,13 @@ class source_ftp extends source_base {
     protected $name = "FTP";
 
     /**
+     * Date and time now.
+     *
+     * @var string
+     */
+    protected $now;
+
+    /**
      * Settings.
      *
      * @var array
@@ -51,6 +58,7 @@ class source_ftp extends source_base {
         'password' => '',
         'directory' => '',
         'fileregex' => '',
+        'delete' => 0,
     );
 
     /**
@@ -85,6 +93,8 @@ class source_ftp extends source_base {
         if (!extension_loaded('ftp')) {
             throw new \Exception('PHP extension FTP is not loaded.');
         }
+
+        $this->now = date('YmdHis', time());
 
         $this->filedir = $CFG->dataroot . DIRECTORY_SEPARATOR . $this->get_short_name();
         check_dir_exists($this->filedir);
@@ -165,6 +175,7 @@ class source_ftp extends source_base {
             'password' => new config_field('password', 'Password', 'passwordunmask', $this->settings['password'], PARAM_RAW),
             'directory' => new config_field('directory', 'Files directory', 'text', $this->settings['directory'], PARAM_SAFEPATH),
             'fileregex' => new config_field('fileregex', 'Files regex', 'text', $this->settings['fileregex'], PARAM_RAW),
+            'delete' => new config_field('delete', 'Delete loaded files', 'advcheckbox', $this->settings['delete'], PARAM_BOOL),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));
@@ -190,6 +201,10 @@ class source_ftp extends source_base {
 
                     if ($this->copy_file($remotefile, $localfile)) {
                         $localfiles[] = $localfile;
+
+                        if (!empty($this->settings['delete'])) {
+                            $this->delete_remote_file($remotefile);
+                        }
                     }
                 }
             }
@@ -228,7 +243,9 @@ class source_ftp extends source_base {
      * @return string
      */
     protected function get_local_file_path($remotefile) {
-        return $this->filedir . DIRECTORY_SEPARATOR . basename($remotefile);
+        $localfolder = $this->filedir . DIRECTORY_SEPARATOR . $this->now;
+        check_dir_exists($localfolder);
+        return $localfolder . DIRECTORY_SEPARATOR . basename($remotefile);
     }
 
     /**
@@ -244,6 +261,30 @@ class source_ftp extends source_base {
         $this->log_copy_result($result, $remotefile, $localfile);
 
         return $result;
+    }
+
+    /**
+     * Delete remote file.
+     *
+     * @param string $filepath File path.
+     */
+    protected function delete_remote_file($filepath) {
+        if (!$this->delete_file($filepath)) {
+            $this->log('delete_file', 'Failed to delete ' . $filepath, logger::TYPE_ERROR);
+        } else {
+            $this->log('delete_file', 'Successfully deleted ' . $filepath);
+        }
+    }
+
+    /**
+     * Delete file.
+     *
+     * @param string $filepath File path.
+     *
+     * @return bool
+     */
+    protected function delete_file($filepath) {
+        return ftp_delete($this->connid, $filepath);
     }
 
     /**
