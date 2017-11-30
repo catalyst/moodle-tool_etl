@@ -43,6 +43,7 @@ abstract class target_base extends common_base implements target_interface {
         return array(
             'target_dataroot',
             'target_folder',
+            'target_sftp_key',
         );
     }
 
