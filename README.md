@@ -30,6 +30,8 @@ To install this plugin in your Moodle.
 ### Targets
 * **Moodle sitedata** - a folder inside Moodle sitedata directory.
 * **Server folder** - server local folder.
+* **SFTP with key authentication** - remote SFTP server, login using SSH key.
+
 
 ### Processors
 * **Default processor** - doesn't do any transformation, simply pass extracted data from a source to a target.
