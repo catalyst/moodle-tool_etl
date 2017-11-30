@@ -344,7 +344,6 @@ class target_sftp_key extends target_base {
             $errors[$this->get_config_form_prefix() . 'username'] = 'Username could not be empty';
         }
 
-
         if (empty($data[$this->get_config_form_prefix() . 'key']) && empty($data[$this->get_config_form_prefix() . 'keyname'])) {
             $errors[$this->get_config_form_prefix() . 'key'] = 'Private key could not be empty';
         }
