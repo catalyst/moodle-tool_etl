@@ -47,7 +47,33 @@ class source_folder extends source_base {
     protected $settings = array(
         'folder' => '',
         'fileregex' => '',
+        'delete' => 0,
     );
+
+    /**
+     * A temp folder to save files.
+     *
+     * @var string
+     */
+    protected $filedir;
+
+    /**
+     * Date and time now.
+     *
+     * @var string
+     */
+    protected $now;
+
+    public function __construct(array $settings = array()) {
+        global $CFG;
+
+        parent::__construct($settings);
+
+        $this->now = date('YmdHis', time());
+
+        $this->filedir = $CFG->dataroot . DIRECTORY_SEPARATOR . $this->get_short_name();
+        check_dir_exists($this->filedir);
+    }
 
     /**
      * @inheritdoc
@@ -76,6 +102,8 @@ class source_folder extends source_base {
      */
     protected function get_files() {
         $matchedfiles = array();
+        $localfiles = array();
+
         $files = scandir($this->get_folder_path());
 
         $this->log('get_files', $files);
@@ -83,16 +111,89 @@ class source_folder extends source_base {
         if ($files) {
             foreach ($files as $file) {
                 if ($this->should_extract($file)) {
-                    $matchedfiles[] = $this->get_folder_path() . DIRECTORY_SEPARATOR . $file;
+                    $localfile = $this->get_local_file_path($file);
+                    $remotefile = $this->get_folder_path() . DIRECTORY_SEPARATOR . $file;
+                    if ($this->copy_file($remotefile, $localfile)) {
+                        $localfiles[] = $localfile;
+
+                        if (!empty($this->settings['delete'])) {
+                            $this->delete_remote_file($remotefile);
+                        }
+                    }
+
+                    $matchedfiles[] = $remotefile;
                 }
             }
         }
 
         $this->log('match_files', count ($matchedfiles) . ' files matched regex ' . $this->settings['fileregex']);
 
-        return $matchedfiles;
+        return $localfiles;
     }
 
+    /**
+     * Get a path of local file to copy.
+     *
+     * @param string $remotefile Remote file path.
+     *
+     * @return string
+     */
+    protected function get_local_file_path($remotefile) {
+        $localfolder = $this->filedir . DIRECTORY_SEPARATOR . $this->now;
+        check_dir_exists($localfolder);
+        return $localfolder . DIRECTORY_SEPARATOR . basename($remotefile);
+    }
+
+    /**
+     * Copy file from source.
+     *
+     * @param string $remotefile Remote file path.
+     * @param string $localfile Local file path.
+     *
+     * @return bool
+     * @throws \coding_exception
+     */
+    protected function copy_file($remotefile, $localfile) {
+        $result = copy($remotefile, $localfile);
+
+        if ($result) {
+            $this->log('copy_from_folder', 'Completed copy ' . $remotefile . ' to ' . $localfile);
+        } else {
+            $this->log('copy_from_folder', 'Failed to copy ' . $remotefile . ' to ' . $localfile, logger::TYPE_ERROR);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete remote file.
+     *
+     * @param string $filepath File path.
+     *
+     * @throws \coding_exception
+     */
+    protected function delete_remote_file($filepath) {
+        if (!$this->delete_file($filepath)) {
+            $this->log('delete_file', 'Failed to delete ' . $filepath, logger::TYPE_ERROR);
+        } else {
+            $this->log('delete_file', 'Successfully deleted ' . $filepath);
+        }
+    }
+
+    /**
+     * Delete file.
+     *
+     * @param string $filepath File path.
+     *
+     * @return bool
+     */
+    protected function delete_file($filepath) {
+        if (!is_writable($filepath)) {
+            return false;
+        }
+
+        return unlink($filepath);
+    }
 
     /**
      * @inheritdoc
@@ -116,6 +217,7 @@ class source_folder extends source_base {
         $fields = array(
             'folder' => new config_field('folder', 'Files folder', 'text', $this->settings['folder'], PARAM_SAFEPATH),
             'fileregex' => new config_field('fileregex', 'Files regex', 'text', $this->settings['fileregex'], PARAM_RAW),
+            'delete' => new config_field('delete', 'Delete loaded files', 'advcheckbox', $this->settings['delete'], PARAM_BOOL),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));

@@ -60,6 +60,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $expected = array(
             'folder' => '',
             'fileregex' => '',
+            'delete' => 0,
         );
         $this->assertEquals($expected, $this->source->get_settings());
     }
@@ -83,13 +84,15 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->source->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(2, $elements);
+        $this->assertCount(3, $elements);
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('text', $elements[1]->getType());
+        $this->assertEquals('checkbox', $elements[2]->getType());
 
         $this->assertEquals('source_folder-folder', $elements[0]->getName());
         $this->assertEquals('source_folder-fileregex', $elements[1]->getName());
+        $this->assertEquals('source_folder-delete', $elements[2]->getName());
     }
 
     public function test_config_form_validation() {
@@ -160,17 +163,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         touch($testfile3);
         touch($testfile4);
 
-        // Filter files by regex.
-        $this->source = new source_folder(array('folder' => $testfolder, 'fileregex' => '/test[1-3].txt/'));
-        $result = $this->source->extract();
-        $this->assertInstanceOf('tool_etl\\data_interface', $result);
-
-        $files = $result->get_data('files');
-        $this->assertTrue(is_array($files));
-        $this->assertCount(3, $files);
-        $this->assertEquals($testfile1, $files[0]);
-        $this->assertEquals($testfile2, $files[1]);
-        $this->assertEquals($testfile3, $files[2]);
+        $pattern = $CFG->dataroot . DIRECTORY_SEPARATOR . 'source_folder' . DIRECTORY_SEPARATOR . '[0-9]{14}' . DIRECTORY_SEPARATOR;
 
         // Get all files as regex is empty.
         $this->source = new source_folder(array('folder' => $testfolder));
@@ -180,17 +173,36 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $files = $result->get_data('files');
         $this->assertTrue(is_array($files));
         $this->assertCount(4, $files);
-        $this->assertEquals($testfile1, $files[0]);
-        $this->assertEquals($testfile2, $files[1]);
-        $this->assertEquals($testfile3, $files[2]);
-        $this->assertEquals($testfile4, $files[3]);
 
-        // Clean up.
-        unlink($testfile1);
-        unlink($testfile2);
-        unlink($testfile3);
-        unlink($testfile4);
-        rmdir($testfolder);
+        $this->assertTrue(file_exists($testfile1));
+        $this->assertTrue(file_exists($testfile2));
+        $this->assertTrue(file_exists($testfile3));
+        $this->assertTrue(file_exists($testfile4));
+
+        $this->assertRegExp('#' . $pattern . basename($testfile1) . '#', $files[0]);
+        $this->assertRegExp('#' . $pattern . basename($testfile2) . '#', $files[1]);
+        $this->assertRegExp('#' . $pattern . basename($testfile3) . '#', $files[2]);
+        $this->assertRegExp('#' . $pattern . basename($testfile4) . '#', $files[3]);
+
+        // Filter files by regex and delete files after loading.
+        $this->source = new source_folder(array('folder' => $testfolder, 'fileregex' => '/test[1-3].txt/', 'delete' => 1));
+        $result = $this->source->extract();
+        $this->assertInstanceOf('tool_etl\\data_interface', $result);
+
+        $files = $result->get_data('files');
+        $this->assertTrue(is_array($files));
+        $this->assertCount(3, $files);
+
+        // Check that we deleted loaded files only.
+        $this->assertFalse(file_exists($testfile1));
+        $this->assertFalse(file_exists($testfile2));
+        $this->assertFalse(file_exists($testfile3));
+        $this->assertTrue(file_exists($testfile4));
+
+        $this->assertRegExp('#' . $pattern . basename($testfile1) . '#', $files[0]);
+        $this->assertRegExp('#' . $pattern . basename($testfile2) . '#', $files[1]);
+        $this->assertRegExp('#' . $pattern . basename($testfile3) . '#', $files[2]);
+
     }
 
 }
