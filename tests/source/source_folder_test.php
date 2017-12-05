@@ -88,7 +88,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('text', $elements[1]->getType());
-        $this->assertEquals('checkbox', $elements[2]->getType());
+        $this->assertContains('checkbox', $elements[2]->getType());
 
         $this->assertEquals('source_folder-folder', $elements[0]->getName());
         $this->assertEquals('source_folder-fileregex', $elements[1]->getName());
