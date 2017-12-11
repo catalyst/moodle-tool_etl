@@ -76,6 +76,7 @@ class source_sftp_key extends source_ftp {
         'keyname' => '',
         'directory' => '',
         'fileregex' => '',
+        'filterdate' => 0,
         'delete' => 0,
     );
 
@@ -155,6 +156,24 @@ class source_sftp_key extends source_ftp {
     }
 
     /**
+     * Check if we should copy the remote file.
+     *
+     * @param string $remotefile Remote file path.
+     *
+     * @return int
+     */
+    protected function should_copy($remotefile) {
+        $shouldcopy = parent::should_copy($remotefile);
+
+        if ($shouldcopy && $this->settings['filterdate']) {
+            $datestring = date('Ymd', time());
+            $shouldcopy = preg_match("/$datestring/", $remotefile);
+        }
+
+        return $shouldcopy;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function get_remote_files() {
@@ -204,6 +223,15 @@ class source_sftp_key extends source_ftp {
         $fields['key'] = new config_field('key', 'Private key', 'textarea', '', PARAM_RAW);
         $fields['directory'] = new config_field('directory', 'Directory', 'text', $this->settings['directory'], PARAM_SAFEPATH);
         $fields['fileregex'] = new config_field('fileregex', 'File regex', 'text', $this->settings['fileregex'], PARAM_RAW);
+
+        $fields['filterdate'] = new config_field(
+            'filterdate',
+            'Filter by today date in filename',
+            'advcheckbox',
+            $this->settings['filterdate'],
+            PARAM_BOOL
+        );
+
         $fields['delete'] = new config_field('delete', 'Delete loaded files', 'advcheckbox', $this->settings['delete'], PARAM_BOOL);
 
         $elements = $this->get_config_form_elements($mform, $fields);
