@@ -77,6 +77,7 @@ abstract class processor_base extends common_base implements processor_interface
     final public static function get_options() {
         return array(
             'processor_default',
+            'processor_lowercase',
         );
     }
 
