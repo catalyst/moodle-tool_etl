@@ -92,6 +92,12 @@ class processor_lowercase extends processor_base {
 
     /**
      * @inheritdoc
+     *
+     * - csvfields: a list of csv field that need to be updated. The names should be separated using ||.
+     *   E.g. username||email||firstname
+     *
+     * - csvdelimiter: a delimiter used in the csv file.
+     *
      */
     public function create_config_form_elements(\MoodleQuickForm $mform) {
         $elements = parent::create_config_form_elements($mform);
