@@ -173,27 +173,11 @@ class processor_lowercase extends processor_base {
 
                 foreach ($files as $file) {
                     try {
-                        $data = $this->read_csv_file_as_array($file, $this->get_settings()['csvdelimiter']);
-                        $processeddata = $this->lowercase_data($data);
-
-                        if (empty($processeddata)) {
-                            $this->log('process', 'Skip processing file ' . $file . ' Empty file.', logger::TYPE_WARNING);
-                            continue;
+                        $newfile = $this->process_file($file);
+                        if ($newfile) {
+                            $newfiles[] = $newfile;
+                            $this->log('process', 'Successfully processed file ' . $file . ' to ' . $newfile, logger::TYPE_INFO);
                         }
-
-                        $targetfile = $this->get_target_file_path($file);
-
-                        if (file_exists($targetfile)) {
-                            $this->log(
-                                'process',
-                                'Skip processing file ' . $file . ' File ' . $targetfile . ' exists.', logger::TYPE_WARNING
-                            );
-                            continue;
-                        }
-
-                        $this->save_array_as_csv_file($targetfile, $processeddata, $this->get_settings()['csvdelimiter']);
-                        $newfiles[] = $targetfile;
-                        $this->log('process', 'Successfully processed file ' . $file . ' to ' . $targetfile, logger::TYPE_INFO);
                     } catch (\Exception $e) {
                         $this->log('process', 'Failed processing file ' . $file . ' ' . $e->getMessage(), logger::TYPE_ERROR);
                     }
@@ -207,6 +191,40 @@ class processor_lowercase extends processor_base {
         }
 
         return true;
+    }
+
+    /**
+     * Process one file.
+     *
+     * @param string $file Path to the file.
+     *
+     * @return bool|string
+     * @throws \Exception
+     * @throws \coding_exception
+     */
+    protected function process_file($file) {
+        $data = $this->read_csv_file_as_array($file, $this->get_settings()['csvdelimiter']);
+        $processeddata = $this->lowercase_data($data);
+
+        if (empty($processeddata)) {
+            $this->log('process', 'Skip processing file ' . $file . ' Empty file.', logger::TYPE_WARNING);
+            return false;
+        }
+
+        $newfile = $this->get_target_file_path($file);
+
+        if (file_exists($newfile)) {
+            $this->log(
+                'process',
+                'Skip processing file ' . $file . ' File ' . $newfile . ' exists.',
+                logger::TYPE_WARNING
+            );
+            return false;
+        }
+
+        $this->save_array_as_csv_file($newfile, $processeddata, $this->get_settings()['csvdelimiter']);
+
+        return $newfile;
     }
 
     /**
