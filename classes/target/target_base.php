@@ -40,11 +40,20 @@ abstract class target_base extends common_base implements target_interface {
      * @return array A list of existing target classes.
      */
     final public static function get_options() {
-        return array(
-            'target_dataroot',
-            'target_folder',
-            'target_sftp_key',
-        );
+        $plugins = \core_component::get_plugin_list('etl');
+        $options = [];
+        foreach ($plugins as $name => $dir) {
+            $classname = "\\etl_$name\\capabilities";
+            /** @var \tool_etl\capabilities_interface $capabilities */
+            $capabilities = new $classname();
+            foreach ($capabilities->targets() as $item) {
+                $options[] = (object)[
+                    'subplugin'  => "etl_$name",
+                    'classname'  => $item,
+                ];
+            }
+        }
+        return $options;
     }
 
     /**

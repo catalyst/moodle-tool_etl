@@ -24,6 +24,7 @@
 
 namespace tool_etl\common;
 
+use lang_string;
 use tool_etl\logger;
 use tool_etl\regex_validator;
 
@@ -39,13 +40,6 @@ abstract class common_base implements common_interface {
      * Default delimiter.
      */
     const DEFAULT_DELIMITER = '';
-
-    /**
-     * Name of the element.
-     *
-     * @var string
-     */
-    protected $name = '';
 
     /**
      * A list of settings.
@@ -67,11 +61,13 @@ abstract class common_base implements common_interface {
      * @inheritdoc
      */
     public function get_name() {
-        if (empty($this->name)) {
-            throw new \coding_exception('Name should be not empty');
-        }
+        $reflection = new \ReflectionClass($this);
 
-        return $this->name;
+        $parts = explode('\\', $reflection->getName());
+        $component = $parts[0];
+        $stringid = implode('_', array_slice($parts, 1));
+
+        return new lang_string($stringid, $component);
     }
 
     /**
@@ -81,6 +77,18 @@ abstract class common_base implements common_interface {
         $reflection = new \ReflectionClass($this);
 
         return $reflection->getShortName();
+    }
+
+    public final function get_subplugin_name() {
+        $reflection = new \ReflectionClass($this);
+
+        return explode('\\', $reflection->getNamespaceName(), 1)[0];
+    }
+
+    public final function get_identifier_name() {
+        $reflection = new \ReflectionClass($this);
+
+        return str_replace('\\', '/', $reflection->getName());
     }
 
     /**
@@ -128,7 +136,7 @@ abstract class common_base implements common_interface {
      * @return string
      */
     public final function get_config_form_prefix() {
-        return $this->get_short_name() . '-';
+        return $this->get_subplugin_name() . '-' . $this->get_short_name() . '-';
     }
 
     /**
@@ -164,8 +172,8 @@ abstract class common_base implements common_interface {
      * @return common_interface
      * @throws \coding_exception If required class is not exist.
      */
-    public static function init($type, $name, $settings = array()) {
-        $classname = "tool_etl\\$type\\" . $name;
+    public static function init($type, $name, $subplugin, $settings = array()) {
+        $classname = "$subplugin\\$type\\$name";
 
         if (!class_exists($classname)) {
             throw new \coding_exception('Can not initialise element. Class ' . $classname . ' is not exists');

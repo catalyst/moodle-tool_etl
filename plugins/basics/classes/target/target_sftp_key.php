@@ -15,31 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * SFTP using ssh key for authentication.
+ * SFTP with key auth target.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\source;
-
+namespace etl_basics\target;
 use tool_etl\config_field;
 use phpseclib\Crypt\RSA;
 use phpseclib\Net\SFTP;
+use tool_etl\logger;
+use tool_etl\target\target_base;
+
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/admin/tool/etl/extlib/vendor/autoload.php');
-
-class source_sftp_key extends source_ftp {
-
-    /**
-     * Name of the source.
-     *
-     * @var string
-     */
-    protected $name = "SFTP (key auth)";
+class target_sftp_key extends target_base {
 
     /**
      * RSA key.
@@ -56,11 +49,25 @@ class source_sftp_key extends source_ftp {
     protected $connid;
 
     /**
+     * Result of connection.
+     *
+     * @var bool
+     */
+    protected $logginresult;
+
+    /**
      * A path to a directory which stores private keys.
      *
      * @var string
      */
     protected $keydir;
+
+    /**
+     * A temp folder to save files.
+     *
+     * @var string
+     */
+    protected $filedir;
 
     /**
      * Settings.
@@ -75,17 +82,23 @@ class source_sftp_key extends source_ftp {
         'key' => '',
         'keyname' => '',
         'directory' => '',
-        'fileregex' => '',
-        'filterdate' => 0,
-        'delete' => 0,
+        'filename' => '',
+        'overwrite' => 1,
+        'addtime' => 0,
+        'delimiter' => '',
+        'backupfiles' => 1,
     );
 
     /**
      * @inheritdoc
      */
     public function __construct(array $settings = array()) {
+        global $CFG;
+
         parent::__construct($settings);
 
+        $this->filedir = $CFG->dataroot . DIRECTORY_SEPARATOR . $this->get_short_name();
+        check_dir_exists($this->filedir);
         $this->keydir = $this->filedir . DIRECTORY_SEPARATOR . 'key';
         check_dir_exists($this->keydir);
     }
@@ -156,52 +169,74 @@ class source_sftp_key extends source_ftp {
     }
 
     /**
-     * Check if we should copy the remote file.
-     *
-     * @param string $remotefile Remote file path.
-     *
-     * @return int
+     * @inheritdoc
      */
-    protected function should_copy($remotefile) {
-        $shouldcopy = parent::should_copy($remotefile);
+    public function is_available() {
+        $this->connect();
+        $this->login();
 
-        if ($shouldcopy && $this->settings['filterdate']) {
-            $datestring = date('Ymd', time());
-            $shouldcopy = preg_match("/$datestring/", $remotefile);
+        if (!$this->connid) {
+            $this->log('connect', 'Connection failed', logger::TYPE_ERROR);
+            return false;
         }
 
-        return $shouldcopy;
+        if (!$this->logginresult) {
+            $this->log('login', 'Login failed using ' . $this->settings['username'], logger::TYPE_ERROR);
+            return false;
+        }
+
+        return true;
     }
 
     /**
-     * @inheritdoc
+     * Load data from files.
+     *
+     * @param array $filepaths A list of files to load from.
+     *
+     * @return bool
+     * @throws \coding_exception If incorrect file paths format.
      */
-    protected function get_remote_files() {
-        return $this->connid->nlist($this->settings['directory']);
-    }
+    protected function load_from_files($filepaths) {
+        if (!is_array($filepaths)) {
+            throw new \coding_exception('File paths should be an array');
+        }
 
-    /**
-     * @inheritdoc
-     */
-    protected function get_remote_file_path($remotefile) {
-        return $this->settings['directory'] . '/' . basename($remotefile);
-    }
+        $this->backup_files($filepaths);
 
-    /**
-     * @inheritdoc
-     */
-    protected function copy_file($remotefile, $localfile) {
-        $result = $this->connid->get($remotefile, $localfile);
-        $this->log_copy_result($result, $remotefile, $localfile);
+        $result = true;
+
+        foreach ($filepaths as $file) {
+            $target = $this->get_full_target_file_path($this->get_target_file_name($file));
+
+            if ($this->connid->file_exists($target) && empty($this->settings['overwrite'])) {
+                $this->log('load_data', 'Skip copying file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
+                continue;
+            }
+
+            if (!$this->connid->put($target, $file, SFTP::SOURCE_LOCAL_FILE)) {
+                $this->log('load_data', 'Failed to copy file ' . $file . ' to ' . $target, logger::TYPE_ERROR);
+                $result = false; // Fail result if any file is failed.
+            } else {
+                $this->log('load_data', 'Successfully copied file ' . $file . ' to ' . $target);
+            }
+        }
 
         return $result;
     }
 
     /**
-     * @inheritdoc
+     * Return full path of the target file.
+     *
+     * @param string $targetfilename A name of the target file.
+     *
+     * @return string
      */
-    protected function delete_file($filepath) {
-        return $this->connid->delete($filepath);
+    protected function get_full_target_file_path($targetfilename) {
+        if (!empty($this->settings['directory'])) {
+            return rtrim($this->settings['directory'], '/') . '/' . $targetfilename;
+        } else {
+            return $targetfilename;
+        }
     }
 
     /**
@@ -210,29 +245,65 @@ class source_sftp_key extends source_ftp {
     public function create_config_form_elements(\MoodleQuickForm $mform) {
         $fields = array();
 
-        $fields['keyname'] = new config_field('keyname', 'Host', 'hidden', $this->settings['keyname'],  PARAM_RAW);
+        $fields['keyname'] = new config_field('keyname', 'keyname', 'hidden', $this->settings['keyname'],  PARAM_RAW);
         $fields['host'] = new config_field('host', 'Host', 'text', $this->settings['host'],  PARAM_HOST);
         $fields['port'] = new config_field('port', 'Port', 'text', $this->settings['port'], PARAM_INT);
         $fields['username'] = new config_field('username', 'User name', 'text', $this->settings['username'], PARAM_ALPHAEXT);
         $fields['password'] = new config_field('password', 'Password', 'passwordunmask', $this->settings['password'], PARAM_RAW);
 
         if (!empty($this->settings['keyname'])) {
-            $fields['owerwritekey'] = new config_field('owerwritekey', 'Overwrite existing key?', 'advcheckbox', 0, PARAM_INT);
+            $fields['owerwritekey'] = new config_field('owerwritekey', 'Overwrite existing key?', 'checkbox', 0, PARAM_INT);
         }
 
-        $fields['key'] = new config_field('key', 'Private key', 'textarea', '', PARAM_RAW);
-        $fields['directory'] = new config_field('directory', 'Directory', 'text', $this->settings['directory'], PARAM_SAFEPATH);
-        $fields['fileregex'] = new config_field('fileregex', 'File regex', 'text', $this->settings['fileregex'], PARAM_RAW);
-
-        $fields['filterdate'] = new config_field(
-            'filterdate',
-            'Filter by today date in filename',
+        $fields['key'] = new config_field(
+            'key',
+            'Private key',
+            'textarea',
+            '',
+            PARAM_RAW
+        );
+        $fields['directory'] = new config_field(
+            'directory',
+            'Directory',
+            'text',
+            $this->settings['directory'],
+            PARAM_SAFEPATH
+        );
+        $fields['filename'] = new config_field(
+            'filename',
+            'File name',
+            'text',
+            $this->settings['filename'],
+            PARAM_RAW
+        );
+        $fields['overwrite'] = new config_field(
+            'overwrite',
+            'Overwrite existing files?',
             'advcheckbox',
-            $this->settings['filterdate'],
+            $this->settings['overwrite'],
             PARAM_BOOL
         );
-
-        $fields['delete'] = new config_field('delete', 'Delete loaded files', 'advcheckbox', $this->settings['delete'], PARAM_BOOL);
+        $fields['addtime'] = new config_field(
+            'addtime',
+            'Append files by date like ' . date($this->get_date_format(), time()),
+            'advcheckbox',
+            $this->settings['addtime'],
+            PARAM_BOOL
+        );
+        $fields['delimiter'] = new config_field(
+            'delimiter',
+            'Date delimiter',
+            'text',
+            $this->settings['delimiter'],
+            PARAM_RAW
+        );
+        $fields['backupfiles'] = new config_field(
+            'backupfiles',
+            'Backup files?',
+            'advcheckbox',
+            $this->settings['backupfiles'],
+            PARAM_BOOL
+        );
 
         $elements = $this->get_config_form_elements($mform, $fields);
 
@@ -242,6 +313,12 @@ class source_sftp_key extends source_ftp {
             $mform->disabledIf($key, $overwrite);
         }
 
+        // Disable delimiter setting if not appending files by date.
+        $mform->disabledIf(
+            $this->get_config_form_prefix() . 'delimiter' ,
+            $this->get_config_form_prefix() . 'addtime'
+        );
+
         return $elements;
     }
 
@@ -249,7 +326,17 @@ class source_sftp_key extends source_ftp {
      * @inheritdoc
      */
     public function validate_config_form_elements($data, $files, $errors) {
-        $errors = parent::validate_config_form_elements($data, $files, $errors);
+        if (empty($data[$this->get_config_form_prefix() . 'host'])) {
+            $errors[$this->get_config_form_prefix() . 'host'] = 'Host could not be empty';
+        }
+
+        if (empty($data[$this->get_config_form_prefix() . 'port'])) {
+            $errors[$this->get_config_form_prefix() . 'port'] = 'Port could not be empty';
+        }
+
+        if (empty($data[$this->get_config_form_prefix() . 'username'])) {
+            $errors[$this->get_config_form_prefix() . 'username'] = 'Username could not be empty';
+        }
 
         if (empty($data[$this->get_config_form_prefix() . 'key']) && empty($data[$this->get_config_form_prefix() . 'keyname'])) {
             $errors[$this->get_config_form_prefix() . 'key'] = 'Private key could not be empty';
@@ -305,5 +392,4 @@ class source_sftp_key extends source_ftp {
             unlink($filepath);
         }
     }
-
 }

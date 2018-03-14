@@ -57,6 +57,8 @@ class task implements task_interface {
      */
     const DEFAULT_PROCESSOR = 'processor_default';
 
+    const DEFAULT_SUBPLUGIN = 'etl_basics';
+
     /**
      * Source for the task.
      *
@@ -132,6 +134,8 @@ class task implements task_interface {
     /**
      * Initial set up of the instance.
      *
+     * @throws \coding_exception
+     * @throws \dml_exception
      * @throws \invalid_parameter_exception
      */
     protected function init() {
@@ -139,8 +143,11 @@ class task implements task_interface {
 
         if ($this->id == 0) {
             $source = self::DEFAULT_SOURCE;
+            $sourcesubplugin = self::DEFAULT_SUBPLUGIN;
             $target = self::DEFAULT_TARGET;
+            $targetsubplugin = self::DEFAULT_SUBPLUGIN;
             $processor = self::DEFAULT_PROCESSOR;
+            $processorsubplugin = self::DEFAULT_SUBPLUGIN;
             $sourcesettings = array();
             $targetsettings = array();
             $processorsettings = array();
@@ -152,8 +159,11 @@ class task implements task_interface {
             $this->enabled = $data->enabled;
 
             $source = $data->source;
+            $sourcesubplugin = $data->source_subplugin;
             $target = $data->target;
+            $targetsubplugin = $data->target_subplugin;
             $processor = $data->processor;
+            $processorsubplugin = $data->processor_subplugin;
             $sourcesettings = unserialize($data->source_settings);
             $targetsettings = unserialize($data->target_settings);
             $processorsettings = unserialize($data->processor_settings);
@@ -164,9 +174,9 @@ class task implements task_interface {
             }
         }
 
-        $this->source = common_base::init('source', $source, $sourcesettings);
-        $this->target = common_base::init('target', $target, $targetsettings);
-        $this->processor = common_base::init('processor', $processor, $processorsettings);
+        $this->source = common_base::init('source', $source, $sourcesubplugin, $sourcesettings);
+        $this->target = common_base::init('target', $target, $targetsubplugin, $targetsettings);
+        $this->processor = common_base::init('processor', $processor, $processorsubplugin, $processorsettings);
     }
 
     /**
@@ -296,10 +306,13 @@ class task implements task_interface {
         }
 
         $task->source = $this->source->get_short_name();
+        $task->source_subplugin = $this->source->get_subplugin_name();
         $task->source_settings = serialize($this->source->get_settings());
         $task->processor = $this->processor->get_short_name();
+        $task->processor_subplugin = $this->processor->get_subplugin_name();
         $task->processor_settings = serialize($this->processor->get_settings());
         $task->target = $this->target->get_short_name();
+        $task->target_subplugin = $this->target->get_subplugin_name();
         $task->target_settings = serialize($this->target->get_settings());
         $task->enabled = $this->enabled;
 
