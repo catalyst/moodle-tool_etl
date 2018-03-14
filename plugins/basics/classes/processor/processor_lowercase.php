@@ -22,22 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\processor;
+namespace etl_basics\processor;
 
 use tool_etl\data;
 use tool_etl\logger;
 use tool_etl\config_field;
+use tool_etl\processor\processor_base;
 
 defined('MOODLE_INTERNAL') || die;
 
 class processor_lowercase extends processor_base {
-
-    /**
-     * Name of the processor.
-     *
-     * @var string
-     */
-    protected $name = "Lowercase processor";
 
     /**
      * A list of fields to lowercase from the config of the processor.

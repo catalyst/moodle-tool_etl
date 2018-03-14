@@ -65,20 +65,20 @@ class task_form extends \moodleform {
 
         $mform->addElement('header', 'sourcesettings', get_string('source', 'tool_etl'));
         $mform->addElement('select', 'source', get_string('selsource', 'tool_etl'), $this->get_list_of_options('source'));
-        $mform->setType('source', PARAM_ALPHAEXT);
-        $mform->setDefault('source', $this->task->source->get_short_name());
+        $mform->setType('source', PARAM_SAFEPATH);
+        $mform->setDefault('source', $this->task->source->get_identifier_name());
         $this->add_config_fields_anchor('source');
 
         $mform->addElement('header', 'targetsettings',  get_string('target', 'tool_etl'));
         $mform->addElement('select', 'target',  get_string('seltarget', 'tool_etl'), $this->get_list_of_options('target'));
-        $mform->setType('target', PARAM_ALPHAEXT);
-        $mform->setDefault('target', $this->task->target->get_short_name());
+        $mform->setType('target', PARAM_SAFEPATH);
+        $mform->setDefault('target', $this->task->target->get_identifier_name());
         $this->add_config_fields_anchor('target');
 
         $mform->addElement('header', 'processorsettings',  get_string('processor', 'tool_etl'));
         $mform->addElement('select', 'processor', get_string('selprocessor', 'tool_etl'), $this->get_list_of_options('processor'));
-        $mform->setType('processor', PARAM_ALPHAEXT);
-        $mform->setDefault('processor', $this->task->processor->get_short_name());
+        $mform->setType('processor', PARAM_SAFEPATH);
+        $mform->setDefault('processor', $this->task->processor->get_identifier_name());
         $this->add_config_fields_anchor('processor');
 
         $mform->addElement('header', 'schedulesettings', get_string('schedule', 'tool_etl'));
@@ -109,7 +109,8 @@ class task_form extends \moodleform {
         $types = array('source', 'target', 'processor');
 
         foreach ($types as $type) {
-            $typeerrors = $this->validate_config_fields($type, $data[$type], $data, $files, $errors);
+            $subplugin = explode('/', $data[$type]);
+            $typeerrors = $this->validate_config_fields($type, $subplugin[2], $subplugin[0], $data, $files, $errors);
 
             if (!empty($typeerrors) && is_array($typeerrors)) {
                 $errors = array_merge($errors, $typeerrors);
@@ -128,9 +129,9 @@ class task_form extends \moodleform {
     protected function get_list_of_options($type) {
         $options = array();
 
-        foreach (common_base::options($type) as $classname) {
-            $instance = common_base::init($type, $classname);
-            $options[$instance->get_short_name()] = $instance->get_name();
+        foreach (common_base::options($type) as $plugindata) {
+            $instance = common_base::init($type, $plugindata->classname, $plugindata->subplugin);
+            $options[$instance->get_identifier_name()] = $instance->get_name();
         }
 
         return $options;
@@ -149,8 +150,9 @@ class task_form extends \moodleform {
         if (isset($data[0])) {
             $selectedtype = $data[0];
 
-            if ($this->task->$type->get_short_name() != $selectedtype) {
-                $instance = common_base::init($type, $selectedtype);
+            if ($this->task->$type->get_identifier_name() != $selectedtype) {
+                $selectedtypedata = explode('/', $selectedtype);
+                $instance = common_base::init($type, $selectedtypedata[2], $selectedtypedata[0]);
             } else {
                 $instance = $this->task->$type;
             }
@@ -177,8 +179,8 @@ class task_form extends \moodleform {
      *
      * @return array A list of errors.
      */
-    protected function validate_config_fields($type, $name, $data, $files, $errors) {
-        return common_base::init($type, $name)->validate_config_form_elements($data, $files, $errors);
+    protected function validate_config_fields($type, $name, $subplugin, $data, $files, $errors) {
+        return common_base::init($type, $name, $subplugin)->validate_config_form_elements($data, $files, $errors);
     }
 
     /**

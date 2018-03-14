@@ -22,20 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\target;
+namespace etl_basics\target;
 
 use tool_etl\config_field;
 use tool_etl\logger;
+use tool_etl\target\target_base;
 
 defined('MOODLE_INTERNAL') || die;
 
 class target_dataroot extends target_base {
-    /**
-     * Name of the source.
-     *
-     * @var string
-     */
-    protected $name = "Site data";
 
     /**
      * Settings of the target.

@@ -15,18 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info.
+ * Default processor instance.
+ *
+ * Does not manipulate data. Simply pass it to target.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace etl_basics\processor;
+
+use tool_etl\logger;
+use tool_etl\processor\processor_base;
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2018011901; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051101; // Requires this Moodle version.
-$plugin->component = 'tool_etl'; // Full name of the plugin (used for diagnostics).
-$plugin->dependencies = array(
-    'etl_basics' => ANY_VERSION,
-);
+class processor_default extends processor_base {
+
+    /**
+     * @inheritdoc
+     */
+    public function process() {
+        parent::process();
+
+        $result = $this->source->extract();
+
+        if (empty($result->get_supported_formats())) {
+            $this->log('process', 'No data to process', logger::TYPE_WARNING);
+        } else {
+            $this->target->load($result);
+        }
+
+        return true;
+    }
+}

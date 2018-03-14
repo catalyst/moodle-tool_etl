@@ -50,6 +50,20 @@ interface common_interface {
     public function get_short_name();
 
     /**
+     * Return the name of the subplugin.
+     *
+     * @return string
+     */
+    public function get_subplugin_name();
+
+    /**
+     * Return the name of the $subplugin\$shortname.
+     *
+     * @return string
+     */
+    public function get_identifier_name();
+
+    /**
      * Return settings of the component.
      *
      * @return array

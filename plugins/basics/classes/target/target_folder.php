@@ -22,19 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\target;
+namespace etl_basics\target;
 
 use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
 class target_folder extends target_dataroot {
-    /**
-     * Name of the source.
-     *
-     * @var string
-     */
-    protected $name = "Server folder";
 
     /**
      * @inheritdoc

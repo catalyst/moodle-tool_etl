@@ -44,12 +44,20 @@ abstract class source_base extends common_base implements source_interface {
      * @return array A list of existing source classes.
      */
     final public static function get_options() {
-        return array(
-            'source_ftp',
-            'source_sftp',
-            'source_sftp_key',
-            'source_folder',
-        );
+        $plugins = \core_component::get_plugin_list('etl');
+        $options = [];
+        foreach ($plugins as $name => $dir) {
+            $classname = "\\etl_$name\\capabilities";
+            /** @var \tool_etl\capabilities_interface $capabilities */
+            $capabilities = new $classname();
+            foreach ($capabilities->sources() as $item) {
+                $options[] = (object)[
+                    'subplugin'  => "etl_$name",
+                    'classname'  => $item,
+                ];
+            }
+        }
+        return $options;
     }
 
 }

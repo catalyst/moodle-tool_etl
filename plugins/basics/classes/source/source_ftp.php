@@ -22,22 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\source;
+namespace etl_basics\source;
 
 use tool_etl\config_field;
 use tool_etl\data;
 use tool_etl\logger;
+use tool_etl\source\source_base;
 
 defined('MOODLE_INTERNAL') || die;
 
 class source_ftp extends source_base {
-
-    /**
-     * Name of the source.
-     *
-     * @var string
-     */
-    protected $name = "FTP";
 
     /**
      * Date and time now.

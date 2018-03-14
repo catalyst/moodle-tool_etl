@@ -15,44 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Default processor instance.
- *
- * Does not manipulate data. Simply pass it to target.
+ * SFTP source.
  *
  * @package    tool_etl
  * @copyright  2017 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_etl\processor;
-
-use tool_etl\logger;
+namespace etl_basics\source;
 
 defined('MOODLE_INTERNAL') || die;
 
-class processor_default extends processor_base {
+class source_sftp extends source_ftp {
 
     /**
-     * Name of the processor.
-     *
-     * @var string
+     * Connect to SFTP server.
      */
-    protected $name = "Default processor";
-
-    /**
-     * @inheritdoc
-     */
-    public function process() {
-        parent::process();
-
-        $result = $this->source->extract();
-
-        if (empty($result->get_supported_formats())) {
-            $this->log('process', 'No data to process', logger::TYPE_WARNING);
-        } else {
-            $this->target->load($result);
+    protected function connect() {
+        if (!empty($this->settings['host'])) {
+            $this->connid = ftp_ssl_connect($this->settings['host'], $this->settings['port']);
         }
-
-        return true;
     }
+
 }
