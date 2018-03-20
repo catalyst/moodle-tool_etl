@@ -38,9 +38,12 @@ class task_manager {
     public static function save_task(\stdClass $data) {
         $data = (array)$data;
 
-        $sourceinstance = common_base::init('source', $data['source']);
-        $targetinstance = common_base::init('target', $data['target']);
-        $processorinstance = common_base::init('processor', $data['processor']);
+        $sourcedataparts = explode('/', $data['source']);
+        $sourceinstance = common_base::init('source', $sourcedataparts[2], $sourcedataparts[0]);
+        $targetdataparts = explode('/', $data['target']);
+        $targetinstance = common_base::init('target', $targetdataparts[2], $targetdataparts[0]);
+        $processordataparts = explode('/', $data['processor']);
+        $processorinstance = common_base::init('processor', $processordataparts[2], $processordataparts[0]);
 
         $sourceinstance->set_settings($sourceinstance->get_settings_from_submitted_data($data));
         $targetinstance->set_settings($targetinstance->get_settings_from_submitted_data($data));

@@ -33,7 +33,7 @@ class data implements data_interface {
      *
      * @var array
      */
-    protected $formats = array('files', 'string', 'array', 'object');
+    protected $formats = array('files', 'string', 'array', 'object', 'iterator');
 
     /**
      * Data as files.
@@ -64,6 +64,11 @@ class data implements data_interface {
     protected $object = null;
 
     /**
+     * @var \Iterator|null
+     */
+    protected $iterator = null;
+
+    /**
      * Constructor.
      *
      * @param array|null $files
@@ -71,11 +76,12 @@ class data implements data_interface {
      * @param array|null $array
      * @param \stdClass|null $object
      */
-    public function __construct(array $files = null, $string = null, array $array = null, \stdClass $object = null) {
+    public function __construct(array $files = null, $string = null, array $array = null, \stdClass $object = null, \Iterator $iterator = null) {
         $this->files = $files;
         $this->string = $string;
         $this->array = $array;
         $this->object = $object;
+        $this->iterator = $iterator;
     }
 
     /**
