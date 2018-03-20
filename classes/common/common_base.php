@@ -82,7 +82,7 @@ abstract class common_base implements common_interface {
     public final function get_subplugin_name() {
         $reflection = new \ReflectionClass($this);
 
-        return explode('\\', $reflection->getNamespaceName(), 1)[0];
+        return explode('\\', $reflection->getNamespaceName(), 2)[0];
     }
 
     public final function get_identifier_name() {
@@ -251,7 +251,11 @@ abstract class common_base implements common_interface {
      * @throws \coding_exception
      */
     protected function log($action, $info='', $logtype = logger::TYPE_INFO, $trace='') {
-        logger::get_instance()->set_element($this->get_name());
+        $name = $this->get_name();
+        if ($name instanceof lang_string) {
+            $name = $name->out();
+        }
+        logger::get_instance()->set_element($name);
         logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
     }
 
