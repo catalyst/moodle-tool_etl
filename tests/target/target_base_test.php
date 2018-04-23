@@ -29,7 +29,20 @@ defined('MOODLE_INTERNAL') || die;
 class tool_etl_target_base_testcase extends advanced_testcase {
     public function test_get_options() {
         $actual = target_base::get_options();
-        $expected = array('target_dataroot', 'target_folder', 'target_sftp_key');
+        $expected = array(
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'target_dataroot'
+            ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'target_folder'
+            ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'target_sftp_key'
+            ),
+        );
         $this->assertEquals($expected, $actual);
     }
 }

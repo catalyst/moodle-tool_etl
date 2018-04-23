@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_etl\processor\processor_default;
+use etl_basics\processor\processor_default;
 use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
@@ -77,7 +77,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
 
     public function test_config_form_prefix() {
         $processor = new processor_default();
-        $this->assertEquals('processor_default-', $processor->get_config_form_prefix());
+        $this->assertEquals('etl_basics-processor_default-', $processor->get_config_form_prefix());
     }
 
     /**

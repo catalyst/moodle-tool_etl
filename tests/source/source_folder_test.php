@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_etl\source\source_folder;
+use etl_basics\source\source_folder;
 use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
@@ -69,7 +69,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $this->assertEquals('source_folder', $this->source->get_short_name());
     }
     public function test_config_form_prefix() {
-        $this->assertEquals('source_folder-', $this->source->get_config_form_prefix());
+        $this->assertEquals('etl_basics-source_folder-', $this->source->get_config_form_prefix());
     }
 
     public function test_is_not_available_by_default() {
@@ -90,9 +90,9 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $this->assertEquals('text', $elements[1]->getType());
         $this->assertContains('checkbox', $elements[2]->getType());
 
-        $this->assertEquals('source_folder-folder', $elements[0]->getName());
-        $this->assertEquals('source_folder-fileregex', $elements[1]->getName());
-        $this->assertEquals('source_folder-delete', $elements[2]->getName());
+        $this->assertEquals('etl_basics-source_folder-folder', $elements[0]->getName());
+        $this->assertEquals('etl_basics-source_folder-fileregex', $elements[1]->getName());
+        $this->assertEquals('etl_basics-source_folder-delete', $elements[2]->getName());
     }
 
     public function test_config_form_validation() {
@@ -102,8 +102,8 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
             array()
         );
         $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('source_folder-folder', $errors);
-        $this->assertArrayNotHasKey('source_folder-fileregex', $errors);
+        $this->assertArrayHasKey('etl_basics-source_folder-folder', $errors);
+        $this->assertArrayNotHasKey('etl_basics-source_folder-fileregex', $errors);
 
         $errors = $this->source->validate_config_form_elements(
             array('folder' => 'test', 'fileregex' => 'test'),
@@ -111,11 +111,11 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
             array()
         );
         $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('source_folder-folder', $errors);
-        $this->assertArrayNotHasKey('source_folder-fileregex', $errors);
+        $this->assertArrayHasKey('etl_basics-source_folder-folder', $errors);
+        $this->assertArrayNotHasKey('etl_basics-source_folder-fileregex', $errors);
 
         $errors = $this->source->validate_config_form_elements(
-            array('source_folder-folder' => 'test'),
+            array('etl_basics-source_folder-folder' => 'test'),
             array(),
             array()
         );
@@ -129,11 +129,11 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
             array()
         );
         $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('source_folder-folder', $errors);
-        $this->assertArrayNotHasKey('source_folder-fileregex', $errors);
+        $this->assertArrayHasKey('etl_basics-source_folder-folder', $errors);
+        $this->assertArrayNotHasKey('etl_basics-source_folder-fileregex', $errors);
 
         $errors = $this->source->validate_config_form_elements(
-            array('source_folder-folder' => 'test', 'source_folder-fileregex' => '/test/'),
+            array('etl_basics-source_folder-folder' => 'test', 'etl_basics-source_folder-fileregex' => '/test/'),
             array(),
             array()
         );
@@ -142,7 +142,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Server folder source is not available!
+     * @expectedExceptionMessage etl_basics\source\source_folder source is not available!
      */
     public function test_exception_thrown_when_extract_and_source_is_not_available() {
         $this->source->extract();

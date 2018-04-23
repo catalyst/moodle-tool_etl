@@ -30,10 +30,22 @@ class tool_etl_source_base_testcase extends advanced_testcase {
     public function test_get_options() {
         $actual = source_base::get_options();
         $expected = array(
-            'source_ftp',
-            'source_sftp',
-            'source_sftp_key',
-            'source_folder',
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'source_ftp'
+            ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'source_sftp'
+            ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'source_sftp_key'
+            ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'source_folder'
+            ),
         );
         $this->assertEquals($expected, $actual);
     }

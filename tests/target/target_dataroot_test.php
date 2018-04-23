@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_etl\target\target_dataroot;
+use etl_basics\target\target_dataroot;
 use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
@@ -74,7 +74,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
     }
 
     public function test_config_form_prefix() {
-        $this->assertEquals('target_dataroot-', $this->target->get_config_form_prefix());
+        $this->assertEquals('etl_basics-target_dataroot-', $this->target->get_config_form_prefix());
     }
 
     public function test_available_by_default() {
@@ -104,13 +104,13 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEquals('text', $elements[5]->getType());
         $this->assertContains('checkbox', $elements[6]->getType());
 
-        $this->assertEquals('target_dataroot-path', $elements[0]->getName());
-        $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());
-        $this->assertEquals('target_dataroot-filename', $elements[2]->getName());
-        $this->assertEquals('target_dataroot-overwrite', $elements[3]->getName());
-        $this->assertEquals('target_dataroot-addtime', $elements[4]->getName());
-        $this->assertEquals('target_dataroot-delimiter', $elements[5]->getName());
-        $this->assertEquals('target_dataroot-backupfiles', $elements[6]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-path', $elements[0]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-clreateifnotexist', $elements[1]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-filename', $elements[2]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-overwrite', $elements[3]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-addtime', $elements[4]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-delimiter', $elements[5]->getName());
+        $this->assertEquals('etl_basics-target_dataroot-backupfiles', $elements[6]->getName());
     }
 
     public function test_config_form_validation() {
@@ -122,15 +122,15 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertEmpty($errors);
 
         $errors = $this->target->validate_config_form_elements(
-            array('target_dataroot-clreateifnotexist' => 1),
+            array('etl_basics-target_dataroot-clreateifnotexist' => 1),
             array(),
             array()
         );
         $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('target_dataroot-path', $errors);
+        $this->assertArrayHasKey('etl_basics-target_dataroot-path', $errors);
 
         $errors = $this->target->validate_config_form_elements(
-            array('target_dataroot-clreateifnotexist' => 1, 'target_dataroot-path' => 'test'),
+            array('etl_basics-target_dataroot-clreateifnotexist' => 1, 'etl_basics-target_dataroot-path' => 'test'),
             array(),
             array()
         );

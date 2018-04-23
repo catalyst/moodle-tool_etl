@@ -76,7 +76,7 @@ class source_folder extends source_base {
         if ($this->is_available()) {
             $this->data = new data($this->get_files());
         } else {
-            throw new \Exception($this->name . ' source is not available!');
+            throw new \Exception(get_class($this) . ' source is not available!');
         }
 
         return $this->data;

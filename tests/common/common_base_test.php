@@ -60,9 +60,12 @@ class tool_etl_common_base_testcase extends advanced_testcase {
 
     public function data_provider_for_test_get_options() {
         return array(
-            array('source', array('source_ftp', 'source_sftp', 'source_sftp_key', 'source_folder')),
-            array('target', array('target_dataroot', 'target_folder', 'target_sftp_key')),
-            array('processor', array('processor_default', 'processor_lowercase')),
+            array('source', array(
+                (object) array('subplugin' => 'etl_basics', 'classname' => 'source_ftp'),
+                (object) array('subplugin' => 'etl_basics', 'classname' => 'source_sftp'),
+                (object) array('subplugin' => 'etl_basics', 'classname' => 'source_sftp_key'),
+                (object) array('subplugin' => 'etl_basics', 'classname' => 'source_folder'),
+            )),
         );
     }
 
@@ -70,15 +73,15 @@ class tool_etl_common_base_testcase extends advanced_testcase {
      * @dataProvider data_provider_for_test_get_options
      */
     public function test_get_options($type, $expected) {
-        $this->assertSame($expected, common_base::options($type));
+        $this->assertEquals($expected, common_base::options($type));
     }
 
     /**
      * @expectedException coding_exception
-     * @expectedExceptionMessage Can not initialise element. Class tool_etl\random_type\RandonName is not exist
+     * @expectedExceptionMessage Can not initialise element. Class etl_random\random_type\RandonName is not exist
      */
     public function test_throw_exception_when_init_invalid_type() {
-        $options = common_base::init('random_type', 'RandonName');
+        $options = common_base::init('random_type', 'RandonName', 'etl_random', '');
     }
 
     public function data_provider_for_test_init_new_element() {
@@ -96,13 +99,13 @@ class tool_etl_common_base_testcase extends advanced_testcase {
         $options = common_base::options($type);
         foreach ($options as $option) {
             // Test is it's correct class.
-            $this->assertInstanceOf("tool_etl\\$type\\" . $option, common_base::init($type, $option));
+            $this->assertInstanceOf("$option->subplugin\\$type\\" . $option->classname, common_base::init($type, $option->classname, $option->subplugin));
             // Test is it extends required base class.
-            $this->assertInstanceOf("tool_etl\\$type\\$type" . "_base", common_base::init($type, $option));
+            $this->assertInstanceOf("tool_etl\\$type\\$type" . "_base", common_base::init($type, $option->classname, $option->subplugin));
             // Test that it implements an interface of required type.
-            $this->assertInstanceOf("tool_etl\\". $type . '\\' . $type. "_interface", common_base::init($type, $option));
+            $this->assertInstanceOf("tool_etl\\". $type . '\\' . $type. "_interface", common_base::init($type, $option->classname, $option->subplugin));
             // Test that it implements common interface.
-            $this->assertInstanceOf("tool_etl\\common\\common_interface", common_base::init($type, $option));
+            $this->assertInstanceOf("tool_etl\\common\\common_interface", common_base::init($type, $option->classname, $option->subplugin));
         }
     }
 
