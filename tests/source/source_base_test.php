@@ -47,6 +47,7 @@ class tool_etl_source_base_testcase extends advanced_testcase {
                 'classname' => 'source_folder'
             ),
         );
-        $this->assertEquals($expected, $actual);
+
+        $this->assertArraySubset($expected, $actual);
     }
 }

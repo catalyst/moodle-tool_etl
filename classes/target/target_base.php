@@ -43,9 +43,6 @@ abstract class target_base extends common_base implements target_interface {
         $plugins = \core_component::get_plugin_list('etl');
         $options = [];
         foreach ($plugins as $name => $dir) {
-            if ($name !== "basics") {
-                continue;
-            }
             $classname = "\\etl_$name\\capabilities";
             /** @var \tool_etl\capabilities_interface $capabilities */
             $capabilities = new $classname();

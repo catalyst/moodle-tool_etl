@@ -43,6 +43,7 @@ class tool_etl_target_base_testcase extends advanced_testcase {
                 'classname' => 'target_sftp_key'
             ),
         );
-        $this->assertEquals($expected, $actual);
+
+        $this->assertArraySubset($expected, $actual);
     }
 }

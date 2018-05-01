@@ -39,6 +39,7 @@ class tool_etl_processor_base_testcase extends advanced_testcase {
                 'classname' => 'processor_lowercase'
             ),
         );
-        $this->assertEquals($expected, $actual);
+
+        $this->assertArraySubset($expected, $actual);
     }
 }

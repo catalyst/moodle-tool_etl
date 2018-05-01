@@ -73,7 +73,7 @@ class tool_etl_common_base_testcase extends advanced_testcase {
      * @dataProvider data_provider_for_test_get_options
      */
     public function test_get_options($type, $expected) {
-        $this->assertEquals($expected, common_base::options($type));
+        $this->assertArraySubset($expected, common_base::options($type));
     }
 
     /**
