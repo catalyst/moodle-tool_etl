@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $string['pluginname'] = 'Extract, transform, load (ETL)';
+$string['privacy:metadata'] = 'Extract, transform, load (ETL) plugin does not store any personal data.';
 $string['edit_breadcrumb'] = 'Edit task';
 $string['create_breadcrumb'] = 'Create task';
 $string['delete_breadcrumb'] = 'Delete task';
