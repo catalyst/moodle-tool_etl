@@ -49,6 +49,7 @@ abstract class source_base extends common_base implements source_interface {
             'source_sftp',
             'source_sftp_key',
             'source_folder',
+            'source_database',
         );
     }
 

@@ -31,7 +31,7 @@ class config_field {
      * A list of parameters for every config field instance.
      * @var array
      */
-    protected $parameters = array('name', 'title', 'type', 'default', 'filter');
+    protected $parameters = array('name', 'title', 'type', 'default', 'filter', 'options');
 
     /**
      * Name parameter.
@@ -68,6 +68,9 @@ class config_field {
      */
     protected $filter;
 
+    protected $options;
+
+
     /**
      * Constructor.
      *
@@ -76,13 +79,15 @@ class config_field {
      * @param string $type
      * @param mixed $default
      * @param string $filter
+     * @param array $options
      */
-    public function __construct($name, $title, $type = 'text', $default = null, $filter = PARAM_ALPHAEXT) {
+    public function __construct($name, $title, $type = 'text', $default = null, $filter = PARAM_ALPHAEXT, $options = null) {
         $this->name = $name;
         $this->title = $title;
         $this->type = $type;
         $this->default = $default;
         $this->filter = $filter;
+        $this->options = $options;
     }
 
     /**

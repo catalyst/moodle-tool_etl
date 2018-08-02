@@ -60,7 +60,7 @@ class target_dataroot extends target_base {
     protected function get_full_path() {
         global $CFG;
 
-        return $CFG->dataroot . DIRECTORY_SEPARATOR .  $this->settings['path'];
+        return $CFG->dataroot . DIRECTORY_SEPARATOR . $this->settings['path'];
     }
 
     /**
@@ -81,7 +81,7 @@ class target_dataroot extends target_base {
         $result = true;
 
         foreach ($filepaths as $file) {
-            $target = rtrim($this->get_full_path(), '/') . '/' .  $this->get_target_file_name($file);
+            $target = rtrim($this->get_full_path(), '/') . '/' . $this->get_target_file_name($file);
 
             if (file_exists($target) && empty($this->settings['overwrite'])) {
                 $this->log('load_data', 'Skip copying file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
@@ -102,6 +102,48 @@ class target_dataroot extends target_base {
         }
 
         return $result;
+    }
+
+    /**
+     * Load data from objects.
+     *
+     * @param array $objects A list of objects to load from.
+     *
+     * @return bool
+     * @throws \coding_exception If incorrect file paths format.
+     */
+    protected function load_from_array($array) {
+
+        $result = true;
+
+        $target = rtrim($this->get_full_path(), '/') . '/' . $this->settings['filename'];
+
+        if (file_exists($target) && empty($this->settings['overwrite'])) {
+            $this->log('load_data', 'Skip saving sql query to ' . $target . ' File exists.', logger::TYPE_WARNING);
+        }
+
+        if (is_dir($target)) {
+            throw new \Exception('Specified export file path is a dir: ' . $target);
+        }
+
+        if (($handle = fopen($target, 'w')) !== false) {
+
+            foreach ($array as $row) {
+                $tmp = get_object_vars($row);
+                $result = fputcsv($handle, $tmp, ',');
+
+                if (!$result) {
+                    throw new \Exception('Can\'t write to the export file: ' . $target);
+                }
+            }
+        } else {
+            throw new \Exception('Can\'t open the export file: ' . $target);
+        }
+
+        fclose($handle);
+
+        return $result;
+
     }
 
     /**

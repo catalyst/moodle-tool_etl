@@ -223,7 +223,11 @@ abstract class common_base implements common_interface {
         foreach ($fields as $field) {
             $fieldname = $this->get_config_form_prefix() . $field->name;
             $element = $mform->createElement($field->type, $fieldname, $field->title);
-            $mform->addElement($field->type, $fieldname, $field->title);
+            if ($field->type == 'select') {
+                $mform->addElement($field->type, $fieldname, $field->title, $field->options);
+            } else {
+                $mform->addElement($field->type, $fieldname, $field->title);
+            }
             $mform->setDefault($fieldname, $field->default);
             $mform->setType($fieldname, $field->filter);
             $elements[] = $element;
