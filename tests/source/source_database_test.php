@@ -60,6 +60,7 @@ class tool_etl_source_database_testcase extends advanced_testcase {
         $expected = array(
             'querysql' => '',
             'querylimit' => 5000,
+            'columnheader' => 0,
             'weekstart' => 6,
         );
         $this->assertEquals($expected, $this->source->get_settings());
@@ -75,7 +76,7 @@ class tool_etl_source_database_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->source->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(3, $elements);
+        $this->assertCount(4, $elements);
 
         $this->assertEquals('textarea', $elements[0]->getType());
         $this->assertEquals('text', $elements[1]->getType());

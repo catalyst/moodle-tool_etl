@@ -49,6 +49,7 @@ class source_database extends source_base {
     protected $settings = array(
         'querysql' => '',
         'querylimit' => 5000,
+        'columnheader' => 0,
         'weekstart' => 6,
     );
 
@@ -59,8 +60,19 @@ class source_database extends source_base {
         global $DB;
 
         $arraytoprocess = $DB->get_records_sql($this->get_settings()['querysql'], null, 0 , $this->get_settings()['querylimit']);
-        $this->data = new data(null, null, $arraytoprocess, null);
 
+        if ($this->settings['columnheader']) {
+            if ($arraytoprocess) {
+                $columnheaders = array();
+                $columnheaders[0] = new \StdClass;
+                foreach ($arraytoprocess[1] as $key => $value) {
+                    $columnheaders[0]->$key = $key;
+                }
+                $arraytoprocess = $columnheaders + $arraytoprocess;
+            }
+        }
+
+        $this->data = new data(null, null, $arraytoprocess, null);
         return $this->data;
     }
 
@@ -81,6 +93,7 @@ class source_database extends source_base {
             'querysql' => new config_field('querysql', 'SQL query', 'textarea', $this->settings['querysql'], PARAM_RAW),
             'querylimit' => new config_field('querylimit', 'Limit rows returned', 'text', $this->settings['querylimit'], PARAM_INT),
             'weekstart' => new config_field('weekstart', 'Week start', 'select', $this->settings['weekstart'], PARAM_INT, $this->get_list_of_days()),
+            'columnheader' => new config_field('columnheader', 'Column headers as a first row', 'advcheckbox', $this->settings['columnheader'], PARAM_BOOL),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));
