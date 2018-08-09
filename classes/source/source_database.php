@@ -59,16 +59,22 @@ class source_database extends source_base {
     public function extract() {
         global $DB;
 
-        $arraytoprocess = $DB->get_records_sql($this->get_settings()['querysql'], null, 0 , $this->get_settings()['querylimit']);
+        $recordset = $DB->get_recordset_sql($this->get_settings()['querysql'], null, 0 , $this->get_settings()['querylimit']);
+
+        $arraytoprocess = array();
+        while ($recordset->valid()) {
+            $arraytoprocess[] = $recordset->current();
+            $recordset->next();
+        }
+        $recordset->close();
 
         if ($this->settings['columnheader']) {
-            if ($arraytoprocess) {
-                $columnheaders = array();
-                $columnheaders[0] = new \StdClass;
-                foreach ($arraytoprocess[1] as $key => $value) {
-                    $columnheaders[0]->$key = $key;
+            if (count($arraytoprocess) > 0) {
+                $columnheaders = new \StdClass;
+                foreach ($arraytoprocess[0] as $key => $value) {
+                    $columnheaders->$key = $key;
                 }
-                $arraytoprocess = $columnheaders + $arraytoprocess;
+                array_unshift($arraytoprocess, $columnheaders);
             }
         }
 
