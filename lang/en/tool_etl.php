@@ -78,5 +78,3 @@ $string['noexplicitprefix'] = 'Please do to include the table name prefix <tt>{$
 $string['queryparamschanged'] = 'The placeholders in the query have changed.';
 $string['norowsreturned'] = 'No rows were returned. This query should return one row.';
 $string['morethanonerowreturned'] = 'More than one row was returned. This query should return one row.';
-$string['querylimitrange'] = 'Number must be between 1 and {$a}';
-$string['requireint'] = 'Integer required';

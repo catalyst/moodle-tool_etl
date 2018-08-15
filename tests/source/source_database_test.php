@@ -59,7 +59,6 @@ class tool_etl_source_database_testcase extends advanced_testcase {
     public function test_default_settings() {
         $expected = array(
             'querysql' => '',
-            'querylimit' => 5000,
             'columnheader' => 0,
             'weekstart' => 6,
         );
@@ -76,13 +75,10 @@ class tool_etl_source_database_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->source->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(4, $elements);
+        $this->assertCount(3, $elements);
 
         $this->assertEquals('textarea', $elements[0]->getType());
-        $this->assertEquals('text', $elements[1]->getType());
-
         $this->assertEquals('source_database-querysql', $elements[0]->getName());
-        $this->assertEquals('source_database-querylimit', $elements[1]->getName());
     }
 
     public function test_config_form_validation() {
@@ -93,38 +89,17 @@ class tool_etl_source_database_testcase extends advanced_testcase {
         );
         $this->assertNotEmpty($errors);
         $this->assertArrayHasKey('source_database-querysql', $errors);
-        $this->assertArrayHasKey('source_database-querylimit', $errors);
 
         $errors = $this->source->validate_config_form_elements(
-            array('source_database-querysql' => 'test', 'source_database-querylimit' => '1000'),
+            array('source_database-querysql' => 'test'),
             array(),
             array()
         );
         $this->assertNotEmpty($errors);
         $this->assertArrayHasKey('source_database-querysql', $errors);
-        $this->assertArrayNotHasKey('source_database-querylimit', $errors);
 
         $errors = $this->source->validate_config_form_elements(
-            array('source_database-querysql' => 'SELECT * FROM {user}',
-                'source_database-querylimit' => '1000'),
-            array(),
-            array()
-        );
-        $this->assertEmpty($errors);
-        $this->assertArrayNotHasKey('source_database-querysql', $errors);
-        $this->assertArrayNotHasKey('source_database-querylimit', $errors);
-
-        $errors = $this->source->validate_config_form_elements(
-            array('source_database-querylimit' => '1000'),
-            array(),
-            array()
-        );
-        $this->assertNotEmpty($errors);
-        $this->assertArrayHasKey('source_database-querysql', $errors);
-        $this->assertArrayNotHasKey('source_database-querylimit', $errors);
-
-        $errors = $this->source->validate_config_form_elements(
-            array('source_database-querysql' => 'SELECT * FROM {user}', 'source_database-querylimit' => '1'),
+            array('source_database-querysql' => 'SELECT * FROM {user}'),
             array(),
             array()
         );

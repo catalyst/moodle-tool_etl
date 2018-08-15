@@ -30,8 +30,6 @@ use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
-define('TOOL_ETL_MAX_RECORDS', 5000);
-
 class source_database extends source_base {
 
     /**
@@ -48,7 +46,6 @@ class source_database extends source_base {
      */
     protected $settings = array(
         'querysql' => '',
-        'querylimit' => 5000,
         'columnheader' => 0,
         'weekstart' => 6,
     );
@@ -59,7 +56,7 @@ class source_database extends source_base {
     public function extract() {
         global $DB;
 
-        $recordset = $DB->get_recordset_sql($this->get_settings()['querysql'], null, 0 , $this->get_settings()['querylimit']);
+        $recordset = $DB->get_recordset_sql($this->get_settings()['querysql']);
 
         $arraytoprocess = array();
         while ($recordset->valid()) {
@@ -97,7 +94,6 @@ class source_database extends source_base {
 
         $fields = array(
             'querysql' => new config_field('querysql', 'SQL query', 'textarea', $this->settings['querysql'], PARAM_RAW),
-            'querylimit' => new config_field('querylimit', 'Limit rows returned', 'text', $this->settings['querylimit'], PARAM_INT),
             'weekstart' => new config_field('weekstart', 'Week start', 'select', $this->settings['weekstart'], PARAM_INT, $this->get_list_of_days()),
             'columnheader' => new config_field('columnheader', 'Column headers as a first row', 'advcheckbox', $this->settings['columnheader'], PARAM_BOOL),
         );
@@ -184,14 +180,6 @@ class source_database extends source_base {
             }
         }
 
-        // Check querylimit is positive integer in range 1 .. TOOL_ETL_MAX_RECORDS.
-        if ((empty($data['source_database-querylimit']) ||
-            !((int)$data['source_database-querylimit'] > 0) ||
-            !($this->tool_etl_is_integer($data['source_database-querylimit'])) ||
-                $data['source_database-querylimit'] > TOOL_ETL_MAX_RECORDS)) {
-            $errors[$this->get_config_form_prefix() . 'querylimit'] = get_string('querylimitrange', 'tool_etl', TOOL_ETL_MAX_RECORDS);
-        }
-
         return $errors;
     }
 
@@ -202,14 +190,13 @@ class source_database extends source_base {
      * @return moodle_recordset A moodle_recordset instance.
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function tool_etl_execute_query($sql, $params = null,
-                                    $limitnum = TOOL_ETL_MAX_RECORDS) {
+    public function tool_etl_execute_query($sql, $params = null) {
         global $CFG, $DB;
 
         $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
 
         // Note: throws Exception if there is an error.
-        return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
+        return $DB->get_recordset_sql($sql, $params);
     }
 
     /**
