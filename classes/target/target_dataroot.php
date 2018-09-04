@@ -49,6 +49,7 @@ class target_dataroot extends target_base {
         'overwrite' => 1,
         'addtime' => 0,
         'delimiter' => '',
+        'dateformat' => 'dmY_hi',
         'backupfiles' => 1,
     );
 
@@ -81,7 +82,7 @@ class target_dataroot extends target_base {
         $result = true;
 
         foreach ($filepaths as $file) {
-            $target = rtrim($this->get_full_path(), '/') . '/' . $this->get_target_file_name($file);
+            $target = $this->get_target_file_path($file);
 
             if (file_exists($target) && empty($this->settings['overwrite'])) {
                 $this->log('load_data', 'Skip copying file ' . $file . ' to ' . $target . ' File exists.', logger::TYPE_WARNING);
@@ -116,7 +117,7 @@ class target_dataroot extends target_base {
 
         $result = true;
 
-        $target = rtrim($this->get_full_path(), '/') . '/' . $this->settings['filename'];
+        $target = $this->get_target_file_path($this->settings['filename']);
 
         if (file_exists($target) && empty($this->settings['overwrite'])) {
             $this->log('load_data', 'Skip saving sql query to ' . $target . ' File exists.', logger::TYPE_WARNING);
@@ -187,6 +188,16 @@ class target_dataroot extends target_base {
             $this->settings['addtime'],
             PARAM_BOOL
         );
+
+        $fields['dateformat'] = new config_field(
+            'dateformat',
+            'Date format',
+            'select',
+            $this->settings['dateformat'],
+            PARAM_INT,
+            $this->get_list_of_formats()
+        );
+
         $fields['delimiter'] = new config_field(
             'delimiter',
             'Date delimiter',
@@ -251,4 +262,31 @@ class target_dataroot extends target_base {
         return false;
     }
 
+    /**
+     * Returns full path of target file.
+     *
+     * @param string $file temp file path or filename.
+     *
+     * @return string
+     */
+    protected function get_target_file_path($file) {
+        return rtrim($this->get_full_path(), '/') . '/' . $this->get_target_file_name($file);
+    }
+
+    /**
+     * Returns array of available date formats.
+     *
+     * @return array
+     */
+    protected function get_list_of_formats() {
+
+        $availableformats = array('dmY_hi', 'dmy_hi', 'Ydm_hi', 'ydm_hi', 'dmYhi', 'dmyhi', 'Ydmhi', 'ydmhi');
+        $formats = array();
+
+        foreach ($availableformats as $format) {
+            $formats[$format] = date($format, time());
+        }
+
+        return $formats;
+    }
 }

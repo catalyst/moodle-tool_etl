@@ -63,8 +63,8 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
             'overwrite' => 1,
             'addtime' => 0,
             'delimiter' => '',
+            'dateformat' => 'dmY_hi',
             'backupfiles' => 1,
-
         );
         $this->assertEquals($expected, $this->target->get_settings());
     }
@@ -94,23 +94,25 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->target->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(7, $elements);
+        $this->assertCount(8, $elements);
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertContains('checkbox', $elements[1]->getType());
         $this->assertEquals('text', $elements[2]->getType());
         $this->assertContains('checkbox', $elements[3]->getType());
         $this->assertContains('checkbox', $elements[4]->getType());
-        $this->assertEquals('text', $elements[5]->getType());
-        $this->assertContains('checkbox', $elements[6]->getType());
+        $this->assertEquals('select', $elements[5]->getType());
+        $this->assertEquals('text', $elements[6]->getType());
+        $this->assertContains('checkbox', $elements[7]->getType());
 
         $this->assertEquals('target_dataroot-path', $elements[0]->getName());
         $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());
         $this->assertEquals('target_dataroot-filename', $elements[2]->getName());
         $this->assertEquals('target_dataroot-overwrite', $elements[3]->getName());
         $this->assertEquals('target_dataroot-addtime', $elements[4]->getName());
-        $this->assertEquals('target_dataroot-delimiter', $elements[5]->getName());
-        $this->assertEquals('target_dataroot-backupfiles', $elements[6]->getName());
+        $this->assertEquals('target_dataroot-dateformat', $elements[5]->getName());
+        $this->assertEquals('target_dataroot-delimiter', $elements[6]->getName());
+        $this->assertEquals('target_dataroot-backupfiles', $elements[7]->getName());
     }
 
     public function test_config_form_validation() {
@@ -212,18 +214,18 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
 
     public function data_provider_for_test_append_filename_by_date() {
         return array(
-            array('/var/lib/test.csv', 'test20171129071554.csv'),
-            array('test.csv', 'test20171129071554.csv'),
-            array('/var/lib/test', 'test20171129071554'),
-            array('test', 'test20171129071554'),
-            array('/var/lib/test.', 'test.20171129071554'),
-            array('test.', 'test.20171129071554'),
-            array('/var/lib/.test', '.test20171129071554'),
-            array('.test', '.test20171129071554'),
-            array('/var/lib/test.inc.csv', 'test.inc20171129071554.csv'),
-            array('test.inc.csv', 'test.inc20171129071554.csv'),
-            array('/var/lib/test.inc.csv.', 'test.inc.csv.20171129071554'),
-            array('test.inc.csv.', 'test.inc.csv.20171129071554'),
+            array('/var/lib/test.csv', 'test29112017_0715.csv'),
+            array('test.csv', 'test29112017_0715.csv'),
+            array('/var/lib/test', 'test29112017_0715'),
+            array('test', 'test29112017_0715'),
+            array('/var/lib/test.', 'test.29112017_0715'),
+            array('test.', 'test.29112017_0715'),
+            array('/var/lib/.test', '.test29112017_0715'),
+            array('.test', '.test29112017_0715'),
+            array('/var/lib/test.inc.csv', 'test.inc29112017_0715.csv'),
+            array('test.inc.csv', 'test.inc29112017_0715.csv'),
+            array('/var/lib/test.inc.csv.', 'test.inc.csv.29112017_0715'),
+            array('test.inc.csv.', 'test.inc.csv.29112017_0715'),
         );
     }
 
