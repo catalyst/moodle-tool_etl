@@ -1,5 +1,6 @@
 <?php
 $string['pluginname'] = 'Basic ETL steps';
+$string['privacy:metadata'] = 'Basic ETL steps plugin does not store any personal data.';
 $string['processor_processor_default'] = 'Default processor';
 $string['processor_processor_lowercase'] = 'Lowercase processor';
 $string['source_source_folder'] = 'Server folder';
