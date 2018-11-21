@@ -76,7 +76,8 @@ class data implements data_interface {
      * @param array|null $array
      * @param \stdClass|null $object
      */
-    public function __construct(array $files = null, $string = null, array $array = null, \stdClass $object = null, \Iterator $iterator = null) {
+    public function __construct(array $files = null, $string = null, array $array = null, \stdClass $object = null,
+        \Iterator $iterator = null) {
         $this->files = $files;
         $this->string = $string;
         $this->array = $array;

@@ -22,6 +22,9 @@
  * @author    Darren Cocco {@link https://blog.segfault.id.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die;
+
 $subplugins = array(
     'etl' => 'admin/tool/etl/plugins',
 );
