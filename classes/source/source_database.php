@@ -48,6 +48,7 @@ class source_database extends source_base {
         'querysql' => '',
         'columnheader' => 0,
         'weekstart' => 6,
+        'columnfields' => '',
     );
 
     /**
@@ -66,12 +67,19 @@ class source_database extends source_base {
         $recordset->close();
 
         if ($this->settings['columnheader']) {
+            $columnheaders = new \StdClass;
             if (count($arraytoprocess) > 0) {
-                $columnheaders = new \StdClass;
                 foreach ($arraytoprocess[0] as $key => $value) {
                     $columnheaders->$key = $key;
                 }
                 array_unshift($arraytoprocess, $columnheaders);
+            } else {
+                $columnfields = $this->get_settings()['columnfields'];
+                $fields = explode(',', $columnfields);
+                foreach ($fields as $field) {
+                    $columnheaders->$field = $field;
+                }
+                $arraytoprocess[] = $columnheaders;
             }
         }
 
@@ -96,6 +104,7 @@ class source_database extends source_base {
             'querysql' => new config_field('querysql', 'SQL query', 'textarea', $this->settings['querysql'], PARAM_RAW),
             'weekstart' => new config_field('weekstart', 'Week start', 'select', $this->settings['weekstart'], PARAM_INT, $this->get_list_of_days()),
             'columnheader' => new config_field('columnheader', 'Column headers as a first row', 'advcheckbox', $this->settings['columnheader'], PARAM_BOOL),
+            'columnfields' => new config_field('columnfields', 'Comma separated column headers', 'textarea', $this->settings['columnfields'], PARAM_RAW),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));
