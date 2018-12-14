@@ -75,8 +75,9 @@ class source_database extends source_base {
                 array_unshift($arraytoprocess, $columnheaders);
             } else {
                 $columnfields = $this->get_settings()['columnfields'];
-                $fields = explode(',', $columnfields);
+                $fields = explode('\r\n', $columnfields);
                 foreach ($fields as $field) {
+                    $field = trim($field);
                     $columnheaders->$field = $field;
                 }
                 $arraytoprocess[] = $columnheaders;
@@ -104,7 +105,7 @@ class source_database extends source_base {
             'querysql' => new config_field('querysql', 'SQL query', 'textarea', $this->settings['querysql'], PARAM_RAW),
             'weekstart' => new config_field('weekstart', 'Week start', 'select', $this->settings['weekstart'], PARAM_INT, $this->get_list_of_days()),
             'columnheader' => new config_field('columnheader', 'Column headers as a first row', 'advcheckbox', $this->settings['columnheader'], PARAM_BOOL),
-            'columnfields' => new config_field('columnfields', 'Comma separated column headers', 'textarea', $this->settings['columnfields'], PARAM_RAW),
+            'columnfields' => new config_field('columnfields', 'Column headers', 'textarea', $this->settings['columnfields'], PARAM_RAW),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));
@@ -186,6 +187,13 @@ class source_database extends source_base {
                             $e->getMessage());
                     }
                 }
+            }
+        }
+
+        $columnfields = $data[$this->get_config_form_prefix() . 'columnfields'];
+        if (!empty($columnfields)) {
+            if ($this->tool_etl_column_headers_contains_invalid_symbols($columnfields)) {
+                $errors[$this->get_config_form_prefix() . 'columnfields'] = get_string('errorinvalidsymbols', 'tool_etl');
             }
         }
 
@@ -447,6 +455,15 @@ class source_database extends source_base {
      */
     protected function get_list_of_days() {
         return array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+    }
+
+    /**
+     * Check if column headers has invalid symbols
+     * @param  $string Column header
+     * @return boolean
+     */
+    public function tool_etl_column_headers_contains_invalid_symbols($string) {
+        return preg_match('/[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/i', $string);
     }
 
 }

@@ -78,3 +78,4 @@ $string['noexplicitprefix'] = 'Please do to include the table name prefix <tt>{$
 $string['queryparamschanged'] = 'The placeholders in the query have changed.';
 $string['norowsreturned'] = 'No rows were returned. This query should return one row.';
 $string['morethanonerowreturned'] = 'More than one row was returned. This query should return one row.';
+$string['errorinvalidsymbols'] = 'Column headers cannot contain invalid symbols';
