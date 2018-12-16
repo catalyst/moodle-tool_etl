@@ -168,4 +168,63 @@ class tool_etl_source_database_testcase extends advanced_testcase {
         $this->assertFalse($this->source->tool_etl_is_integer('2013-10-07'));
     }
 
+    public function test_tool_etl_column_headers_contains_invalid_symbols() {
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('/'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('['));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('-'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('!'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('$'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('%'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('^'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('&'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('*'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('('));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols(')'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('_'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('+'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('|'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('~'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('='));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('`'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('{'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('}'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols(']'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols(':'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('"'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols(';'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('<'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('>'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('?'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols(','));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('.'));
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols('\''));
+    }
+
+    public function test_tool_etl_parse_column_headers() {
+        $columnfields = "username
+        password
+        address";
+        $columnheader = new \StdClass;
+        $columnheader->username = "username";
+        $columnheader->password = "password";
+        $columnheader->address = "address";
+
+        $actual = $this->source->tool_etl_parse_column_headers($columnfields);
+
+        $this->assertEquals($columnheader, $actual);
+
+        // Test that it trims white space.
+        $columnfields = "  user  name
+        password
+        address";
+        $columnheader = new \StdClass;
+        $columnheader->username = "username";
+        $columnheader->password = "password";
+        $columnheader->address = "address";
+
+        $actual = $this->source->tool_etl_parse_column_headers($columnfields);
+
+        $this->assertEquals($columnheader, $actual);
+    }
+
 }

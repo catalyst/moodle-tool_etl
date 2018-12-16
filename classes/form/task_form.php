@@ -163,6 +163,8 @@ class task_form extends \moodleform {
                     );
                 }
             }
+
+            $mform->addHelpButton('source_database-columnfields', 'columnfields', 'tool_etl');
         }
     }
 
