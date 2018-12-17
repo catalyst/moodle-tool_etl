@@ -67,15 +67,14 @@ class source_database extends source_base {
         $recordset->close();
 
         if ($this->settings['columnheader']) {
+            $columnheaders = new \StdClass;
             if (count($arraytoprocess) > 0) {
-                $columnheaders = new \StdClass;
                 foreach ($arraytoprocess[0] as $key => $value) {
                     $columnheaders->$key = $key;
                 }
                 array_unshift($arraytoprocess, $columnheaders);
             } else {
                 $columnfields = $this->get_settings()['columnfields'];
-                $columnheaders = new \StdClass;
                 $columnheaders = $this->tool_etl_parse_column_headers($columnfields);
                 $arraytoprocess[] = $columnheaders;
             }
@@ -465,7 +464,7 @@ class source_database extends source_base {
      * @return boolean
      */
     public function tool_etl_column_headers_contains_invalid_symbols($string) {
-        return preg_match_all('/[-!$%^&*()_+|~=`{}\[\]:\'";<>?,.\/]/i', $string);
+        return !preg_match('/^[\w\r\n-]+$/', $string);
     }
 
     /**

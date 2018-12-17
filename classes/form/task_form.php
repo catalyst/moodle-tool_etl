@@ -193,7 +193,6 @@ class task_form extends \moodleform {
 
         $mform->addElement('hidden', $this->build_placeholder_name($type));
         $mform->setType( $this->build_placeholder_name($type), PARAM_BOOL);
-
     }
 
     /**
