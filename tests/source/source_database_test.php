@@ -61,6 +61,7 @@ class tool_etl_source_database_testcase extends advanced_testcase {
             'querysql' => '',
             'columnheader' => 0,
             'weekstart' => 6,
+            'columnfields' => '',
         );
         $this->assertEquals($expected, $this->source->get_settings());
     }
@@ -75,7 +76,7 @@ class tool_etl_source_database_testcase extends advanced_testcase {
     public function test_config_form_elements() {
         $elements = $this->source->create_config_form_elements(new \MoodleQuickForm('test', 'POST', '/index.php'));
 
-        $this->assertCount(3, $elements);
+        $this->assertCount(4, $elements);
 
         $this->assertEquals('textarea', $elements[0]->getType());
         $this->assertEquals('source_database-querysql', $elements[0]->getName());
@@ -166,6 +167,91 @@ class tool_etl_source_database_testcase extends advanced_testcase {
         $this->assertTrue($this->source->tool_etl_is_integer('1'));
         $this->assertFalse($this->source->tool_etl_is_integer('frog'));
         $this->assertFalse($this->source->tool_etl_is_integer('2013-10-07'));
+    }
+
+    public function data_provider_for_test_tool_etl_column_headers_contains_invalid_symbols() {
+        return array(
+            array('`'),
+            array('~'),
+            array('!'),
+            array('@'),
+            array('#'),
+            array('$'),
+            array('%'),
+            array('^'),
+            array('&'),
+            array('*'),
+            array('('),
+            array(')'),
+            array('+'),
+            array('='),
+            array('['),
+            array(']'),
+            array('{'),
+            array('}'),
+            array(';'),
+            array(':'),
+            array('"'),
+            array('\''),
+            array('|'),
+            array('\\'),
+            array('/'),
+            array('<'),
+            array('>'),
+            array('.'),
+            array(','),
+            array('?'),
+        );
+    }
+
+    /**
+     * @dataProvider data_provider_for_test_tool_etl_column_headers_contains_invalid_symbols
+     */
+    public function test_tool_etl_column_headers_contains_invalid_symbols($symbols) {
+        $this->assertEquals(1, $this->source->tool_etl_column_headers_contains_invalid_symbols($symbols));
+    }
+
+    public function data_provider_for_test_tool_etl_parse_column_headers() {
+        $columnfields = 'username
+        password
+        address';
+
+        $columnfields2 = '  user  name
+        password
+        address';
+
+        $columnheader = new \StdClass;
+        $columnheader->username = 'username';
+        $columnheader->password = 'password';
+        $columnheader->address = 'address';
+
+        return array(
+            array($columnheader, $columnfields, $columnfields2)
+        );
+    }
+
+    /**
+     * @dataProvider data_provider_for_test_tool_etl_parse_column_headers
+     *
+     * @param  $columnheader
+     * @param  $columnfields
+     */
+    public function test_tool_etl_parse_column_headers($columnheader, $columnfields, $columnfields2) {
+        $this->resetAfterTest(true);
+        $actual = $this->source->tool_etl_parse_column_headers($columnfields);
+        $this->assertEquals($columnheader, $actual);
+
+        // Test that it trims white space.
+        $actual = $this->source->tool_etl_parse_column_headers($columnfields2);
+        $this->assertEquals($columnheader, $actual);
+
+        // Test the order of column headers.
+        $actualarray = (array)$actual;
+        $header = array_values($actualarray);
+
+        $this->assertEquals('username', $header[0]);
+        $this->assertEquals('password', $header[1]);
+        $this->assertEquals('address', $header[2]);
     }
 
 }

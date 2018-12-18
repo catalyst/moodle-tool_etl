@@ -48,6 +48,7 @@ class source_database extends source_base {
         'querysql' => '',
         'columnheader' => 0,
         'weekstart' => 6,
+        'columnfields' => '',
     );
 
     /**
@@ -66,12 +67,16 @@ class source_database extends source_base {
         $recordset->close();
 
         if ($this->settings['columnheader']) {
+            $columnheaders = new \StdClass;
             if (count($arraytoprocess) > 0) {
-                $columnheaders = new \StdClass;
                 foreach ($arraytoprocess[0] as $key => $value) {
                     $columnheaders->$key = $key;
                 }
                 array_unshift($arraytoprocess, $columnheaders);
+            } else {
+                $columnfields = $this->get_settings()['columnfields'];
+                $columnheaders = $this->tool_etl_parse_column_headers($columnfields);
+                $arraytoprocess[] = $columnheaders;
             }
         }
 
@@ -96,6 +101,13 @@ class source_database extends source_base {
             'querysql' => new config_field('querysql', 'SQL query', 'textarea', $this->settings['querysql'], PARAM_RAW),
             'weekstart' => new config_field('weekstart', 'Week start', 'select', $this->settings['weekstart'], PARAM_INT, $this->get_list_of_days()),
             'columnheader' => new config_field('columnheader', 'Column headers as a first row', 'advcheckbox', $this->settings['columnheader'], PARAM_BOOL),
+            'columnfields' => new config_field('columnfields',
+                get_string('columnfields', 'tool_etl'),
+                'textarea', $this->settings['columnfields'],
+                PARAM_RAW,
+                null,
+                true
+            ),
         );
 
         return array_merge($elements, $this->get_config_form_elements($mform, $fields));
@@ -176,6 +188,15 @@ class source_database extends source_base {
                         $errors[$this->get_config_form_prefix() . 'querysql'] = get_string('queryfailed', 'tool_etl',
                             $e->getMessage());
                     }
+                }
+            }
+        }
+
+        if (isset($data[$this->get_config_form_prefix() . 'columnfields'])) {
+            $columnfields = $data[$this->get_config_form_prefix() . 'columnfields'];
+            if (!empty($columnfields)) {
+                if ($this->tool_etl_column_headers_contains_invalid_symbols($columnfields)) {
+                    $errors[$this->get_config_form_prefix() . 'columnfields'] = get_string('errorinvalidsymbols', 'tool_etl');
                 }
             }
         }
@@ -438,6 +459,31 @@ class source_database extends source_base {
      */
     protected function get_list_of_days() {
         return array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+    }
+
+    /**
+     * Check if column headers contains invalid symbols.
+     *
+     * @param  $string Column header
+     * @return boolean
+     */
+    public function tool_etl_column_headers_contains_invalid_symbols($string) {
+        return !preg_match('/^[\w\r\n-]+$/', $string);
+    }
+
+    /**
+     * Parse column headers.
+     * @param  string $columnfields  The fields to be used as column headers
+     * @return object $columnheaders
+     */
+    public function tool_etl_parse_column_headers($columnfields) {
+        $columnheaders = new \StdClass;
+        $fields = explode(PHP_EOL, $columnfields);
+        foreach ($fields as $field) {
+            $field = str_replace(' ', '', trim($field));
+            $columnheaders->$field = $field;
+        }
+        return $columnheaders;
     }
 
 }
