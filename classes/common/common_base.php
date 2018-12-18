@@ -228,6 +228,9 @@ abstract class common_base implements common_interface {
             } else {
                 $mform->addElement($field->type, $fieldname, $field->title);
             }
+            if ($field->help) {
+                $mform->addHelpButton($fieldname, $field->name, 'tool_etl');
+            }
             $mform->setDefault($fieldname, $field->default);
             $mform->setType($fieldname, $field->filter);
             $elements[] = $element;
