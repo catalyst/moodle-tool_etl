@@ -62,6 +62,7 @@ class tool_etl_logger_testcase extends advanced_testcase {
         $logger->set_element('Test element');
 
         $logger->add_to_log(logger::TYPE_ERROR, 'test');
+
     }
 
     /**
@@ -74,6 +75,26 @@ class tool_etl_logger_testcase extends advanced_testcase {
         $logger->set_task_id(777);
 
         $logger->add_to_log(logger::TYPE_ERROR, 'test');
+    }
+
+    public function test_logging_failed_event_triggered_when_can_not_add_log_record() {
+        $this->resetAfterTest();
+
+        $sink = $this->redirectEvents();
+        $this->assertEquals(0, $sink->count());
+
+        try {
+            $logger = logger::get_instance();
+            $logger->set_element(null);
+            $logger->set_task_id(777);
+            $logger->add_to_log(logger::TYPE_ERROR, 'test');
+        } catch (\Exception $exception) {
+            $this->assertEquals(1, $sink->count());
+            $this->assertRegExp(
+                "/Task or Element is not set. Can not write to the log table. Run ID #[0-9]+/",
+                $sink->get_events()[0]->get_description()
+            );
+        }
     }
 
     public function test_add_to_log() {
@@ -171,6 +192,27 @@ class tool_etl_logger_testcase extends advanced_testcase {
 
         $expected = array(1, 888);
         $this->assertEquals($expected, logger::get_existing_run_ids());
+    }
+
+    public function test_logging_triggers_log_record_added_event() {
+        $this->resetAfterTest();
+
+        $sink = $this->redirectEvents();
+        $this->assertEquals(0, $sink->count());
+
+        $logger = logger::get_instance();
+        $logger->add_to_log(logger::TYPE_ERROR, 'Test log message', 'Test info', 'Test trace');
+        $logger->add_to_log(logger::TYPE_WARNING, 'Test log message', 'Test info', 'Test trace');
+
+        $this->assertEquals(2, $sink->count());
+        foreach ($sink->get_events() as $event) {
+            $this->assertRegExp(
+                "/Log record added for ETL task" .
+                " #[0-9]+ during run #[0-9]+. " .
+                "Element: '(.)+'. Type: '[A-Z]+'. Action: '(.)+'. Information: '(.)+'/",
+                $event->get_description()
+            );
+        }
     }
 
 }
