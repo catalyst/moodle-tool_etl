@@ -24,6 +24,9 @@
 
 namespace tool_etl;
 
+use tool_etl\event\logging_succeed;
+use tool_etl\event\logging_failed;
+
 defined('MOODLE_INTERNAL') || die;
 
 final class logger {
@@ -161,6 +164,7 @@ final class logger {
         global $DB;
 
         if (empty($this->taskid) || empty($this->element)) {
+            logging_failed::create(['other' => $this->runid])->trigger();
             throw new \coding_exception('Task or Element is not set. Can not write to the log');
         }
 
@@ -174,7 +178,11 @@ final class logger {
         $log->info = $this->to_string($info);
         $log->trace = $trace;
 
-        return $DB->insert_record(self::TABLE, $log);
+        $id = $DB->insert_record(self::TABLE, $log);
+
+        logging_succeed::create(['objectid' => $id, 'other' => (array)$log])->trigger();
+
+        return $id;
     }
 
     /**

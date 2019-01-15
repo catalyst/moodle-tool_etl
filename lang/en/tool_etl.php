@@ -73,3 +73,6 @@ $string['regex_error_too_short'] = 'RegEx too short';
 $string['regex_error_malformed'] = 'Invalid (malformed) RegEx';
 $string['subplugintype_etl'] = 'ETL step set';
 $string['subplugintype_etl_plural'] = 'ETL step sets';
+$string['eventloggingsucceed'] = 'ETL Tool log record added';
+$string['eventloggingfailed'] = 'Failed to add ETL Tool log record';
+
