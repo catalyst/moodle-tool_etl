@@ -45,7 +45,7 @@ class logging_succeed extends base {
      * @inheritdoc
      */
     public static function get_name() {
-        return get_string('eventlogrecordadded', 'tool_etl');
+        return get_string('eventloggingsucceed', 'tool_etl');
     }
 
     /**
