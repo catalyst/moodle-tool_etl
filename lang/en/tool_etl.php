@@ -81,3 +81,5 @@ $string['morethanonerowreturned'] = 'More than one row was returned. This query 
 $string['errorinvalidsymbols'] = 'Column headers cannot contain invalid symbols';
 $string['columnfields'] = 'Column headers';
 $string['columnfields_help'] = 'If no data is returned from the sql query the source will completely empty. If you want an empty source but include the heads please add the field names one per line ';
+$string['address_empty'] = 'URL address could not be empty';
+$string['address_not_url'] = 'This file cannot be downloaded';
