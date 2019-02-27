@@ -60,7 +60,7 @@ class tool_etl_common_base_testcase extends advanced_testcase {
 
     public function data_provider_for_test_get_options() {
         return array(
-            array('source', array('source_ftp', 'source_sftp', 'source_sftp_key', 'source_folder', 'source_database')),
+            array('source', array('source_ftp', 'source_sftp', 'source_sftp_key', 'source_folder', 'source_database', 'source_url')),
             array('target', array('target_dataroot', 'target_folder', 'target_sftp_key')),
             array('processor', array('processor_default', 'processor_lowercase')),
         );

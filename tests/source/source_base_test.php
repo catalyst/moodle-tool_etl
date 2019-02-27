@@ -35,6 +35,7 @@ class tool_etl_source_base_testcase extends advanced_testcase {
             'source_sftp_key',
             'source_folder',
             'source_database',
+            'source_url',
         );
         $this->assertEquals($expected, $actual);
     }

@@ -27,6 +27,7 @@ To install this plugin in your Moodle.
 * **SFTP with key authentication** - remote SFTP server, login using SSH key.
 * **Server folder** - server local folder.
 * **Database** - SQL query to export.
+* **URL** - remote URL.
 
 ### Targets
 * **Moodle sitedata** - a folder inside Moodle sitedata directory.
