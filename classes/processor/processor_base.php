@@ -78,6 +78,7 @@ abstract class processor_base extends common_base implements processor_interface
         return array(
             'processor_default',
             'processor_lowercase',
+            'processor_add_time_column'
         );
     }
 

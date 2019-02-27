@@ -83,3 +83,5 @@ $string['columnfields'] = 'Column headers';
 $string['columnfields_help'] = 'If no data is returned from the sql query the source will completely empty. If you want an empty source but include the heads please add the field names one per line ';
 $string['address_empty'] = 'URL address could not be empty';
 $string['address_not_url'] = 'This file cannot be downloaded';
+$string['targetcolumn_empty'] = 'Target Field could not be empty';
+$string['dateformat_help'] = 'This should be formatted according to Moodle time format. For example {%d %b %Y om %H:%M} {%d %b %Y} {%d %B %Y} If empty, it uses unix timestamp';
