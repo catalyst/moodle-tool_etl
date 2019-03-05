@@ -26,6 +26,7 @@ $string['privacy:metadata'] = 'Basic ETL steps plugin does not store any persona
 $string['processor_processor_default'] = 'Default processor';
 $string['processor_processor_lowercase'] = 'Lowercase processor';
 $string['source_source_folder'] = 'Server folder';
+$string['source_source_url'] = 'URL';
 $string['source_source_ftp'] = 'FTP';
 $string['source_source_sftp'] = 'SFTP';
 $string['source_source_sftp_key'] = 'SFTP (key auth)';

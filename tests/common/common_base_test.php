@@ -65,6 +65,7 @@ class tool_etl_common_base_testcase extends advanced_testcase {
                 (object) array('subplugin' => 'etl_basics', 'classname' => 'source_sftp'),
                 (object) array('subplugin' => 'etl_basics', 'classname' => 'source_sftp_key'),
                 (object) array('subplugin' => 'etl_basics', 'classname' => 'source_folder'),
+                (object) array('subplugin' => 'etl_basics', 'classname' => 'source_url'),
             )),
         );
     }
