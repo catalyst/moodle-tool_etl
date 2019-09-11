@@ -4,22 +4,22 @@
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="tool_etl_task" COMMENT="">
+    <TABLE NAME="tool_etl_task" COMMENT="Contains the list of ETL task">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="source" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="source_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="processor" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="processor_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="target_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="source" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Source of the task"/>
+        <FIELD NAME="source_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Additional settings for the source"/>
+        <FIELD NAME="processor" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Processor for the task"/>
+        <FIELD NAME="processor_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Settings for the processor"/>
+        <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Target location"/>
+        <FIELD NAME="target_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Additional target settings"/>
+        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Enable or disable the task"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="tool_etl_schedule" COMMENT="">
+    <TABLE NAME="tool_etl_schedule" COMMENT="Contains the schedule for tasks">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="taskid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -32,7 +32,7 @@
         <KEY NAME="tooletlsched_t_fk" TYPE="foreign" FIELDS="taskid" REFTABLE="tool_etl_task" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="tool_etl_log" COMMENT="">
+    <TABLE NAME="tool_etl_log" COMMENT="Contains the log for the task">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="unix time"/>

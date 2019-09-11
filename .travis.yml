@@ -7,6 +7,9 @@ notifications:
 
 sudo: false
 
+services:
+  - mysql
+
 cache:
   directories:
     - $HOME/.composer/cache
