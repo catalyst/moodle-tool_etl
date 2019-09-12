@@ -38,6 +38,7 @@ To install this plugin in your Moodle.
 ### Processors
 * **Default processor** - doesn't do any transformation, simply pass extracted data from a source to a target.
 * **Lowercase processor** - transforms csv fields to lowercase 
+* **Timeformat processor** - add time column to csv fields 
 
 ## Developer notes
 To create a new source, target or processor you'd just need to create a new class and extend a relevant base class and implement related interface. See existing elements as an example.

@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 class tool_etl_processor_base_testcase extends advanced_testcase {
     public function test_get_options() {
         $actual = processor_base::get_options();
-        $expected = array('processor_default', 'processor_lowercase');
+        $expected = array('processor_default', 'processor_lowercase', 'processor_add_time_column');
         $this->assertEquals($expected, $actual);
     }
 }
