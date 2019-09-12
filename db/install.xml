@@ -8,11 +8,11 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="source" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Source of the task"/>
-        <FIELD NAME="source_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Additional settings for the source"/>
+        <FIELD NAME="source_settings" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Additional settings for the source"/>
         <FIELD NAME="processor" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Processor for the task"/>
-        <FIELD NAME="processor_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Settings for the processor"/>
+        <FIELD NAME="processor_settings" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Settings for the processor"/>
         <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Target location"/>
-        <FIELD NAME="target_settings" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Additional target settings"/>
+        <FIELD NAME="target_settings" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Additional target settings"/>
         <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Enable or disable the task"/>
       </FIELDS>
       <KEYS>
@@ -41,8 +41,8 @@
         <FIELD NAME="logtype" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="element" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="action" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="info" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="trace" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="info" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="trace" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
