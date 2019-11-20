@@ -5,6 +5,8 @@
 # Extract, transform, load (ETL)
 ETL is a Moodle admin tool that allows to extract, transform and then load any data from a source system to a target system.
 
+For example it is often used to slightly massage data before using it with Totara HR sync.
+
 * [Branches](#branches)
 * [Installation](#installation)
 * [Configuration](#configuration)
