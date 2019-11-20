@@ -20,6 +20,12 @@ For example it is often used to slightly massage data before using it with Totar
 | Moodle 2.9 to 3.8 | master  | 5.6 - 7.0+ |
 | Totara 12+        | master  | 5.6 - 7.0+ |
 
+NOTE: There is a fork of this under the MOODLE_35 branch which moves to a sub plugin architecture, and has various improvements:
+
+https://github.com/catalyst/moodle-tool_etl/tree/MOODLE_35
+
+At some point that branch needs to be untangled and parts of that merged into master with a proper upgrade script. Until then please consider than branch as experimental.
+
 
 ## Installation
 To install this plugin in your Moodle.
