@@ -5,6 +5,20 @@
 # Extract, transform, load (ETL)
 ETL is a Moodle admin tool that allows to extract, transform and then load any data from a source system to a target system.
 
+* [Branches](#branches)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Contributing and Support](#contributing-and-support)
+
+
+## Branches
+
+| Moodle verion     | Branch  | PHP        |
+| ----------------- | ------- | ---------- |
+| Moodle 2.9 to 3.8 | master  | 5.6 - 7.0+ |
+| Totara 12+        | master  | 5.6 - 7.0+ |
+
+
 ## Installation
 To install this plugin in your Moodle.
 1. Get the code and copy/install it to: `<moodledir>/admin/tool/etl`
