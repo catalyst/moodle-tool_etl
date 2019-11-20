@@ -235,4 +235,17 @@ final class logger {
         return $DB->get_fieldset_sql("SELECT runid FROM {" . self::TABLE . "} GROUP BY runid ORDER BY runid");
     }
 
+    /**
+     * Return last run for task
+     *
+     * @return array
+     */
+    public function get_last_execute_time() {
+        global $DB;
+
+        return $DB->get_field_sql(
+            "SELECT time FROM {" . self::TABLE . "} WHERE taskid = ? AND action = 'execute' AND info = 'Task started' ORDER BY time DESC LIMIT 1",
+            [$this->taskid]
+        );
+    }
 }
