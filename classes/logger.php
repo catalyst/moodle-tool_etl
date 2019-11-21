@@ -235,4 +235,14 @@ final class logger {
         return $DB->get_fieldset_sql("SELECT runid FROM {" . self::TABLE . "} GROUP BY runid ORDER BY runid");
     }
 
+    /**
+     * Return a list of log entries for the current run
+     *
+     * @return array
+     */
+    public function get_current_run_logs() {
+        global $DB;
+
+        return array_values($DB->get_records(self::TABLE, ["taskid" => $this->taskid, "runid" => $this->runid], 'id'));
+    }
 }

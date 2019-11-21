@@ -93,6 +93,7 @@ class target_sftp_key extends target_base {
         'addtime' => 0,
         'delimiter' => '',
         'backupfiles' => 1,
+        'notifymailto' => '',
     );
 
     /**
@@ -178,8 +179,18 @@ class target_sftp_key extends target_base {
      * @inheritdoc
      */
     public function is_available() {
-        $this->connect();
-        $this->login();
+        try {
+            $this->connect();
+            $this->login();
+        } catch (\Exception $e) {
+            $this->log(
+                'connect',
+                "Error connecting/authenticating: ".$e->getMessage(),
+                logger::TYPE_ERROR,
+                $e->getTraceAsString()
+            );
+            return false;
+        }
 
         if (!$this->connid) {
             $this->log('connect', 'Connection failed', logger::TYPE_ERROR);
@@ -309,6 +320,13 @@ class target_sftp_key extends target_base {
             'advcheckbox',
             $this->settings['backupfiles'],
             PARAM_BOOL
+        );
+        $fields['notifymailto'] = new config_field(
+            'notifymailto',
+            'Send error notifications to',
+            'text',
+            $this->settings['notifymailto'],
+            PARAM_RAW
         );
 
         $elements = $this->get_config_form_elements($mform, $fields);
