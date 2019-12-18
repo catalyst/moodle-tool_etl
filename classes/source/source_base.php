@@ -39,6 +39,13 @@ abstract class source_base extends common_base implements source_interface {
     protected $data;
 
     /**
+     * Last extract timestamp
+     *
+     * @var int
+     */
+    protected $lastextracttime;
+
+    /**
      * Return available source options.
      *
      * @return array A list of existing source classes.
@@ -54,4 +61,12 @@ abstract class source_base extends common_base implements source_interface {
         );
     }
 
+    /**
+     * Set last extract timestamp
+     *
+     * @param int $lastextracttime
+     */
+    final public function set_last_extract_time($lastextracttime) {
+        $this->lastextracttime = $lastextracttime;
+    }
 }

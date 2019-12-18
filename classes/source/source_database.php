@@ -55,9 +55,8 @@ class source_database extends source_base {
      * @inheritdoc
      */
     public function extract() {
-        global $DB;
-
-        $recordset = $DB->get_recordset_sql($this->get_settings()['querysql']);
+        $sql = $this->tool_etl_substitute_time_tokens($this->get_settings()['querysql'], $this->lastextracttime, time());
+        $recordset = $this->tool_etl_execute_query($sql);
 
         $arraytoprocess = array();
         while ($recordset->valid()) {
