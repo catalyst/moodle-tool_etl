@@ -107,6 +107,26 @@ class tool_etl_source_database_testcase extends advanced_testcase {
         $this->assertEmpty($errors);
     }
 
+    public function test_extract() {
+        $now = time();
+        $hour = 60 * 60;
+        $query = 'SELECT * FROM {test} WHERE updated >= %%STARTTIME%% AND updated < %%ENDTIME%%';
+        $re = '/updated >= (\d+) AND updated < (\d+)/';
+        $lastrun = $now - 48 * $hour;
+
+        $this->source->set_settings(['querysql' => $query]);
+        $this->source->set_last_extract_time($lastrun);
+        try {
+            $this->source->extract();
+        } catch (\dml_read_exception $e) {
+            preg_match($re, $e->sql, $matches);
+            list($m, $start, $end) = $matches;
+            $deh = ($now - $end) / $hour;
+            $this->assertEquals($lastrun, $start);
+            $this->assertTrue($deh < 24);
+        }
+    }
+
     public function test_get_week_starts_test() {
         $this->assertEquals(array(
             strtotime('00:00 7 November 2009'), strtotime('00:00 31 October 2009')),

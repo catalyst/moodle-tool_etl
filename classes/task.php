@@ -343,6 +343,8 @@ class task implements task_interface {
     public function execute() {
         try {
             if ($this->is_enabled() && $this->schedule->is_time()) {
+                $this->source->set_last_extract_time($this->log_last_execute_time());
+
                 $this->log('execute', 'Task started');
 
                 $this->schedule->next();
@@ -373,5 +375,17 @@ class task implements task_interface {
         logger::get_instance()->set_task_id($this->id);
         logger::get_instance()->set_element('Task');
         logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
+    }
+
+    /**
+     * Get last exec time from log
+     *
+     * @return int timestamp
+     *
+     * @throws \coding_exception
+     */
+    protected function log_last_execute_time() {
+        logger::get_instance()->set_task_id($this->id);
+        return logger::get_instance()->get_last_execute_time();
     }
 }

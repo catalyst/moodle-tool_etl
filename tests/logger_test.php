@@ -173,4 +173,20 @@ class tool_etl_logger_testcase extends advanced_testcase {
         $this->assertEquals($expected, logger::get_existing_run_ids());
     }
 
+    public function test_get_last_execute_time() {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $logger = logger::get_instance();
+        $logger->set_task_id(666);
+
+        $lasttime = $logger->get_last_execute_time();
+        $this->assertFalse($lasttime);
+
+        $now = time();
+        $logger->add_to_log(logger::TYPE_INFO, 'execute', 'Test started');
+        $lasttime = $logger->get_last_execute_time();
+        $this->assertTrue($lasttime - $now <= 1);
+    }
 }
