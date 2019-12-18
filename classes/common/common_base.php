@@ -252,6 +252,45 @@ abstract class common_base implements common_interface {
     protected function log($action, $info='', $logtype = logger::TYPE_INFO, $trace='') {
         logger::get_instance()->set_element($this->get_name());
         logger::get_instance()->add_to_log($logtype, $action, $info, $trace);
+
+        if ($logtype == logger::TYPE_ERROR) {
+            try {
+                $this->notify($action, $info);
+            } catch (\moodle_exception $e) {
+                logger::get_instance()->add_to_log(logger::TYPE_ERROR, 'notify', $e->getMessage(), $e->getTrace());
+            }
+        }
+    }
+
+    /**
+     * Notify of failure
+     *
+     * @param string $subject
+     * @param string $msg
+     * @return bool
+     */
+    protected function notify($action, $msg) {
+        if (empty($this->settings['notifymailto'])) {
+            return;
+        }
+
+        $notifyemails = explode(',', $this->settings['notifymailto']);
+
+        $sitename = get_site();
+        $sitename = format_string($sitename->fullname);
+        $subject = "$sitename $action error";
+
+        // Send emails.
+        $supportuser = \core_user::get_support_user();
+        $user = \core_user::get_noreply_user();
+        $sent = true;
+        foreach ($notifyemails as $emailaddress) {
+            $user->email = $emailaddress;
+            $sent = $sent && email_to_user($user, $supportuser, $subject, $msg);
+        }
+        if (!$sent) {
+            throw new \moodle_exception('notify_failed', 'tool_etl', null, $notifyemails);
+        }
     }
 
     /**

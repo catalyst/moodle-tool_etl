@@ -236,6 +236,18 @@ final class logger {
     }
 
     /**
+
+     * Return a list of log entries for the current run
+     *
+     * @return array
+     */
+    public function get_current_run_logs() {
+        global $DB;
+
+        return array_values($DB->get_records(self::TABLE, ["taskid" => $this->taskid, "runid" => $this->runid], 'id'));
+    }
+
+    /**
      * Return last run for task
      *
      * @return array
@@ -247,5 +259,6 @@ final class logger {
             "SELECT time FROM {" . self::TABLE . "} WHERE taskid = ? AND action = 'execute' AND info = 'Task started' ORDER BY time DESC LIMIT 1",
             [$this->taskid]
         );
+
     }
 }
