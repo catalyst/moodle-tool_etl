@@ -198,7 +198,7 @@ class target_sftp_key extends target_base {
         }
 
         if (!$this->logginresult) {
-            $this->log('login', 'Login failed using ' . $this->settings['username'], logger::TYPE_ERROR);
+            $this->log('login', get_string('login_failed_target_sftp_email', 'tool_etl', $this->settings['username']), logger::TYPE_ERROR);
             return false;
         }
 

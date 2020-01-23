@@ -63,7 +63,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
             'overwrite' => 1,
             'addtime' => 0,
             'delimiter' => '',
-            'dateformat' => 'dmY_hi',
+            'dateformat' => 'dmY_Hi',
             'backupfiles' => 1,
         );
         $this->assertEquals($expected, $this->target->get_settings());
