@@ -84,3 +84,4 @@ $string['columnfields_help'] = 'If no data is returned from the sql query the so
 $string['address_empty'] = 'URL address could not be empty';
 $string['address_not_url'] = 'This file cannot be downloaded';
 $string['notify_failed'] = 'One or more emails to {$a} could not be sent';
+$string['login_failed_target_sftp_email'] = 'SFTP login fail email message. If you need to show the username please add {$a}';

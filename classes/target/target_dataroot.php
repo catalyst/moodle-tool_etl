@@ -49,7 +49,7 @@ class target_dataroot extends target_base {
         'overwrite' => 1,
         'addtime' => 0,
         'delimiter' => '',
-        'dateformat' => 'dmY_hi',
+        'dateformat' => 'dmY_Hi',
         'backupfiles' => 1,
     );
 
@@ -280,7 +280,7 @@ class target_dataroot extends target_base {
      */
     protected function get_list_of_formats() {
 
-        $availableformats = array('dmY_hi', 'dmy_hi', 'Ydm_hi', 'ydm_hi', 'dmYhi', 'dmyhi', 'Ydmhi', 'ydmhi');
+        $availableformats = array('dmY_Hi', 'dmy_Hi', 'Ydm_Hi', 'ydm_Hi', 'dmYHi', 'dmyHi', 'YdmHi', 'ydmHi');
         $formats = array();
 
         foreach ($availableformats as $format) {
