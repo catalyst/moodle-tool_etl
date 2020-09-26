@@ -46,6 +46,10 @@ class tool_etl_source_base_testcase extends advanced_testcase {
                 'subplugin' => 'etl_basics',
                 'classname' => 'source_folder'
             ),
+            (object) array(
+                'subplugin' => 'etl_basics',
+                'classname' => 'source_url'
+            ),
         );
 
         $this->assertArraySubset($expected, $actual);

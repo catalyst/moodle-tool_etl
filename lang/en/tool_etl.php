@@ -75,4 +75,5 @@ $string['subplugintype_etl'] = 'ETL step set';
 $string['subplugintype_etl_plural'] = 'ETL step sets';
 $string['eventloggingsucceed'] = 'ETL Tool log record added';
 $string['eventloggingfailed'] = 'Failed to add ETL Tool log record';
-
+$string['address_empty'] = 'URL address could not be empty';
+$string['address_not_url'] = 'This file cannot be downloaded';

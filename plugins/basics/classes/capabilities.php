@@ -33,6 +33,7 @@ class capabilities implements \tool_etl\capabilities_interface {
             'source_sftp',
             'source_sftp_key',
             'source_folder',
+            'source_url',
         );
     }
 
