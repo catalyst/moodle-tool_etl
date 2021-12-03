@@ -77,7 +77,7 @@ abstract class common_base implements common_interface {
     /**
      * @inheritdoc
      */
-    public final function get_short_name() {
+    final public function get_short_name() {
         $reflection = new \ReflectionClass($this);
 
         return $reflection->getShortName();
@@ -127,7 +127,7 @@ abstract class common_base implements common_interface {
      *
      * @return string
      */
-    public final function get_config_form_prefix() {
+    final public function get_config_form_prefix() {
         return $this->get_short_name() . '-';
     }
 

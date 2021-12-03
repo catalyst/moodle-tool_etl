@@ -38,7 +38,7 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
      */
     protected $data;
 
-    public function setUp() {
+    public function setUp() : void {
         global $CFG;
         require_once($CFG->dirroot . '/lib/formslib.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/data_fake.php');

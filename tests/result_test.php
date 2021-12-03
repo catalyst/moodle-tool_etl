@@ -35,7 +35,7 @@ class tool_etl_result_testcase extends advanced_testcase {
      */
     protected $resultinstance;
 
-    public function setUp() {
+    public function setUp() : void {
         parent::setUp();
         $this->resetAfterTest();
         $this->resultinstance = new result();

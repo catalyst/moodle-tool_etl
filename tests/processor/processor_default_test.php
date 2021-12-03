@@ -43,7 +43,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
      */
     protected $data;
 
-    public function setUp() {
+    public function setUp(): void {
         global $CFG;
         require_once($CFG->dirroot . '/lib/formslib.php');
         require_once($CFG->dirroot . '/admin/tool/etl/tests/fake/source_fake.php');
