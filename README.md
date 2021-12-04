@@ -1,5 +1,5 @@
-<a href="https://travis-ci.org/catalyst/moodle-tool_etl">
-<img src="https://api.travis-ci.org/catalyst/moodle-tool_etl.svg?branch=master">
+<a href="https://github.com/catalyst/moodle-tool_etl/actions?query=workflow%3A%22Run+all+tests%22">
+<img src="https://github.com/catalyst/moodle-tool_etl/workflows/Run%20all%20tests/badge.svg">
 </a>
 
 # Extract, transform, load (ETL)
@@ -15,10 +15,11 @@ For example it is often used to slightly massage data before using it with Totar
 
 ## Branches
 
-| Moodle verion     | Branch  | PHP        |
-| ----------------- | ------- | ---------- |
-| Moodle 2.9 to 3.8 | master  | 5.6 - 7.0+ |
-| Totara 12+        | master  | 5.6 - 7.0+ |
+| Moodle verion      | Branch  | PHP        |
+| ------------------ | ------- | ---------- |
+| Moodle 3.3 to 3.8  | master  | 7.1 - 7.2+ |
+| Moodle 3.9 to 3.11 | master  | 7.2 - 7.4+ |
+| Totara 12+         | master  | 5.6 - 7.0+ |
 
 NOTE: There is a fork of this under the MOODLE_35 branch which moves to a sub plugin architecture, and has various improvements:
 

@@ -38,7 +38,7 @@ class tool_etl_source_database_testcase extends advanced_testcase {
      */
     protected $data;
 
-    public function setUp() {
+    public function setUp() : void {
         global $CFG;
 
         require_once($CFG->dirroot . '/lib/formslib.php');

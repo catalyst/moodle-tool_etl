@@ -84,7 +84,7 @@ class tool_etl_target_sftp_key_testcase extends advanced_testcase {
      */
     protected $data;
 
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
 
         $this->resetAfterTest(true);
