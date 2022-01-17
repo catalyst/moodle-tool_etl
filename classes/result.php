@@ -24,8 +24,6 @@
 
 namespace tool_etl;
 
-defined('MOODLE_INTERNAL') || die;
-
 class result {
     /**
      * A list of results. Keys are names of formats.

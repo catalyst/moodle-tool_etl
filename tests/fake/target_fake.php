@@ -25,8 +25,6 @@
 use tool_etl\target\target_base;
 use tool_etl\data_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 class target_fake extends target_base {
     protected $name = "Fake target";
     protected $result;

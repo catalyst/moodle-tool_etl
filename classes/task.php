@@ -29,8 +29,6 @@ use tool_etl\source\source_interface;
 use tool_etl\processor\processor_interface;
 use tool_etl\target\target_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 class task implements task_interface {
     /**
      * Task table.

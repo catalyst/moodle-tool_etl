@@ -24,8 +24,6 @@
 
 use tool_etl\target\target_base;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_target_base_testcase extends advanced_testcase {
     public function test_get_options() {
         $actual = target_base::get_options();

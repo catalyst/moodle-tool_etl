@@ -27,8 +27,6 @@ use tool_etl\table\history_table;
 use tool_etl\task_manager;
 use \tool_etl\form\task_form;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_renderer extends plugin_renderer_base {
 
     /**

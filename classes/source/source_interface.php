@@ -27,8 +27,6 @@ namespace tool_etl\source;
 use tool_etl\common\common_interface;
 use tool_etl\data_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 interface source_interface extends common_interface {
     /**
      * Return a result of extraction.

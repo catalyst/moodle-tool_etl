@@ -28,9 +28,6 @@ use phpseclib\Crypt\RSA;
 use phpseclib\Net\SFTP;
 use tool_etl\logger;
 
-
-defined('MOODLE_INTERNAL') || die;
-
 class target_sftp_key extends target_base {
 
     /**

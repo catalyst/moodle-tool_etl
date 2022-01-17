@@ -1,0 +1,21 @@
+#
+# Whenever version.php is changed, add the latest version
+# to the Moodle Plugins directory at https://moodle.org/plugins
+#
+name: master - Releasing in the Plugins directory
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'version.php'
+
+jobs:
+  workflow_group_33_plus_release:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-33-plus-release.yml@main
+    with:
+      plugin_name: tool_etl
+      disable_grunt: true
+    secrets:
+      moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}

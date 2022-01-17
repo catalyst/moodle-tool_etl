@@ -24,8 +24,6 @@
 
 namespace tool_etl;
 
-defined('MOODLE_INTERNAL') || die;
-
 interface data_interface {
     /**
      * Return a list of supported data formats for the data object.

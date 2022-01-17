@@ -25,8 +25,6 @@
 use tool_etl\target\target_dataroot;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_target_dataroot_testcase extends advanced_testcase {
     /**
      * @var \tool_etl\target\target_dataroot

@@ -24,8 +24,6 @@
 
 use tool_etl\data_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 class data_fake implements data_interface {
 
     protected $formats = array();

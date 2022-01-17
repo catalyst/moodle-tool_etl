@@ -25,9 +25,6 @@
 use tool_etl\processor\processor_default;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
-
 class tool_etl_processor_default_testcase extends advanced_testcase {
     /**
      * @var source_fake

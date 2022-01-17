@@ -28,8 +28,6 @@ use tool_etl\config_field;
 use tool_etl\data;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class source_folder extends source_base {
 
     /**

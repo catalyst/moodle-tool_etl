@@ -28,8 +28,6 @@ use tool_etl\common\common_interface;
 use tool_etl\source\source_interface;
 use tool_etl\target\target_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 interface processor_interface extends common_interface {
     /**
      * Set source for the processor.

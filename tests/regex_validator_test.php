@@ -22,8 +22,6 @@
  */
 use tool_etl\regex_validator;
 
-defined('MOODLE_INTERNAL') || die();
-
 class tool_regex_validator_test extends advanced_testcase {
 
     public function provider_for_test_it_validates_the_regex() {
