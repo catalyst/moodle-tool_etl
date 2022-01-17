@@ -24,8 +24,6 @@
 
 use tool_etl\result;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Test report scheduler class
  */

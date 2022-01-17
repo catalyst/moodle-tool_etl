@@ -27,8 +27,6 @@ namespace tool_etl\target;
 use tool_etl\config_field;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class target_dataroot extends target_base {
     /**
      * Name of the source.

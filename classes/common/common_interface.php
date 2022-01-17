@@ -24,8 +24,6 @@
 
 namespace tool_etl\common;
 
-defined('MOODLE_INTERNAL') || die;
-
 interface common_interface {
     /**
      * Constructor.

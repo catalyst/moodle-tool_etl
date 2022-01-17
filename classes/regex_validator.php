@@ -22,8 +22,6 @@
 
 namespace tool_etl;
 
-defined('MOODLE_INTERNAL') || die();
-
 class regex_validator {
     /** @var string */
     private $regex;

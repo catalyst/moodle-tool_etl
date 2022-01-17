@@ -29,8 +29,6 @@ use tool_etl\source\source_interface;
 use tool_etl\target\target_interface;
 
 
-defined('MOODLE_INTERNAL') || die;
-
 abstract class processor_base extends common_base implements processor_interface {
     /**
      * Configured source instance.

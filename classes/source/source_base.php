@@ -27,8 +27,6 @@ namespace tool_etl\source;
 use tool_etl\common\common_base;
 use tool_etl\data_interface;
 
-defined('MOODLE_INTERNAL') || die;
-
 abstract class source_base extends common_base implements source_interface {
 
     /**

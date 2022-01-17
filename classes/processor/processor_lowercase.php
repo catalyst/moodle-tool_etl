@@ -28,8 +28,6 @@ use tool_etl\data;
 use tool_etl\logger;
 use tool_etl\config_field;
 
-defined('MOODLE_INTERNAL') || die;
-
 class processor_lowercase extends processor_base {
 
     /**

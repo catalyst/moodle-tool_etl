@@ -24,8 +24,6 @@
 
 use tool_etl\source\source_base;
 
-defined('MOODLE_INTERNAL') || die;
-
 class source_fake extends source_base {
 
     protected $name = "Fake source";

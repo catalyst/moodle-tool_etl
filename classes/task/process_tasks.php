@@ -26,8 +26,6 @@ namespace tool_etl\task;
 
 use tool_etl\task_manager;
 
-defined('MOODLE_INTERNAL') || die();
-
 class process_tasks extends \core\task\scheduled_task {
 
     /**

@@ -24,8 +24,6 @@
 
 namespace tool_etl;
 
-defined('MOODLE_INTERNAL') || die;
-
 final class logger {
     /**
      * Logger DB table.

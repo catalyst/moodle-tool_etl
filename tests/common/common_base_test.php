@@ -24,8 +24,6 @@
 
 use tool_etl\common\common_base;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_common_base_testcase extends advanced_testcase {
 
     public function data_provider_for_test_validate_type() {

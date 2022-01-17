@@ -25,8 +25,6 @@
 use tool_etl\source\source_database;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_source_database_testcase extends advanced_testcase {
     /**
      * @var source_database

@@ -28,8 +28,6 @@ namespace tool_etl\processor;
 
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class processor_default extends processor_base {
 
     /**

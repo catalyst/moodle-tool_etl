@@ -25,8 +25,6 @@
 use tool_etl\source\source_folder;
 use tool_etl\logger;
 
-defined('MOODLE_INTERNAL') || die;
-
 class tool_etl_source_folder_testcase extends advanced_testcase {
     /**
      * @var source_folder

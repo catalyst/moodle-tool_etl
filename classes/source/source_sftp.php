@@ -24,8 +24,6 @@
 
 namespace tool_etl\source;
 
-defined('MOODLE_INTERNAL') || die;
-
 class source_sftp extends source_ftp {
 
     /**

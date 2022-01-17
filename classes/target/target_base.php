@@ -29,9 +29,6 @@ use tool_etl\data_interface;
 use tool_etl\logger;
 use tool_etl\result;
 
-
-defined('MOODLE_INTERNAL') || die;
-
 abstract class target_base extends common_base implements target_interface {
 
     /**

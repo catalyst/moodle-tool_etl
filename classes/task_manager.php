@@ -26,8 +26,6 @@ namespace tool_etl;
 
 use tool_etl\common\common_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 class task_manager {
 
     /**

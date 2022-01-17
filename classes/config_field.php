@@ -24,8 +24,6 @@
 
 namespace tool_etl;
 
-defined('MOODLE_INTERNAL') || die;
-
 class config_field {
     /**
      * A list of parameters for every config field instance.

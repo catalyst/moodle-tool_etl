@@ -27,8 +27,6 @@ namespace tool_etl\common;
 use tool_etl\logger;
 use tool_etl\regex_validator;
 
-defined('MOODLE_INTERNAL') || die;
-
 abstract class common_base implements common_interface {
     /**
      * Default date format.
