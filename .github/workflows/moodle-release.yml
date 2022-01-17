@@ -16,5 +16,6 @@ jobs:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-33-plus-release.yml@main
     with:
       plugin_name: tool_etl
+      disable_grunt: true
     secrets:
       moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}

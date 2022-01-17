@@ -5,3 +5,5 @@ on: [push, pull_request]
 jobs:
   workflow_group_33_plus_ci:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-33-plus-ci.yml@main
+    with:
+      disable_grunt: true
