@@ -1,6 +1,4 @@
-<a href="https://github.com/catalyst/moodle-tool_etl/actions?query=workflow%3A%22Run+all+tests%22">
-<img src="https://github.com/catalyst/moodle-tool_etl/workflows/Run%20all%20tests/badge.svg">
-</a>
+[![Build Status](https://github.com/catalyst/moodle-tool_etl/workflows/Run%20all%20tests%20for%20Moodle%2033+/badge.svg)](https://github.com/catalyst/moodle-tool_etl/actions)
 
 # Extract, transform, load (ETL)
 ETL is a Moodle admin tool that allows to extract, transform and then load any data from a source system to a target system.
