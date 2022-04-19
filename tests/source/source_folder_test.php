@@ -88,7 +88,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('text', $elements[1]->getType());
-        $this->assertContains('checkbox', $elements[2]->getType());
+        $this->assertStringContainsString('checkbox', $elements[2]->getType());
 
         $this->assertEquals('source_folder-folder', $elements[0]->getName());
         $this->assertEquals('source_folder-fileregex', $elements[1]->getName());
@@ -145,6 +145,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
      * @expectedExceptionMessage Server folder source is not available!
      */
     public function test_exception_thrown_when_extract_and_source_is_not_available() {
+        $this->expectExceptionMessage('Server folder source is not available!');
         $this->source->extract();
     }
 
@@ -179,10 +180,10 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $this->assertTrue(file_exists($testfile3));
         $this->assertTrue(file_exists($testfile4));
 
-        $this->assertRegExp('#' . $pattern . basename($testfile1) . '#', $files[0]);
-        $this->assertRegExp('#' . $pattern . basename($testfile2) . '#', $files[1]);
-        $this->assertRegExp('#' . $pattern . basename($testfile3) . '#', $files[2]);
-        $this->assertRegExp('#' . $pattern . basename($testfile4) . '#', $files[3]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile1) . '#', $files[0]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile2) . '#', $files[1]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile3) . '#', $files[2]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile4) . '#', $files[3]);
 
         // Filter files by regex and delete files after loading.
         $this->source = new source_folder(array('folder' => $testfolder, 'fileregex' => '/test[1-3].txt/', 'delete' => 1));
@@ -199,9 +200,9 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
         $this->assertFalse(file_exists($testfile3));
         $this->assertTrue(file_exists($testfile4));
 
-        $this->assertRegExp('#' . $pattern . basename($testfile1) . '#', $files[0]);
-        $this->assertRegExp('#' . $pattern . basename($testfile2) . '#', $files[1]);
-        $this->assertRegExp('#' . $pattern . basename($testfile3) . '#', $files[2]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile1) . '#', $files[0]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile2) . '#', $files[1]);
+        $this->assertMatchesRegularExpression('#' . $pattern . basename($testfile3) . '#', $files[2]);
 
     }
 

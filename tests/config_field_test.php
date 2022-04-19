@@ -37,6 +37,7 @@ class tool_etl_config_field_testcase extends advanced_testcase {
      */
     public function test_exception_when_getting_unknown_parameter() {
         $instance = new config_field('test_name', 'Test title');
+        $this->expectExceptionMessage('Unknown parameter bla');
         $instance->bla;
     }
 

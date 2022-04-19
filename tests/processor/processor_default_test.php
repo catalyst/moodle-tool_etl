@@ -87,6 +87,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
      */
     public function test_throw_exception_if_source_and_target_are_not_set() {
         $processor = new processor_default();
+        $this->expectExceptionMessage('Can not process. Source and target must be set!');
         $processor->process();
     }
 
@@ -98,6 +99,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
     public function test_throw_exception_if_source_is_not_set() {
         $processor = new processor_default();
         $processor->set_source($this->source);
+        $this->expectExceptionMessage('Can not process. Source and target must be set!');
         $processor->process();
     }
 
@@ -109,6 +111,7 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
     public function test_throw_exception_if_target_is_not_set() {
         $processor = new processor_default();
         $processor->set_target($this->target);
+        $this->expectExceptionMessage('Can not process. Source and target must be set!');
         $processor->process();
     }
 

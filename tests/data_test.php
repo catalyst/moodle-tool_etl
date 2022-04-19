@@ -64,6 +64,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_if_format_is_not_string() {
         $data = new data();
+        $this->expectExceptionMessage('Format should be a string');
         $data->get_data(array());
     }
 
@@ -73,6 +74,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_on_unknown_format() {
         $data = new data();
+        $this->expectExceptionMessage('Data is not available in bla format');
         $data->get_data('bla');
     }
 
@@ -82,6 +84,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_on_files_format() {
         $data = new data();
+        $this->expectExceptionMessage('Data is not available in files format');
         $data->get_data('files');
     }
 
@@ -91,6 +94,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_on_string_format() {
         $data = new data();
+        $this->expectExceptionMessage('Data is not available in string format');
         $data->get_data('string');
     }
 
@@ -100,6 +104,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_on_array_format() {
         $data = new data();
+        $this->expectExceptionMessage('Data is not available in array format');
         $data->get_data('array');
     }
 
@@ -109,6 +114,7 @@ class tool_etl_data_testcase extends advanced_testcase {
      */
     public function test_get_data_throwing_exception_on_object_format() {
         $data = new data();
+        $this->expectExceptionMessage('Data is not available in object format');
         $data->get_data('object');
     }
 
