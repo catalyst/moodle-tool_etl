@@ -1,4 +1,5 @@
-name: Run all tests
+# .github/workflows/ci.yml
+name: ci
 
 # Run this workflow on push and on pull_request.
 on: [push, pull_request]
@@ -42,8 +43,6 @@ jobs:
           - {moodle-branch: 'MOODLE_39_STABLE', php: '7.4', node: '14.15', database: 'pgsql'}
           - {moodle-branch: 'MOODLE_310_STABLE', php: '7.4', node: '14.15.1', database: 'mariadb'}
           - {moodle-branch: 'MOODLE_310_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_311_STABLE', php: '7.4', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_311_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2

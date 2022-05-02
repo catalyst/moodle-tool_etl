@@ -15,11 +15,13 @@ For example it is often used to slightly massage data before using it with Totar
 
 ## Branches
 
-| Moodle verion      | Branch  | PHP        |
-| ------------------ | ------- | ---------- |
+| Moodle version     | Branch  | PHP        |
+|--------------------| ------- | ---------- |
 | Moodle 3.3 to 3.8  | master  | 7.1 - 7.2+ |
-| Moodle 3.9 to 3.11 | master  | 7.2 - 7.4+ |
+| Moodle 3.9 to 3.10 | master  | 7.2 - 7.4+ |
 | Totara 12+         | master  | 5.6 - 7.0+ |
+
+NOTE: Moodle 3.11 is not supported. This is going to be the end of life version of the plugin.
 
 NOTE: There is a fork of this under the MOODLE_35 branch which moves to a sub plugin architecture, and has various improvements:
 

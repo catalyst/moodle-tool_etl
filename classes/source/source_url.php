@@ -33,8 +33,7 @@ use tool_etl\logger;
 
 defined('MOODLE_INTERNAL') || die;
 
-class source_url extends source_base
-{
+class source_url extends source_base {
 
     /**
      * Name of the source.
