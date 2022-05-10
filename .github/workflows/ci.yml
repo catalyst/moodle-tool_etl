@@ -5,6 +5,8 @@ name: ci
 on: [push, pull_request]
 
 jobs:
+  ci:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
   setup:
     runs-on: ubuntu-latest
     services:
@@ -27,22 +29,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - {moodle-branch: 'MOODLE_33_STABLE', php: '7.1', node: '8.9', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_34_STABLE', php: '7.2', node: '8.9', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_35_STABLE', php: '7.2', node: '14.15', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_36_STABLE', php: '7.3', node: '8.9', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_37_STABLE', php: '7.1', node: '14.15', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_37_STABLE', php: '7.3', node: '14.15', database: 'pgsql' }
-          - {moodle-branch: 'MOODLE_38_STABLE', php: '7.1', node: '14.15', database: 'mariadb' }
-          - {moodle-branch: 'MOODLE_38_STABLE', php: '7.3', node: '14.15', database: 'pgsql' }
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.2', node: '14.15', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.3', node: '14.15', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.4', node: '14.15', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.4', node: '14.15', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_310_STABLE', php: '7.4', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_310_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -110,10 +96,9 @@ jobs:
       #  if: ${{ always() }}
       #  run: moodle-plugin-ci phpdoc
 
-      # It was initially done for shifter, needs adaptation for grunt
-      #- name: Run grunt
-      #  if: ${{ always() }}
-      #  run: moodle-plugin-ci grunt
+      - name: Run grunt
+        if: ${{ always() && inputs.disable_grunt != 'true' && matrix.moodle-branch == 'MOODLE_310_STABLE' }}
+        run: moodle-plugin-ci grunt
 
       - name: Run phpunit
         if: ${{ always() }}
