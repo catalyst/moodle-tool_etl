@@ -277,7 +277,7 @@ class tool_etl_target_sftp_key_testcase extends advanced_testcase {
 
         $messages = $sink->get_messages();
         $this->assertCount(1, $messages);
-        $this->assertContains('load_data error', $messages[0]->subject);
+        $this->assertStringContainsString('load_data error', $messages[0]->subject);
         $this->assertEquals($email, $messages[0]->to);
 
         $this->assertFalse($actual->get_result('files'));

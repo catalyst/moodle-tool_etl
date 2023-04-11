@@ -63,6 +63,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Format should be a string
      */
     public function test_get_data_throwing_exception_if_format_is_not_string() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Format should be a string');
         $data = new data();
         $data->get_data(array());
     }
@@ -72,6 +74,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Data is not available in bla format
      */
     public function test_get_data_throwing_exception_on_unknown_format() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Data is not available in bla format');
         $data = new data();
         $data->get_data('bla');
     }
@@ -81,6 +85,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Data is not available in files format
      */
     public function test_get_data_throwing_exception_on_files_format() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Data is not available in files format');
         $data = new data();
         $data->get_data('files');
     }
@@ -90,6 +96,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Data is not available in string format
      */
     public function test_get_data_throwing_exception_on_string_format() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Data is not available in string format');
         $data = new data();
         $data->get_data('string');
     }
@@ -99,6 +107,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Data is not available in array format
      */
     public function test_get_data_throwing_exception_on_array_format() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Data is not available in array format');
         $data = new data();
         $data->get_data('array');
     }
@@ -108,6 +118,8 @@ class tool_etl_data_testcase extends advanced_testcase {
      * @@expectedExceptionMessage Data is not available in object format
      */
     public function test_get_data_throwing_exception_on_object_format() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Data is not available in object format');
         $data = new data();
         $data->get_data('object');
     }

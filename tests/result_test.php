@@ -57,6 +57,8 @@ class tool_etl_result_testcase extends advanced_testcase {
      * @expectedExceptionMessage Format should be not empty string
      */
     public function test_validate_format_when_add_result($format) {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Format should be not empty string');
         $this->resultinstance->add_result($format, true);
     }
 
@@ -66,6 +68,8 @@ class tool_etl_result_testcase extends advanced_testcase {
      * @expectedExceptionMessage Format should be not empty string
      */
     public function test_validate_format_when_get_result($format) {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Format should be not empty string');
         $this->resultinstance->get_result($format);
     }
 

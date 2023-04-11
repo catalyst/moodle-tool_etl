@@ -63,6 +63,8 @@ class tool_regex_validator_test extends advanced_testcase {
      * @expectedExceptionMessage Expecting regex to be a string
      */
     public function test_it_throws_exception_if_regex_is_not_string($regex) {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Expecting regex to be a string');
         $validator = new regex_validator($regex);
     }
 }

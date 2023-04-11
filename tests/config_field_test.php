@@ -36,6 +36,8 @@ class tool_etl_config_field_testcase extends advanced_testcase {
      * @expectedExceptionMessage Coding error detected, it must be fixed by a programmer: Unknown parameter bla
      */
     public function test_exception_when_getting_unknown_parameter() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: Unknown parameter bla');
         $instance = new config_field('test_name', 'Test title');
         $instance->bla;
     }

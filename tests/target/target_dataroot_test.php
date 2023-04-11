@@ -97,13 +97,13 @@ class tool_etl_target_dataroot_testcase extends advanced_testcase {
         $this->assertCount(8, $elements);
 
         $this->assertEquals('text', $elements[0]->getType());
-        $this->assertContains('checkbox', $elements[1]->getType());
+        $this->assertStringContainsString('checkbox', $elements[1]->getType());
         $this->assertEquals('text', $elements[2]->getType());
-        $this->assertContains('checkbox', $elements[3]->getType());
-        $this->assertContains('checkbox', $elements[4]->getType());
+        $this->assertStringContainsString('checkbox', $elements[3]->getType());
+        $this->assertStringContainsString('checkbox', $elements[4]->getType());
         $this->assertEquals('select', $elements[5]->getType());
         $this->assertEquals('text', $elements[6]->getType());
-        $this->assertContains('checkbox', $elements[7]->getType());
+        $this->assertStringContainsString('checkbox', $elements[7]->getType());
 
         $this->assertEquals('target_dataroot-path', $elements[0]->getName());
         $this->assertEquals('target_dataroot-clreateifnotexist', $elements[1]->getName());

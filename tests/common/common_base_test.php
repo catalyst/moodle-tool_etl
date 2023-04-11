@@ -55,6 +55,8 @@ class tool_etl_common_base_testcase extends advanced_testcase {
      * @expectedExceptionMessage Invalid type Random type
      */
     public function test_throw_exception_when_get_options_for_invalid_type() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Invalid type Random type');
         $options = common_base::options('Random type');
     }
 
@@ -78,6 +80,8 @@ class tool_etl_common_base_testcase extends advanced_testcase {
      * @expectedExceptionMessage Can not initialise element. Class tool_etl\random_type\RandonName is not exist
      */
     public function test_throw_exception_when_init_invalid_type() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Can not initialise element. Class tool_etl\random_type\RandonName is not exist');
         $options = common_base::init('random_type', 'RandonName');
     }
 

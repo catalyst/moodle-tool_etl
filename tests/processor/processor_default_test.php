@@ -86,6 +86,8 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
      * Source and target must be set!
      */
     public function test_throw_exception_if_source_and_target_are_not_set() {
+        $this->expectException('coding_exception');
+        $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: Can not process.');
         $processor = new processor_default();
         $processor->process();
     }
@@ -96,6 +98,8 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
      * Source and target must be set!
      */
     public function test_throw_exception_if_source_is_not_set() {
+        $this->expectException('coding_exception');
+        $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: Can not process.');
         $processor = new processor_default();
         $processor->set_source($this->source);
         $processor->process();
@@ -107,6 +111,8 @@ class tool_etl_processor_default_testcase extends advanced_testcase {
      * Source and target must be set!
      */
     public function test_throw_exception_if_target_is_not_set() {
+        $this->expectException('coding_exception');
+        $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: Can not process.');
         $processor = new processor_default();
         $processor->set_target($this->target);
         $processor->process();

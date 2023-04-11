@@ -88,7 +88,7 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
 
         $this->assertEquals('text', $elements[0]->getType());
         $this->assertEquals('text', $elements[1]->getType());
-        $this->assertContains('checkbox', $elements[2]->getType());
+        $this->assertStringContainsString('checkbox', $elements[2]->getType());
 
         $this->assertEquals('source_folder-folder', $elements[0]->getName());
         $this->assertEquals('source_folder-fileregex', $elements[1]->getName());
@@ -145,6 +145,8 @@ class tool_etl_source_folder_testcase extends advanced_testcase {
      * @expectedExceptionMessage Server folder source is not available!
      */
     public function test_exception_thrown_when_extract_and_source_is_not_available() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Server folder source is not available!');
         $this->source->extract();
     }
 

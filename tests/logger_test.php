@@ -48,8 +48,9 @@ class tool_etl_logger_testcase extends advanced_testcase {
      */
     public function test_throw_exception_when_clone() {
         $this->resetAfterTest();
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: Cannot clone singleton');
         $logger = logger::get_instance();
-
         $clone = clone $logger;
     }
 
@@ -58,6 +59,8 @@ class tool_etl_logger_testcase extends advanced_testcase {
      * @expectedExceptionMessage Task or Element is not set. Can not write to the log
      */
     public function test_throw_exception_if_task_id_is_not_set() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Task or Element is not set. Can not write to the log');
         $logger = logger::get_instance();
         $logger->set_element('Test element');
 
@@ -69,6 +72,8 @@ class tool_etl_logger_testcase extends advanced_testcase {
      * @expectedExceptionMessage Task or Element is not set. Can not write to the log
      */
     public function test_throw_exception_if_element_is_not_set() {
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Task or Element is not set. Can not write to the log');
         $logger = logger::get_instance();
         $logger->set_element(null);
         $logger->set_task_id(777);
