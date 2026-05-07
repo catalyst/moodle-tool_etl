@@ -1,3 +1,38 @@
+
+
+The tool_etl plugin has been deprecated.
+
+It has been replacmented by tool_dataflows which is an even more powerful generic engine for visually creating flows
+and can be used for triggering processes based on events, or cron schedules and is extremely flexible.
+
+It is available as part of the Catalyst Educators Pack:
+
+https://www.catalyst-eu.net/products/moodle-educators-pack
+
+If you are interested please contact us via:
+
+https://www.catalyst-au.net/contact-us
+
+
+--------
+
+---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a href="https://github.com/catalyst/moodle-tool_etl/actions?query=workflow%3A%22Run+all+tests%22">
 <img src="https://github.com/catalyst/moodle-tool_etl/workflows/Run%20all%20tests/badge.svg">
 </a>
