@@ -1,7 +1,9 @@
 ## The tool_etl plugin has been deprecated.
 
-It has been replacmented by tool_dataflows which is an even more powerful generic engine for visually creating flows
+It has been replaced by tool_dataflows which is an even more powerful generic engine for visually creating flows
 and can be used for triggering processes based on events, or cron schedules and is extremely flexible.
+
+https://www.catalyst-au.net/solutions/dataflows-plugin-for-moodle-by-catalyst
 
 It is available as part of the Catalyst Educators Pack:
 
